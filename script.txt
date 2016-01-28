@@ -1,0 +1,32 @@
+Please enter a course code.
+CPSC233
+
+Please enter student grades (0 - 100), or -1 to finish input. 55
+Please enter student grades (0 - 100), or -1 to finish input. 67
+Please enter student grades (0 - 100), or -1 to finish input. 85
+Please enter student grades (0 - 100), or -1 to finish input. 46
+Please enter student grades (0 - 100), or -1 to finish input. 70
+Please enter student grades (0 - 100), or -1 to finish input. 9999
+Invalid student grade.
+Please enter student grades (0 - 100), or -1 to finish input.-100
+Entered Sentinel: Done entering grades.
+
+Course code: CPSC233
+
+A: 	0
+A-: 	1
+B+: 	0
+B: 	0
+B-: 	1
+C+: 	1
+C: 	0
+C-: 	1
+D+: 	0
+D: 	1
+F: 	0
+
+Highest grade: 		85(A-)
+Lowest grade: 		46(D)
+Sum of entered grades: 	323
+# of grades entered: 	5
+Average grade: 		64.6(C)
