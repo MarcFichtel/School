@@ -1,0 +1,36 @@
+Enter first point's coordinates.
+X: 0
+Y: 0
+Enter second point's coordinates.
+X: 1
+Y: 1
+Enter third point's coordinates.
+X: -2
+Y: -2
+
+Enter values by which to move all points.
+X: 2.5
+Y: 3.5
+Point 1. ID: 1, X: 2.5, Y: 3.5
+Point 2. ID: 2, X: 3.5, Y: 4.5
+Point 3. ID: 3, X: 0.5, Y: 1.5
+
+Active Instances: 3
+
+Point 4. ID: 4, X: 0.0, Y: 0.0
+
+Distance between Point 1 to Point 4: 4.301162633521313
+Distance between Point 2 to Point 4: 5.70087712549569
+Distance between Point 3 to Point 4: 1.5811388300841898
+
+Average X Position: 2.1666666666666665
+Average Y Position: 3.1666666666666665
+
+Point 5. ID: 5, X: 2.1666666666666665, Y: 3.1666666666666665
+
+Active Instances: 5
+Garbage is being collected...
+Garbage is being collected...
+Garbage is being collected...
+Deleted references to Points 1, 2, and 3, and forced Garbage Collection
+Active Instances: 2
