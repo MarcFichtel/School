@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 /** 
  * @author Marc-Andre Fichtel
  * -- Assignment 2, due  February 12, 2016
