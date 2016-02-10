@@ -28,9 +28,6 @@ Average Y Position: 3.1666666666666665
 
 Point 5. ID: 5, X: 2.1666666666666665, Y: 3.1666666666666665
 
-Active Instances: 5
-Garbage is being collected...
-Garbage is being collected...
-Garbage is being collected...
+Active Instances: 
 Deleted references to Points 1, 2, and 3, and forced Garbage Collection
 Active Instances: 2
