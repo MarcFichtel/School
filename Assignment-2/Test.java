@@ -101,15 +101,29 @@ public class Test {
 		System.out.print("\nActive Instances: " + Point.ActiveInstances() + "\n");
 		
 		// Force garbage collection (keep calling it until it works)
-		while (Point.ActiveInstances() >= 3) {
-			System.gc();			// Usually takes 2 to 4 loops until garbage has been collected
-			System.out.println("Garbage is being collected...");
-		}
+		// while (Point.ActiveInstances() >= 3) {
+		// 	System.gc();			// Usually takes 2 to 4 loops until garbage has been collected
+		// 	System.out.println("Garbage is being collected...");
+		// }
+		fullGC();
 
 		// Print out the number of active instances (should be 2)
 		System.out.print("Deleted references to Points 1, 2, and 3, and forced Garbage Collection");
 		System.out.print("\nActive Instances: " + Point.ActiveInstances() + "\n");
 		
 		input.close();
+	}
+
+	// Aggressive garbage collection method as given by professor
+	public static void fullGC() {
+	    Runtime rt = Runtime.getRuntime();
+	    long isFree = rt.freeMemory();
+	    long wasFree;
+	    do {
+	        wasFree = isFree;
+	        rt.runFinalization();
+	        rt.gc();
+	        isFree = rt.freeMemory();
+	    } while (isFree > wasFree);
 	}
 }
