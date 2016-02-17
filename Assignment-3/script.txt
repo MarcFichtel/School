@@ -1,0 +1,35 @@
+Created 5 rectangles and 5 circles.
+
+First Rectangle State: Origin at X: 1.0, Y: 2.0
+Length: 2.0
+Width: 4.0
+Area: 8.0
+Circumference: 16.0
+
+First Circle State: Origin at X: 3.0, Y: 4.0
+Radius: 5.0
+Area: 78.53981633975
+Circumference: 31.4159265359
+
+Enter values by which to move the first rectangle and circle.
+Enter x-value: 4
+Enter y-value: 5
+The shapes have been moved.
+
+Distance between the first rectangle and circle is: 2.8284271247461903
+
+All other shapes have been destroyed.
+
+State of all available shapes: 
+Rectangle at index 0: Origin at X: 5.0, Y: 7.0
+Length: 2.0
+Width: 4.0
+Area: 8.0
+Circumference: 16.0
+
+Circle at index 1: Origin at X: 7.0, Y: 9.0
+Radius: 5.0
+Area: 78.53981633975
+Circumference: 31.4159265359
+
+Program done.
