@@ -28,8 +28,8 @@ public class Circle extends Shape {
 	 * @param y: The y-coordinate of the circle's origin
 	 */
 	public Circle (double rad, double x, double y) {
+		super(x, y);
 		SetRadius(rad);
-		this.SetOrigin(x, y);
 	}
 	
 	/**
@@ -79,7 +79,8 @@ public class Circle extends Shape {
 	 * @return state: The circle's current state
 	 */
 	public String toString() {
-		String state = ("Origin at X: " + this.GetOrigin().GetPointX() +
+		String state = ("Shape is a Circle" +
+				"\nOrigin at X: " + this.GetOrigin().GetPointX() +
 				", Y: " + this.GetOrigin().GetPointY() +
 				"\nRadius: " + this.GetRadius() +
 				"\nArea: " + this.GetArea() +

@@ -29,8 +29,8 @@ public class Rectangle extends Shape {
 	 * @param y: The y-coordinate of the rectangle's origin
 	 */
 	public Rectangle (double len, double wid, double x, double y) {
+		super(x, y);
 		SetSize(len, wid);
-		this.SetOrigin(x, y);
 	}
 	
 	/**
@@ -106,7 +106,8 @@ public class Rectangle extends Shape {
 	 * @return state: The rectangle's current state
 	 */
 	public String toString() {
-		String state = ("Origin at X: " + this.GetOrigin().GetPointX() +
+		String state = ("Shape is a Rectangle" +
+				"\nOrigin at X: " + this.GetOrigin().GetPointX() +
 				", Y: " + this.GetOrigin().GetPointY() +
 				"\nLength: " + this.GetLength() +
 				"\nWidth: " + this.GetWidth() +

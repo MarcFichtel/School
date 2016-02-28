@@ -1,35 +1,301 @@
-Created 5 rectangles and 5 circles.
+Dear User,
+This program lets you create, edit, and delete Rectangle and Circle Shapes.
+Please choose an option.
 
-First Rectangle State: Origin at X: 1.0, Y: 2.0
-Length: 2.0
-Width: 4.0
-Area: 8.0
-Circumference: 16.0
+Options:
+	 [0] Create shapes.
+	 [1] Set Origin for a shape.
+	 [2] Set Dimensions for a shape.
+	 [3] Display state of a shape.
+	 [4] Move a shape.
+	 [5] Show Distance between two shapes.
+	 [6] Destroy a shape.
+	 [7] List state of all shapes.
+	 [-1] Exit Program.
+Choose Option: 0
 
-First Circle State: Origin at X: 3.0, Y: 4.0
-Radius: 5.0
-Area: 78.53981633975
-Circumference: 31.4159265359
+Create up to 10 Shapes.
+How many Rectangles would you like to create? 1
+How many Circles would you like to create? 2
 
-Enter values by which to move the first rectangle and circle.
-Enter x-value: 4
-Enter y-value: 5
-The shapes have been moved.
+Shapes:
+Shape 0: Rectangle
+Shape 1: Circle
+Shape 2: Circle
 
-Distance between the first rectangle and circle is: 2.8284271247461903
+Options:
+	 [0] Create shapes.
+	 [1] Set Origin for a shape.
+	 [2] Set Dimensions for a shape.
+	 [3] Display state of a shape.
+	 [4] Move a shape.
+	 [5] Show Distance between two shapes.
+	 [6] Destroy a shape.
+	 [7] List state of all shapes.
+	 [-1] Exit Program.
+Choose Option: 0
 
-All other shapes have been destroyed.
+Create up to 10 Shapes.
+How many Rectangles would you like to create? 1
+How many Circles would you like to create? 0
 
-State of all available shapes: 
-Rectangle at index 0: Origin at X: 5.0, Y: 7.0
-Length: 2.0
-Width: 4.0
-Area: 8.0
-Circumference: 16.0
+Shapes:
+Shape 0: Rectangle
+Shape 1: Circle
+Shape 2: Circle
+Shape 3: Rectangle
 
-Circle at index 1: Origin at X: 7.0, Y: 9.0
-Radius: 5.0
-Area: 78.53981633975
-Circumference: 31.4159265359
+Options:
+	 [0] Create shapes.
+	 [1] Set Origin for a shape.
+	 [2] Set Dimensions for a shape.
+	 [3] Display state of a shape.
+	 [4] Move a shape.
+	 [5] Show Distance between two shapes.
+	 [6] Destroy a shape.
+	 [7] List state of all shapes.
+	 [-1] Exit Program.
+Choose Option: 1
+
+For which shape do you want to set the Origin? 0
+Enter the shape's new origin.
+X: 2
+Y: 5
+
+Shapes:
+Shape 0: Rectangle
+Shape 1: Circle
+Shape 2: Circle
+Shape 3: Rectangle
+
+Options:
+	 [0] Create shapes.
+	 [1] Set Origin for a shape.
+	 [2] Set Dimensions for a shape.
+	 [3] Display state of a shape.
+	 [4] Move a shape.
+	 [5] Show Distance between two shapes.
+	 [6] Destroy a shape.
+	 [7] List state of all shapes.
+	 [-1] Exit Program.
+Choose Option: 1
+
+For which shape do you want to set the Origin? 1
+Enter the shape's new origin.
+X: -4
+Y: -1
+
+Shapes:
+Shape 0: Rectangle
+Shape 1: Circle
+Shape 2: Circle
+Shape 3: Rectangle
+
+Options:
+	 [0] Create shapes.
+	 [1] Set Origin for a shape.
+	 [2] Set Dimensions for a shape.
+	 [3] Display state of a shape.
+	 [4] Move a shape.
+	 [5] Show Distance between two shapes.
+	 [6] Destroy a shape.
+	 [7] List state of all shapes.
+	 [-1] Exit Program.
+Choose Option: 2
+
+For which shape do you want to set the Dimensions? 0
+Shape is a Rectangle. 
+Enter new Length: 4
+Enter new Width: 5
+
+Shapes:
+Shape 0: Rectangle
+Shape 1: Circle
+Shape 2: Circle
+Shape 3: Rectangle
+
+Options:
+	 [0] Create shapes.
+	 [1] Set Origin for a shape.
+	 [2] Set Dimensions for a shape.
+	 [3] Display state of a shape.
+	 [4] Move a shape.
+	 [5] Show Distance between two shapes.
+	 [6] Destroy a shape.
+	 [7] List state of all shapes.
+	 [-1] Exit Program.
+Choose Option: 2
+
+For which shape do you want to set the Dimensions? 1
+Shape is a Circle. Enter new Radius: 4
+
+Shapes:
+Shape 0: Rectangle
+Shape 1: Circle
+Shape 2: Circle
+Shape 3: Rectangle
+
+Options:
+	 [0] Create shapes.
+	 [1] Set Origin for a shape.
+	 [2] Set Dimensions for a shape.
+	 [3] Display state of a shape.
+	 [4] Move a shape.
+	 [5] Show Distance between two shapes.
+	 [6] Destroy a shape.
+	 [7] List state of all shapes.
+	 [-1] Exit Program.
+Choose Option: 3
+
+For which shape do you want to display the state? 0
+Shape is a Rectangle
+Origin at X: 2.0, Y: 5.0
+Length: 4.0
+Width: 5.0
+Area: 20.0
+Circumference: 40.0
+
+Shapes:
+Shape 0: Rectangle
+Shape 1: Circle
+Shape 2: Circle
+Shape 3: Rectangle
+
+Options:
+	 [0] Create shapes.
+	 [1] Set Origin for a shape.
+	 [2] Set Dimensions for a shape.
+	 [3] Display state of a shape.
+	 [4] Move a shape.
+	 [5] Show Distance between two shapes.
+	 [6] Destroy a shape.
+	 [7] List state of all shapes.
+	 [-1] Exit Program.
+Choose Option: 3
+
+For which shape do you want to display the state? 1
+Shape is a Circle
+Origin at X: -4.0, Y: -1.0
+Radius: 4.0
+Area: 50.26548245744
+Circumference: 25.13274122872
+
+Shapes:
+Shape 0: Rectangle
+Shape 1: Circle
+Shape 2: Circle
+Shape 3: Rectangle
+
+Options:
+	 [0] Create shapes.
+	 [1] Set Origin for a shape.
+	 [2] Set Dimensions for a shape.
+	 [3] Display state of a shape.
+	 [4] Move a shape.
+	 [5] Show Distance between two shapes.
+	 [6] Destroy a shape.
+	 [7] List state of all shapes.
+	 [-1] Exit Program.
+Choose Option: 4
+
+Which shape do you want to move? 2
+Enter values by which to move the shape.
+Enter x-value: -1
+Enter y-value: -1
+
+Shapes:
+Shape 0: Rectangle
+Shape 1: Circle
+Shape 2: Circle
+Shape 3: Rectangle
+
+Options:
+	 [0] Create shapes.
+	 [1] Set Origin for a shape.
+	 [2] Set Dimensions for a shape.
+	 [3] Display state of a shape.
+	 [4] Move a shape.
+	 [5] Show Distance between two shapes.
+	 [6] Destroy a shape.
+	 [7] List state of all shapes.
+	 [-1] Exit Program.
+Choose Option: 5
+
+Which shapes do you want to compare? 
+First Shape: 2
+Second Shape: 3
+Distance: 1.4142135623730951
+
+Shapes:
+Shape 0: Rectangle
+Shape 1: Circle
+Shape 2: Circle
+Shape 3: Rectangle
+
+Options:
+	 [0] Create shapes.
+	 [1] Set Origin for a shape.
+	 [2] Set Dimensions for a shape.
+	 [3] Display state of a shape.
+	 [4] Move a shape.
+	 [5] Show Distance between two shapes.
+	 [6] Destroy a shape.
+	 [7] List state of all shapes.
+	 [-1] Exit Program.
+Choose Option: 6
+
+Which shape do you want to destroy? 3
+Shapes:
+Shape 0: Rectangle
+Shape 1: Circle
+Shape 2: Circle
+
+Options:
+	 [0] Create shapes.
+	 [1] Set Origin for a shape.
+	 [2] Set Dimensions for a shape.
+	 [3] Display state of a shape.
+	 [4] Move a shape.
+	 [5] Show Distance between two shapes.
+	 [6] Destroy a shape.
+	 [7] List state of all shapes.
+	 [-1] Exit Program.
+Choose Option: 7
+
+Shape 0: Shape is a Rectangle
+Origin at X: 2.0, Y: 5.0
+Length: 4.0
+Width: 5.0
+Area: 20.0
+Circumference: 40.0
+
+Shape 1: Shape is a Circle
+Origin at X: -4.0, Y: -1.0
+Radius: 4.0
+Area: 50.26548245744
+Circumference: 25.13274122872
+
+Shape 2: Shape is a Circle
+Origin at X: -1.0, Y: -1.0
+Radius: 0.0
+Area: 0.0
+Circumference: 0.0
+
+Shapes:
+Shape 0: Rectangle
+Shape 1: Circle
+Shape 2: Circle
+
+Options:
+	 [0] Create shapes.
+	 [1] Set Origin for a shape.
+	 [2] Set Dimensions for a shape.
+	 [3] Display state of a shape.
+	 [4] Move a shape.
+	 [5] Show Distance between two shapes.
+	 [6] Destroy a shape.
+	 [7] List state of all shapes.
+	 [-1] Exit Program.
+Choose Option: -1
 
 Program done.
