@@ -19,7 +19,7 @@ public final class Test extends Object {
 		int menuChoice = -2;	// Number controls menu flow
 		
 		// Create an ArrayList to hold all shape objects
-		ArrayList shapes = new ArrayList();
+		ArrayList<Shape> shapes = new ArrayList<Shape>();
 		
 		// Welcome the user
 		System.out.println("Dear User,\n"
@@ -136,7 +136,7 @@ public final class Test extends Object {
 				System.out.print("\n");
 
 				// Set origin of chosen shape to given values
-				((Shape)shapes.get(chosenShape)).SetOrigin(xVal, yVal);
+				shapes.get(chosenShape).SetOrigin(xVal, yVal);
 			}
 			
 			
@@ -200,7 +200,7 @@ public final class Test extends Object {
 				System.out.print("\n");
 
 				// Move shape
-				((Shape)shapes.get(chosenShape)).MoveShape(deltaX, deltaY);
+				shapes.get(chosenShape).MoveShape(deltaX, deltaY);
 			}
 			
 			
@@ -214,8 +214,8 @@ public final class Test extends Object {
 				int chosenShape2 = input.nextInt();
 
 				// Get and display distance between chosen shapes
-				System.out.println("Distance: " + ((Shape)shapes.get(chosenShape1)).
-						ComputeDistance(((Shape)shapes.get(chosenShape2))) + "\n");
+				System.out.println("Distance: " + shapes.get(chosenShape1).
+						ComputeDistance(shapes.get(chosenShape2)) + "\n");
 			}
 			
 			
