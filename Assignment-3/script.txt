@@ -150,10 +150,10 @@ Choose Option: 3
 For which shape do you want to display the state? 0
 Shape is a Rectangle
 Origin at X: 2.0, Y: 5.0
-Length: 4.0
-Width: 5.0
 Area: 20.0
 Circumference: 40.0
+Length: 4.0
+Width: 5.0
 
 Shapes:
 Shape 0: Rectangle
@@ -176,9 +176,9 @@ Choose Option: 3
 For which shape do you want to display the state? 1
 Shape is a Circle
 Origin at X: -4.0, Y: -1.0
-Radius: 4.0
 Area: 50.26548245744
 Circumference: 25.13274122872
+Radius: 4.0
 
 Shapes:
 Shape 0: Rectangle
@@ -264,22 +264,22 @@ Choose Option: 7
 
 Shape 0: Shape is a Rectangle
 Origin at X: 2.0, Y: 5.0
-Length: 4.0
-Width: 5.0
 Area: 20.0
 Circumference: 40.0
+Length: 4.0
+Width: 5.0
 
 Shape 1: Shape is a Circle
 Origin at X: -4.0, Y: -1.0
-Radius: 4.0
 Area: 50.26548245744
 Circumference: 25.13274122872
+Radius: 4.0
 
 Shape 2: Shape is a Circle
 Origin at X: -1.0, Y: -1.0
-Radius: 0.0
 Area: 0.0
 Circumference: 0.0
+Radius: 0.0
 
 Shapes:
 Shape 0: Rectangle

@@ -79,12 +79,9 @@ public class Circle extends Shape {
 	 * @return state: The circle's current state
 	 */
 	public String toString() {
-		String state = ("Shape is a Circle" +
-				"\nOrigin at X: " + this.GetOrigin().GetPointX() +
-				", Y: " + this.GetOrigin().GetPointY() +
-				"\nRadius: " + this.GetRadius() +
-				"\nArea: " + this.GetArea() +
-				"\nCircumference: " + this.GetCircumference() + "\n");
+		String state = ("Shape is a Circle\n" +
+				super.toString() +
+				"\nRadius: " + this.GetRadius() + "\n");
 		return state;
 	}
 }

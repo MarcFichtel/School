@@ -106,13 +106,10 @@ public class Rectangle extends Shape {
 	 * @return state: The rectangle's current state
 	 */
 	public String toString() {
-		String state = ("Shape is a Rectangle" +
-				"\nOrigin at X: " + this.GetOrigin().GetPointX() +
-				", Y: " + this.GetOrigin().GetPointY() +
+		String state = ("Shape is a Rectangle\n" +
+				super.toString() +
 				"\nLength: " + this.GetLength() +
-				"\nWidth: " + this.GetWidth() +
-				"\nArea: " + this.GetArea() +
-				"\nCircumference: " + this.GetCircumference() + "\n");
+				"\nWidth: " + this.GetWidth() + "\n");
 		return state;
 	}
 }

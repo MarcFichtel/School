@@ -94,17 +94,13 @@ public abstract class Shape extends Object {
 	 * Get the shape's area
 	 * @return area: The shape's area
 	 */
-	public double GetArea () {
-		return area;
-	}
+	public abstract double GetArea ();
 	
 	/**
 	 * Get the shape's circumference
 	 * @return circumference: The shape's circumference
 	 */
-	public double GetCircumference () {
-		return circumference;
-	}
+	public abstract double GetCircumference ();
 	
 	/**
 	 * Get the shape's current state as a string
