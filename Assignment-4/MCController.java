@@ -192,7 +192,7 @@ public class MCController {
 	 * @param amortization: The entered amortization
 	 */
 	public void setAmortization (String amortization) {
-		data.setPrincipal(Double.parseDouble(amortization));
+		data.setMonthlyAmortization(Double.parseDouble(amortization));
 	}
 	
 	/**
