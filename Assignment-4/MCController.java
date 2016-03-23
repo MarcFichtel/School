@@ -5,12 +5,13 @@
  * -- University of Calgary
  * -- Tutorial 05
  * -- Instructor: Edward Chan 
+ * Class performs calculations and transfers data between MCModel and MCView
  */
-
-// Class performs calculations and transfers data between MCModel and MCView
 public class MCController {
 	
-	// Instantiate MCModel for access to relevant data
+	/**
+	 * Instantiate MCModel for access to relevant data
+	 */
 	private MCModel data = new MCModel();
 	
 	/**
@@ -37,12 +38,17 @@ public class MCController {
 	public double computeInterestFactor () {
 		
 		// Get the semi-annual compound frequency
-		double semiAnnualCompundFrequency = (data.getAnnualCompoundFrequency() / 2);
+		double semiAnnualCompoundFrequency = (data.getAnnualCompoundFrequency() / 2);
 		
 		// Compute the interest factor with the given formula
 		double interestFactor = (Math.pow(
-			(data.getAnnualInterestRate() / semiAnnualCompundFrequency) + 1, 
-			(semiAnnualCompundFrequency / data.getMonthlyPaymentsPerYear())) - 1);
+			(data.getAnnualInterestRate() / (semiAnnualCompoundFrequency * 2)) + 1, 
+			((semiAnnualCompoundFrequency * 2) / data.getMonthlyPaymentsPerYear())) - 1);
+		
+		System.out.println("Annual Interest Rate: " + data.getAnnualInterestRate() + "\n" +
+				"Semi-Annual Comp. Freq.: " + semiAnnualCompoundFrequency * 2 +"\n" +
+				"Payments per year: " + data.getMonthlyPaymentsPerYear() +"\n" +
+				"IF: " + interestFactor);
 		
 		// Return the interest factor
 		return interestFactor;
@@ -100,13 +106,13 @@ public class MCController {
 		
 		// Get relevant data
 		double principle = data.getPrincipal();
-		double interestRate = data.getAnnualInterestRate();
-		double totalAmortization = computeTotalAmortization();
+		double numOfPayments = computeLoanPeriodInMonths();
 		
 		// Given formula for blended monthly payment
-		double blendedMonthlyPayment = (principle * interestRate) /
-				(1 - Math.pow(interestRate + 1, -totalAmortization));
+		double blendedMonthlyPayment = (principle * computeInterestFactor ()) /
+				(1 - Math.pow(computeInterestFactor () + 1, -numOfPayments));
 		
+		System.out.println("Payments total: " + numOfPayments);
 		return blendedMonthlyPayment;	
 	}
 	
@@ -201,5 +207,21 @@ public class MCController {
 	 */
 	public double getAmortization() {
 		return data.getMonthlyAmortization();
+	}
+	
+	/**
+	 * Set Annual Compounding Frequency in MCModel with input given in MCView
+	 * @param compoundFrequency: The entered compounding frequency
+	 */
+	public void setCompoundFrequency (String compoundFrequency) {
+		data.setCompoundFrequency(Integer.parseInt(compoundFrequency));
+	}
+	
+	/**
+	 * Get Annual Compounding Frequency
+	 * @return The annual compounding frequency
+	 */
+	public double getCompoundFrequency() {
+		return data.getAnnualCompoundFrequency();
 	}
 }

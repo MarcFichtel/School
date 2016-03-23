@@ -5,9 +5,8 @@
  * -- University of Calgary
  * -- Tutorial 05
  * -- Instructor: Edward Chan 
+ * Class stores data used for Mortgage Calculator
  */
-
-// Class stores data used for Mortgage Calculator
 public class MCModel {
 
 	/** 
@@ -28,8 +27,11 @@ public class MCModel {
 	/**
 	 * Annual compounding frequency 
 	 */
-	private int compoundFrequency = 2;
+	private int compoundFrequency;
 	
+	/**
+	 * Monthly payments per year = 12 (one per month)
+	 */
 	private final int MONTHLY_PAYMENTS_PER_YEAR = 12;
 
 	/**
@@ -92,7 +94,7 @@ public class MCModel {
 	 * Get the compounding frequency
 	 * @return compoundFrequency: The current compounding frequency
 	 */
-	public double getAnnualCompoundFrequency() {
+	public int getAnnualCompoundFrequency() {
 		return compoundFrequency;
 	}
 	
@@ -100,7 +102,7 @@ public class MCModel {
 	 * Get the number of monthly payments per year
 	 * @return MONTHLY_PAYMENTS_PER_YEAR: 12
 	 */
-	public double getMonthlyPaymentsPerYear() {
+	public int getMonthlyPaymentsPerYear() {
 		return MONTHLY_PAYMENTS_PER_YEAR;
 	}
 }
