@@ -25,102 +25,102 @@ public class MCView extends JFrame {
 	/**
 	 * titlePanel: The JPanel holding the welcome title
 	 */
-	JPanel titlePanel;
+	private JPanel titlePanel;
 	
 	/**
 	 * inputPanel: The JPanel holding the user input elements
 	 */
-	JPanel inputPanel;
+	private JPanel inputPanel;
 	
 	/**
 	 * amortizationPanel: The JPanel holding the amortization sub-input fields
 	 */
-	JPanel amortizationPanel;
+	private JPanel amortizationPanel;
 	
 	/**
 	 * compoundPanel: The JPanel holding the compounding sub-input fields
 	 */
-	JPanel compoundPanel;
+	private JPanel compoundPanel;
 	
 	/**
 	 * statsPanel: The JPanel holding the statistics display elements
 	 */
-	JPanel statsPanel;
+	private JPanel statsPanel;
 	
 	/**
 	 * titleText: The JLabel welcome message
 	 */
-	JLabel titleText;
+	private JLabel titleText;
 	
 	/**
 	 * principleHelpText: The JLabel help text for the principal input
 	 */
-	JLabel principleHelpText;
+	private JLabel principleHelpText;
 	
 	/**
 	 * interestRateHelpText: The JLabel help text for the interest rate input
 	 */
-	JLabel interestRateHelpText;
+	private JLabel interestRateHelpText;
 	
 	/**
 	 * amortizationHelpText: The JLabel help text for the amortization input
 	 */
-	JLabel amortizationHelpText;
+	private JLabel amortizationHelpText;
 	
 	/**
 	 * compoundFrequencyText: The JLabel help text for the compounding input
 	 */
-	JLabel compoundFrequencyText;
+	private JLabel compoundFrequencyText;
 	
 	/**
 	 * statsDescriptionText: The JLabel describing the statistics to be displayed
 	 */
-	JLabel statsDescriptionText;
+	private JLabel statsDescriptionText;
 	
 	/**
 	 * statsValueText: The JLabel displaying the mortgage statistics
 	 */
-	JLabel statsValueText;
+	private JLabel statsValueText;
 	
 	/**
 	 * principalTextField: The JTextField for the principal input
 	 */
-	JTextField principalTextField;
+	private JTextField principalTextField;
 	
 	/**
 	 * interestRateTextField: The JTextField for the interest rate input
 	 */
-	JTextField interestRateTextField;
+	private JTextField interestRateTextField;
 	
 	/**
 	 * amortizationTextField: The JTextField for the amortization input
 	 */
-	JTextField amortizationTextField;
+	private JTextField amortizationTextField;
 	
 	/**
 	 * amortizationDropdown: The JComboBox for the amortization input frequency
 	 */
-	JComboBox<String> amortizationDropdown;
+	private JComboBox<String> amortizationDropdown;
 	
 	/**
 	 * compoundFrequencyTextField: The JTextField for the compounding input
 	 */
-	JTextField compoundFrequencyTextField;
+	private JTextField compoundFrequencyTextField;
 	
 	/**
 	 * compoundFrequencyDropdown: The JComboBox for the compounding input frequency
 	 */
-	JComboBox<String> compoundFrequencyDropdown;
+	private JComboBox<String> compoundFrequencyDropdown;
 	
 	/**
 	 * submitButton: The JButton for user input submission and statistics display
 	 */
-	JButton submitButton;
+	private JButton submitButton;
 	
 	/**
 	 * scheduleButton: The JButton for payment schedule generation and display
 	 */
-	JButton scheduleButton;
+	private JButton scheduleButton;
 	
 	/**
 	 * Sets up the GUI
