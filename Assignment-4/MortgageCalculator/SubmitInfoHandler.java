@@ -58,17 +58,21 @@ public class SubmitInfoHandler implements ActionListener {
 			// Multiply amortization depending on chosen frequency
 			String paymentFrequencyChoice;
 			int paymentsPerYear;
+			int paymentsPerMonth;
 			if (ui.getAmortizationDropDown().getSelectedItem() == "Bi-Weekly") {
-				convertedAmortization *= 2;
+				convertedAmortization /= 2;
 				paymentFrequencyChoice = "Bi-Weekly";
 				paymentsPerYear = 28;
+				paymentsPerMonth = 2;
 			} else if (ui.getAmortizationDropDown().getSelectedItem() == "Weekly") {
-				convertedAmortization *= 4;
+				convertedAmortization /= 4;
 				paymentFrequencyChoice = "Weekly";
 				paymentsPerYear = 56;
+				paymentsPerMonth = 4;
 			} else {
 				paymentFrequencyChoice = "Monthly";
 				paymentsPerYear = 12;
+				paymentsPerMonth = 1;
 			}
 			
 			// If Year(s) was chosen, no need to adjust the value
@@ -104,7 +108,8 @@ public class SubmitInfoHandler implements ActionListener {
 			data.setPrincipal(convertedPrincipal);
 			data.setAnnualInterestRate(convertedInterestRate);
 			data.setAmortization(convertedAmortization);
-			data.setPaymentFrequency(paymentsPerYear);
+			data.setPaymentsPerYear(paymentsPerYear);
+			data.setPaymentsPerMonth(paymentsPerMonth);
 			data.setAnnualCompoundFrequency(annualCompoundFrequency);
 			
 			// Calculate and display statistics, rounded to 2 decimals where appropriate

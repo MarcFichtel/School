@@ -8,7 +8,7 @@ README
 This document explains how to compile the assignment 4 source code and how to run the program.
 
 1.) Using Eclipse
-	* Download the source code (The .java files are located in the folder MortgageCalculator)
+	* Download & extract the zip folder containing the source code (.java files are located in the folder MortgageCalculator)
 	* Open Eclipse
 	* Create a new project with an arbitrary name
 	* In the Eclipse Package Explorer, navigate to the src folder of the new project
@@ -19,7 +19,7 @@ This document explains how to compile the assignment 4 source code and how to ru
 	* In the Eclipse Package Explorer, navigate to MCController.java, open the context menu
 	* Click "Run As", then select "Java Application", and the program will start
 2.) Using Command Prompt
-	* Download the source code (The .java files are located in the folder MortgageCalculator)
+	* Download & extract the zip folder containing the source code (.java files are located in the folder MortgageCalculator)
 	* Open Command Prompt
 	* Navigate to where the MortageCalculator folder is located
 	* Use command "javac MortgageCalculator/*.java" to compile the program

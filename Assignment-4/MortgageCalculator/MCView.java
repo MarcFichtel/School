@@ -157,7 +157,7 @@ public class MCView extends JFrame {
 		statsDescriptionText = new JLabel("<html>Principal: " +
 												"<br>Annual Interest Rate: " + 
 												"<br>Amortization: " + 
-												"<br>Blended Payment Amount: " + 
+												"<br>Blended Monthly Payment: " + 
 												"<br>Total Interest: " + 
 												"<br>Final Investment Value: " + 
 												"<br>Interest/Principle Ratio: " + 

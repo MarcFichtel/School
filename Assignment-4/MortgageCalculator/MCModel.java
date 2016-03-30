@@ -32,9 +32,14 @@ public class MCModel {
 	private int compoundFrequency;
 
 	/**
-	 * paymentFrequency: Frequency of payments (1: Monthly, 2: Bi-Weekly, 4 Weekly) 
+	 * paymentsPerYear: The number of payments per year
 	 */
-	private int paymentFrequency;
+	private int paymentsPerYear;
+	
+	/**
+	 * paymentsPerMonth: The number of payments per month
+	 */
+	private int paymentsPerMonth;
 	
 	/**
 	 * Set the amortization (number of monthly payments)
@@ -104,16 +109,32 @@ public class MCModel {
 	 * Set the annual payment frequency
 	 * @param newAnnualPaymentFrequency: The new number of payments per year
 	 */
-	public void setPaymentFrequency (int newAnnualPaymentFrequency) {
-		paymentFrequency = newAnnualPaymentFrequency;
+	public void setPaymentsPerYear (int newPaymentsPerYear) {
+		paymentsPerYear = newPaymentsPerYear;
 	}
 	
 	/**
 	 * Get the payment frequency
 	 * @return paymentFrequency: The frequency of payments (monthly, bi-weekly, weekly)
 	 */
-	public double getPaymentFrequency() {
-		return paymentFrequency;
+	public double getPaymentsPerYear() {
+		return paymentsPerYear;
+	}
+	
+	/**
+	 * Set the monthly payment frequency
+	 * @param newMonthlyPaymentFrequency: The new number of payments per month
+	 */
+	public void setPaymentsPerMonth (int newPaymentsPerMonth) {
+		paymentsPerMonth = newPaymentsPerMonth;
+	}
+	
+	/**
+	 * Get the payment frequency
+	 * @return paymentFrequency: The frequency of payments (monthly, bi-weekly, weekly)
+	 */
+	public double getPaymentsPerMonth() {
+		return paymentsPerMonth;
 	}
 	
 	/**
@@ -125,7 +146,7 @@ public class MCModel {
 		// Compute the interest factor with the given formula
 		double interestFactor = (Math.pow(
 			(annualInterestRate / compoundFrequency + 1), 
-			(compoundFrequency / getPaymentFrequency())) - 1);
+			(compoundFrequency / getPaymentsPerYear())) - 1);
 		
 		return interestFactor;
 	}
@@ -177,20 +198,6 @@ public class MCModel {
 		return computeTotalInterest () / amortizationInMonths;
 	}
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	/**
 	 * Calculate the final investment value (principal + interest)
 	 * @return The final investment value
@@ -206,11 +213,4 @@ public class MCModel {
 	public double computeAmortizationInYears () {
 		return amortizationInMonths / 12;
 	}
-	
-	
-	
-	
-	
-	
-	
 }

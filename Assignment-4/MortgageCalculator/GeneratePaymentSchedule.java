@@ -16,6 +16,7 @@ import javax.swing.JTable;
  * -- Instructor: Edward Chan 
  * -- Class handles payment schedule generation
  * -- TODO There appear to be small rounding errors throughout the balance owing.
+ * These errors are more severe if bi-weekly or weekly payments are chosen.
  * Identify the source of these and fix them. Note that they are not caused
  * by the uses of Math.round() in this class (the rounding errors persist
  * even when instances of Math.round() are removed from this class).
@@ -48,8 +49,8 @@ public class GeneratePaymentSchedule implements ActionListener {
 		// Create and initialize variables for payment schedule display
 		double principalComponent = 0.0;
 		double interestComponent = 0.0;
-		int blendedAmount = (int)Math.round(data.computeBlendedMonthlyPayment());
-		int numberOfPayments = (int)data.getAmortization();
+		int blendedAmount = (int)(Math.round(data.computeBlendedMonthlyPayment() / data.getPaymentsPerMonth()));
+		int numberOfPayments = (int)(data.getAmortization() * data.getPaymentsPerMonth());
 		
 		// Create table column names
 		String[] columns = {"Payment #", "Blended Payment", "Interest", "Principal", "Amount Owed"};
