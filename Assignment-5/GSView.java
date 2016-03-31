@@ -5,13 +5,14 @@ import java.awt.GridLayout;
 import java.awt.event.ActionListener;
 import java.util.Hashtable;
 
+import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
@@ -39,43 +40,21 @@ public class GSView extends JFrame {
 	private JPanel pTopCenter = new JPanel(new GridLayout(4, 1));
 	private JPanel pTopRight = new JPanel(new GridLayout(4, 1));
 	private JPanel pTemperature = new JPanel(new GridLayout(1,2));
+	private JPanel pHumidity = new JPanel(new GridLayout(1,2));
+	private JPanel pSoilMoisture = new JPanel(new GridLayout(1,2));
 	private JPanel pBottomLeft = new JPanel(new GridLayout(4, 1));
 	private JPanel pTempControl = new JPanel(new FlowLayout());
 	private JPanel pBottomCenter = new JPanel(new GridLayout(4, 1));
 	private JPanel pBottomRight = new JPanel(new GridLayout(4, 1));
-	private JPanel pInput01 = new JPanel(new FlowLayout());
-	private JPanel pInput02 = new JPanel(new FlowLayout());
-	private JPanel pInput03 = new JPanel(new FlowLayout());
-	private JPanel pInput04 = new JPanel(new FlowLayout());
-	private JPanel pInput05 = new JPanel(new FlowLayout());
-	private JPanel pInput06 = new JPanel(new FlowLayout());
-	private JPanel pInput07 = new JPanel(new FlowLayout());
-	private JPanel pInput08 = new JPanel(new FlowLayout());
-	private JPanel pInput09 = new JPanel(new FlowLayout());
-	private JPanel pInput10 = new JPanel(new FlowLayout());
-	private JPanel pInput11 = new JPanel(new FlowLayout());
-	private JPanel pInput12 = new JPanel(new FlowLayout());
-	private JPanel pInput13 = new JPanel(new FlowLayout());
-	private JPanel pInput14 = new JPanel(new FlowLayout());
-	private JPanel pInput15 = new JPanel(new FlowLayout());
-	private JPanel pInput16 = new JPanel(new FlowLayout());
-	private JPanel pInput17 = new JPanel(new FlowLayout());
-	private JPanel pInput18 = new JPanel(new FlowLayout());
-	private JPanel pInput19 = new JPanel(new FlowLayout());
-	private JPanel pInput20 = new JPanel(new FlowLayout());
-	private JPanel pInput21 = new JPanel(new FlowLayout());
-	private JPanel pInput22 = new JPanel(new FlowLayout());
-	private JPanel pInput23 = new JPanel(new FlowLayout());
-	private JPanel pInputStep1 = new JPanel(new GridLayout(8, 2));
-	private JPanel pInputStep2 = new JPanel(new GridLayout(4, 2));
-	private JPanel pInputStep3 = new JPanel(new GridLayout(4, 2));
-	private JPanel pInputStep4 = new JPanel(new GridLayout(4, 2));
-	private JPanel pInputStep5 = new JPanel(new GridLayout(3, 2));
+	private JPanel pWeatherSelect = new JPanel(new FlowLayout());
+	private JPanel pEditButton = new JPanel(new FlowLayout());
 	
-	private JSlider sTemperatureActual = new JSlider(JSlider.VERTICAL, 10, 40, 10);
-	private JSlider sTemperatureDesired = new JSlider(JSlider.VERTICAL, 10, 40, 10);
+	private JSlider sTemperature = new JSlider(JSlider.VERTICAL, 10, 40, 10);
+	private JSlider sTemperatureTarget = new JSlider(JSlider.VERTICAL, 10, 40, 10);
 	private JSlider sHumidity = new JSlider(JSlider.VERTICAL, 0, 100, 0);
+	private JSlider sHumidityTarget = new JSlider(JSlider.VERTICAL, 0, 100, 0);
 	private JSlider sSoilMoisture = new JSlider(JSlider.VERTICAL, 0, 100, 0);
+	private JSlider sSoilMoistureTarget = new JSlider(JSlider.VERTICAL, 0, 100, 0);
 	
 	private JCheckBox cbFurnace = new JCheckBox("Furnace");
 	private JCheckBox cbAirConditioner = new JCheckBox("Air Conditioner");
@@ -85,70 +64,90 @@ public class GSView extends JFrame {
 	private JLabel lTitle = new JLabel("Green Thumbs Greenhouses", JLabel.CENTER);
 	private JLabel lSubTitle = new JLabel("Automatic Climate Control", JLabel.CENTER);
 	private JLabel lTemperature = new JLabel("<html><div style = 'text-align: center;'>"
-			+ "Temperature (Celsius)"
+			+ "Temperature (C)"
 			+ "<br><br>"
 			+ "Actual: "
 			+ "&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp "
 			+ "Target:" 
 			+ "</html>", JLabel.CENTER);
-	private JLabel lWeather = new JLabel("Weather Condition: Sunny", JLabel.CENTER);
-	private JLabel lHumidity = new JLabel("Humidity", JLabel.CENTER);
-	private JLabel lSoilMoisture = new JLabel("Soil Moisture", JLabel.CENTER);
+	private JLabel lHumidity = new JLabel("<html><div style = 'text-align: center;'>"
+			+ "Humidity (%)"
+			+ "<br><br>"
+			+ "Actual: "
+			+ "&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp "
+			+ "Target:" 
+			+ "</html>", JLabel.CENTER);
+	private JLabel lSoilMoisture = new JLabel("<html><div style = 'text-align: center;'>"
+			+ "Soil Moisture (%)"
+			+ "<br><br>"
+			+ "Actual: "
+			+ "&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp "
+			+ "Target:" 
+			+ "</html>", JLabel.CENTER);
+	private JLabel lWeather = new JLabel("Weather Condition:", JLabel.CENTER);
 	private JLabel lInputText01 = new JLabel("Enter initial temperature:");
 	private JLabel lInputText02 = new JLabel("Enter desired temperature:");
 	private JLabel lInputText03 = new JLabel("Enter humidity:");
-	private JLabel lInputText04 = new JLabel("Enter soil moisture:");
-	private JLabel lInputText05 = new JLabel("Enter furnace efficiency:");
-	private JLabel lInputText06 = new JLabel("Enter air conditioner efficiency:");
-	private JLabel lInputText07 = new JLabel("Enter humidifier efficiency:");
-	private JLabel lInputText08 = new JLabel("Enter sprinkler system efficiency:");
-	private JLabel lInputText09 = new JLabel("Enter temperature change on sunny days:");
-	private JLabel lInputText10 = new JLabel("Enter temperature change on cloudy days:");
-	private JLabel lInputText11 = new JLabel("Enter temperature change on rainy days:");
-	private JLabel lInputText12 = new JLabel("Enter temperature change on snowy days:");
-	private JLabel lInputText13 = new JLabel("Enter humidity change on sunny days:");
-	private JLabel lInputText14 = new JLabel("Enter humidity change on cloudy days:");
-	private JLabel lInputText15 = new JLabel("Enter humidity change on rainy days:");
-	private JLabel lInputText16 = new JLabel("Enter humidity change on snowy days:");
-	private JLabel lInputText17 = new JLabel("Enter soil moisture change on sunny days:");
-	private JLabel lInputText18 = new JLabel("Enter soil moisture change on cloudy days:");
-	private JLabel lInputText19 = new JLabel("Enter soil moisture change on rainy days:");
-	private JLabel lInputText20 = new JLabel("Enter soil moisture change on snowy days:");
-	private JLabel lInputText21 = new JLabel("Enter temperature display sample rate:");
-	private JLabel lInputText22 = new JLabel("Enter humidity display sample rate:");
-	private JLabel lInputText23 = new JLabel("Enter soil moisture display sample rate:");
+	private JLabel lInputText04 = new JLabel("Enter desired humidity:");
+	private JLabel lInputText05 = new JLabel("Enter soil moisture:");
+	private JLabel lInputText06 = new JLabel("Enter desired soil moisture:");
+	private JLabel lInputText07 = new JLabel("Enter furnace efficiency:");
+	private JLabel lInputText08 = new JLabel("Enter air conditioner efficiency:");
+	private JLabel lInputText09 = new JLabel("Enter humidifier efficiency:");
+	private JLabel lInputText10 = new JLabel("Enter sprinkler system efficiency:");
+	private JLabel lInputText11 = new JLabel("Enter temperature change on sunny days:");
+	private JLabel lInputText12 = new JLabel("Enter temperature change on cloudy days:");
+	private JLabel lInputText13 = new JLabel("Enter temperature change on rainy days:");
+	private JLabel lInputText14 = new JLabel("Enter temperature change on snowy days:");
+	private JLabel lInputText15 = new JLabel("Enter humidity change on sunny days:");
+	private JLabel lInputText16 = new JLabel("Enter humidity change on cloudy days:");
+	private JLabel lInputText17 = new JLabel("Enter humidity change on rainy days:");
+	private JLabel lInputText18 = new JLabel("Enter humidity change on snowy days:");
+	private JLabel lInputText19 = new JLabel("Enter soil moisture change on sunny days:");
+	private JLabel lInputText20 = new JLabel("Enter soil moisture change on cloudy days:");
+	private JLabel lInputText21 = new JLabel("Enter soil moisture change on rainy days:");
+	private JLabel lInputText22 = new JLabel("Enter soil moisture change on snowy days:");
+	private JLabel lInputText23 = new JLabel("Enter temperature display sample rate:");
+	private JLabel lInputText24 = new JLabel("Enter humidity display sample rate:");
+	private JLabel lInputText25 = new JLabel("Enter soil moisture display sample rate:");
+	private JLabel lInputText26 = new JLabel("Select the initial weather condition:");
 	
-	private JTextField tfInput01 = new JTextField(4);
-	private JTextField tfInput02 = new JTextField(4);
-	private JTextField tfInput03 = new JTextField(4);
-	private JTextField tfInput04 = new JTextField(4);
-	private JTextField tfInput05 = new JTextField(4);
-	private JTextField tfInput06 = new JTextField(4);
-	private JTextField tfInput07 = new JTextField(4);
-	private JTextField tfInput08 = new JTextField(4);
-	private JTextField tfInput09 = new JTextField(4);
-	private JTextField tfInput10 = new JTextField(4);
-	private JTextField tfInput11 = new JTextField(4);
-	private JTextField tfInput12 = new JTextField(4);
-	private JTextField tfInput13 = new JTextField(4);
-	private JTextField tfInput14 = new JTextField(4);
-	private JTextField tfInput15 = new JTextField(4);
-	private JTextField tfInput16 = new JTextField(4);
-	private JTextField tfInput17 = new JTextField(4);
-	private JTextField tfInput18 = new JTextField(4);
-	private JTextField tfInput19 = new JTextField(4);
-	private JTextField tfInput20 = new JTextField(4);
-	private JTextField tfInput21 = new JTextField(4);
-	private JTextField tfInput22 = new JTextField(4);
-	private JTextField tfInput23 = new JTextField(4);
+	private JTextField tfInput01 = new JTextField("20", 4);
+	private JTextField tfInput02 = new JTextField("25", 4);
+	private JTextField tfInput03 = new JTextField("50", 4);
+	private JTextField tfInput04 = new JTextField("50", 4);
+	private JTextField tfInput05 = new JTextField("50", 4);
+	private JTextField tfInput06 = new JTextField("50", 4);
+	private JTextField tfInput07 = new JTextField("2", 4);
+	private JTextField tfInput08 = new JTextField("-2", 4);
+	private JTextField tfInput09 = new JTextField("2", 4);
+	private JTextField tfInput10 = new JTextField("2", 4);
+	private JTextField tfInput11 = new JTextField("1", 4);
+	private JTextField tfInput12 = new JTextField("0", 4);
+	private JTextField tfInput13 = new JTextField("0", 4);
+	private JTextField tfInput14 = new JTextField("-1", 4);
+	private JTextField tfInput15 = new JTextField("-1", 4);
+	private JTextField tfInput16 = new JTextField("0", 4);
+	private JTextField tfInput17 = new JTextField("1", 4);
+	private JTextField tfInput18 = new JTextField("0", 4);
+	private JTextField tfInput19 = new JTextField("0", 4);
+	private JTextField tfInput20 = new JTextField("0", 4);
+	private JTextField tfInput21 = new JTextField("1", 4);
+	private JTextField tfInput22 = new JTextField("0", 4);
+	private JTextField tfInput23 = new JTextField("1", 4);
+	private JTextField tfInput24 = new JTextField("1", 4);
+	private JTextField tfInput25 = new JTextField("1", 4);
 	
 	private Hashtable<Integer, JLabel> temperatureLabels = new Hashtable<Integer, JLabel>();
 	private Hashtable<Integer, JLabel> humidityLabels = new Hashtable<Integer, JLabel>();
 	private Hashtable<Integer, JLabel> soilMoistureLabels = new Hashtable<Integer, JLabel>();
 	
-	//private JDialog inputDialog;
+	private JButton bEditSimulation  = new JButton("Edit current simulation");
 	
-	public GSView() {
+	private JComboBox<String> comboWeather = new JComboBox<String>();
+	private JComboBox<String> comboWeatherSelect = new JComboBox<String>();
+	
+ 	public GSView() {
 		super("Greenhouse Simulation");
 		setSize(700, 700); 
 		setLayout(new GridLayout(3, 3));
@@ -175,28 +174,44 @@ public class GSView extends JFrame {
 			soilMoistureLabels.put(new Integer(i), new JLabel("  " + Integer.toString(i) + "%"));
 		}
 		
-		sTemperatureActual.setLabelTable(temperatureLabels);
-		sTemperatureDesired.setLabelTable(temperatureLabels);
+		sTemperature.setLabelTable(temperatureLabels);
+		sTemperatureTarget.setLabelTable(temperatureLabels);
 		sHumidity.setLabelTable(humidityLabels);
+		sHumidityTarget.setLabelTable(humidityLabels);
 		sSoilMoisture.setLabelTable(soilMoistureLabels);
-		sTemperatureActual.setPaintLabels(true);
-		sTemperatureDesired.setPaintLabels(true);
-		sHumidity.setPaintLabels(true);
-		sSoilMoisture.setPaintLabels(true);
+		sSoilMoistureTarget.setLabelTable(soilMoistureLabels);
 		
-		sTemperatureActual.setMajorTickSpacing(1);
-		sTemperatureActual.setPaintTicks(true);
-		sTemperatureDesired.setMajorTickSpacing(1);
-		sTemperatureDesired.setPaintTicks(true);
+		sTemperature.setPaintLabels(true);
+		sTemperatureTarget.setPaintLabels(true);
+		sHumidity.setPaintLabels(true);
+		sHumidityTarget.setPaintLabels(true);
+		sSoilMoisture.setPaintLabels(true);
+		sSoilMoistureTarget.setPaintLabels(true);
+		
+		sTemperature.setMajorTickSpacing(1);
+		sTemperature.setPaintTicks(true);
+		sTemperatureTarget.setMajorTickSpacing(1);
+		sTemperatureTarget.setPaintTicks(true);
 		sHumidity.setMajorTickSpacing(5);
 		sHumidity.setPaintTicks(true);
+		sHumidityTarget.setMajorTickSpacing(5);
+		sHumidityTarget.setPaintTicks(true);
 		sSoilMoisture.setMajorTickSpacing(5);
 		sSoilMoisture.setPaintTicks(true);
+		sSoilMoistureTarget.setMajorTickSpacing(5);
+		sSoilMoistureTarget.setPaintTicks(true);
 		
-		sTemperatureActual.setEnabled(false);
-		sTemperatureDesired.setEnabled(false);
+		sTemperature.setEnabled(false);
+		sTemperatureTarget.setEnabled(false);
 		sHumidity.setEnabled(false);
+		sHumidityTarget.setEnabled(false);
 		sSoilMoisture.setEnabled(false);
+		sSoilMoistureTarget.setEnabled(false);
+		
+		comboWeather.addItem(new String("Sunny"));
+		comboWeather.addItem(new String("Cloudy"));
+		comboWeather.addItem(new String("Rainy"));
+		comboWeather.addItem(new String("Snowy"));
 		
 		menu.add(menuStart);
 		menu.add(menuSave);
@@ -225,17 +240,25 @@ public class GSView extends JFrame {
 		pTopRight.add(new JLabel(""));
 		pTopRight.add(lSoilMoisture);
 		
-		pTemperature.add(sTemperatureActual);
-		pTemperature.add(sTemperatureDesired);
+		pTemperature.add(sTemperature);
+		pTemperature.add(sTemperatureTarget);
+		
+		pHumidity.add(sHumidity);
+		pHumidity.add(sHumidityTarget);
+		
+		pSoilMoisture.add(sSoilMoisture);
+		pSoilMoisture.add(sSoilMoistureTarget);
 		
 		pTempControl.add(new JLabel(" "));
 		pTempControl.add(cbFurnace);
 		pTempControl.add(new JLabel("              "));
 		pTempControl.add(cbAirConditioner);
 		
+		pWeatherSelect.add(comboWeather);
+		
 		pBottomLeft.add(pTempControl);
 		pBottomLeft.add(lWeather);
-		pBottomLeft.add(new JLabel(""));
+		pBottomLeft.add(pWeatherSelect);
 		pBottomLeft.add(new JLabel(""));
 		
 		pBottomCenter.add(cbHumidifier);
@@ -243,18 +266,22 @@ public class GSView extends JFrame {
 		pBottomCenter.add(new JLabel(""));
 		pBottomCenter.add(new JLabel(""));
 		
+		pEditButton.add(new JLabel(""));
+		pEditButton.add(bEditSimulation);
+		pEditButton.add(new JLabel(""));
+		
 		pBottomRight.add(cbSprinkler);
 		pBottomRight.add(new JLabel(""));
 		pBottomRight.add(new JLabel(""));
-		pBottomRight.add(new JLabel(""));
+		pBottomRight.add(pEditButton);
 		
 		this.getContentPane().add(pTopLeft);
 		this.getContentPane().add(pTopCenter);
 		this.getContentPane().add(pTopRight);
 		
 		this.getContentPane().add(pTemperature);
-		this.getContentPane().add(sHumidity);
-		this.getContentPane().add(sSoilMoisture);
+		this.getContentPane().add(pHumidity);
+		this.getContentPane().add(pSoilMoisture);
 		
 		this.getContentPane().add(pBottomLeft);
 		this.getContentPane().add(pBottomCenter);
@@ -263,7 +290,46 @@ public class GSView extends JFrame {
 		this.setVisible(true);
 	}
 	
-	public void showInputDialog () {
+	public JPanel[] createInputDialog () {
+		
+		JPanel pInput01 = new JPanel(new FlowLayout());
+		JPanel pInput02 = new JPanel(new FlowLayout());
+		JPanel pInput03 = new JPanel(new FlowLayout());
+		JPanel pInput04 = new JPanel(new FlowLayout());
+		JPanel pInput05 = new JPanel(new FlowLayout());
+		JPanel pInput06 = new JPanel(new FlowLayout());
+		JPanel pInput07 = new JPanel(new FlowLayout());
+		JPanel pInput08 = new JPanel(new FlowLayout());
+		JPanel pInput09 = new JPanel(new FlowLayout());
+		JPanel pInput10 = new JPanel(new FlowLayout());
+		JPanel pInput11 = new JPanel(new FlowLayout());
+		JPanel pInput12 = new JPanel(new FlowLayout());
+		JPanel pInput13 = new JPanel(new FlowLayout());
+		JPanel pInput14 = new JPanel(new FlowLayout());
+		JPanel pInput15 = new JPanel(new FlowLayout());
+		JPanel pInput16 = new JPanel(new FlowLayout());
+		JPanel pInput17 = new JPanel(new FlowLayout());
+		JPanel pInput18 = new JPanel(new FlowLayout());
+		JPanel pInput19 = new JPanel(new FlowLayout());
+		JPanel pInput20 = new JPanel(new FlowLayout());
+		JPanel pInput21 = new JPanel(new FlowLayout());
+		JPanel pInput22 = new JPanel(new FlowLayout());
+		JPanel pInput23 = new JPanel(new FlowLayout());
+		JPanel pInput24 = new JPanel(new FlowLayout());
+		JPanel pInput25 = new JPanel(new FlowLayout());
+		JPanel pInput26 = new JPanel(new FlowLayout());
+		JPanel pInputStep1 = new JPanel(new GridLayout(10, 2));
+		JPanel pInputStep2 = new JPanel(new GridLayout(4, 2));
+		JPanel pInputStep3 = new JPanel(new GridLayout(4, 2));
+		JPanel pInputStep4 = new JPanel(new GridLayout(4, 2));
+		JPanel pInputStep5 = new JPanel(new GridLayout(4, 2));
+		
+		if (comboWeatherSelect.getItemCount() == 0) {
+			comboWeatherSelect.addItem(new String("Sunny"));
+			comboWeatherSelect.addItem(new String("Cloudy"));
+			comboWeatherSelect.addItem(new String("Rainy"));
+			comboWeatherSelect.addItem(new String("Snowy"));
+		}
 		
 		pInput01.add(tfInput01);
 		pInput01.add(new JLabel("°C           "));
@@ -286,34 +352,34 @@ public class GSView extends JFrame {
 		pInputStep1.add(pInput04);
 		
 		pInput05.add(tfInput05);
-		pInput05.add(new JLabel("°C/min   "));
+		pInput05.add(new JLabel("%            "));
 		pInputStep1.add(lInputText05);
 		pInputStep1.add(pInput05);
 		
 		pInput06.add(tfInput06);
-		pInput06.add(new JLabel("°C/min   "));
+		pInput06.add(new JLabel("%            "));
 		pInputStep1.add(lInputText06);
 		pInputStep1.add(pInput06);
 		
 		pInput07.add(tfInput07);
-		pInput07.add(new JLabel("%/min    "));
+		pInput07.add(new JLabel("°C/min   "));
 		pInputStep1.add(lInputText07);
 		pInputStep1.add(pInput07);
 		
 		pInput08.add(tfInput08);
-		pInput08.add(new JLabel("%/min    "));
+		pInput08.add(new JLabel("°C/min   "));
 		pInputStep1.add(lInputText08);
 		pInputStep1.add(pInput08);
 		
 		pInput09.add(tfInput09);
-		pInput09.add(new JLabel("°C/min   "));
-		pInputStep2.add(lInputText09);
-		pInputStep2.add(pInput09);
+		pInput09.add(new JLabel("%/min    "));
+		pInputStep1.add(lInputText09);
+		pInputStep1.add(pInput09);
 		
 		pInput10.add(tfInput10);
-		pInput10.add(new JLabel("°C/min   "));
-		pInputStep2.add(lInputText10);
-		pInputStep2.add(pInput10);
+		pInput10.add(new JLabel("%/min    "));
+		pInputStep1.add(lInputText10);
+		pInputStep1.add(pInput10);
 		
 		pInput11.add(tfInput11);
 		pInput11.add(new JLabel("°C/min   "));
@@ -326,14 +392,14 @@ public class GSView extends JFrame {
 		pInputStep2.add(pInput12);
 		
 		pInput13.add(tfInput13);
-		pInput13.add(new JLabel("%/min    "));
-		pInputStep3.add(lInputText13);
-		pInputStep3.add(pInput13);
+		pInput13.add(new JLabel("°C/min   "));
+		pInputStep2.add(lInputText13);
+		pInputStep2.add(pInput13);
 		
 		pInput14.add(tfInput14);
-		pInput14.add(new JLabel("%/min    "));
-		pInputStep3.add(lInputText14);
-		pInputStep3.add(pInput14);
+		pInput14.add(new JLabel("°C/min   "));
+		pInputStep2.add(lInputText14);
+		pInputStep2.add(pInput14);
 		
 		pInput15.add(tfInput15);
 		pInput15.add(new JLabel("%/min    "));
@@ -347,13 +413,13 @@ public class GSView extends JFrame {
 		
 		pInput17.add(tfInput17);
 		pInput17.add(new JLabel("%/min    "));
-		pInputStep4.add(lInputText17);
-		pInputStep4.add(pInput17);
+		pInputStep3.add(lInputText17);
+		pInputStep3.add(pInput17);
 		
 		pInput18.add(tfInput18);
 		pInput18.add(new JLabel("%/min    "));
-		pInputStep4.add(lInputText18);
-		pInputStep4.add(pInput18);
+		pInputStep3.add(lInputText18);
+		pInputStep3.add(pInput18);
 		
 		pInput19.add(tfInput19);
 		pInput19.add(new JLabel("%/min    "));
@@ -366,29 +432,126 @@ public class GSView extends JFrame {
 		pInputStep4.add(pInput20);
 		
 		pInput21.add(tfInput21);
-		pInput21.add(new JLabel("seconds"));
-		pInputStep5.add(lInputText21);
-		pInputStep5.add(pInput21);
+		pInput21.add(new JLabel("%/min    "));
+		pInputStep4.add(lInputText21);
+		pInputStep4.add(pInput21);
 		
 		pInput22.add(tfInput22);
-		pInput22.add(new JLabel("seconds"));
-		pInputStep5.add(lInputText22);
-		pInputStep5.add(pInput22);
+		pInput22.add(new JLabel("%/min    "));
+		pInputStep4.add(lInputText22);
+		pInputStep4.add(pInput22);
 		
 		pInput23.add(tfInput23);
 		pInput23.add(new JLabel("seconds"));
 		pInputStep5.add(lInputText23);
 		pInputStep5.add(pInput23);
 		
-		JOptionPane.showMessageDialog(this, pInputStep1, 
-				"Step 1 of 5: Please enter simulation parameters", JOptionPane.QUESTION_MESSAGE);
-		JOptionPane.showMessageDialog(this, pInputStep2, 
-				"Step 2 of 5: Please enter simulation parameters", JOptionPane.QUESTION_MESSAGE);
-		JOptionPane.showMessageDialog(this, pInputStep3, 
-				"Step 3 of 5: Please enter simulation parameters", JOptionPane.QUESTION_MESSAGE);
-		JOptionPane.showMessageDialog(this, pInputStep4, 
-				"Step 4 of 5: Please enter simulation parameters", JOptionPane.QUESTION_MESSAGE);
-		JOptionPane.showMessageDialog(this, pInputStep5, 
-				"Step 5 of 5: Please enter simulation parameters", JOptionPane.QUESTION_MESSAGE);
+		pInput24.add(tfInput24);
+		pInput24.add(new JLabel("seconds"));
+		pInputStep5.add(lInputText24);
+		pInputStep5.add(pInput24);
+		
+		pInput25.add(tfInput25);
+		pInput25.add(new JLabel("seconds"));
+		pInputStep5.add(lInputText25);
+		pInputStep5.add(pInput25);
+		
+		pInput26.add(comboWeatherSelect);
+		pInputStep5.add(lInputText26);
+		pInputStep5.add(pInput26);
+		
+		JPanel[] inputPanels = new JPanel[5];
+		inputPanels[0] = pInputStep1;
+		inputPanels[1] = pInputStep2;
+		inputPanels[2] = pInputStep3;
+		inputPanels[3] = pInputStep4;
+		inputPanels[4] = pInputStep5;
+		return inputPanels;
+	}
+	
+	public JTextField[] getInputFields () {
+		JTextField[] inputFieldsStep1 = new JTextField[25];
+		inputFieldsStep1[0] = tfInput01;
+		inputFieldsStep1[1] = tfInput02;
+		inputFieldsStep1[2] = tfInput03;
+		inputFieldsStep1[3] = tfInput04;
+		inputFieldsStep1[4] = tfInput05;
+		inputFieldsStep1[5] = tfInput06;
+		inputFieldsStep1[6] = tfInput07;
+		inputFieldsStep1[7] = tfInput08;
+		inputFieldsStep1[8] = tfInput09;
+		inputFieldsStep1[9] = tfInput10;
+		inputFieldsStep1[10] = tfInput11;
+		inputFieldsStep1[11] = tfInput12;
+		inputFieldsStep1[12] = tfInput13;
+		inputFieldsStep1[13] = tfInput14;
+		inputFieldsStep1[14] = tfInput15;
+		inputFieldsStep1[15] = tfInput16;
+		inputFieldsStep1[16] = tfInput17;
+		inputFieldsStep1[17] = tfInput18;
+		inputFieldsStep1[18] = tfInput19;
+		inputFieldsStep1[19] = tfInput20;
+		inputFieldsStep1[20] = tfInput21;
+		inputFieldsStep1[21] = tfInput22;
+		inputFieldsStep1[22] = tfInput23;
+		inputFieldsStep1[23] = tfInput24;
+		inputFieldsStep1[24] = tfInput25;
+		return inputFieldsStep1;
+	}
+
+	public JComboBox<String> getWeatherInput () {
+		return comboWeatherSelect;
+	}
+	
+	public JComboBox<String> getWeatherSelection () {
+		return comboWeather;
+	}
+	
+	public void setTemperatureDisplay (int value) {
+		sTemperature.setValue(value);
+	}
+	
+	public void setTemperatureTargetDisplay (int value) {
+		sTemperatureTarget.setValue(value);
+	}
+	
+	public void setHumidityDisplay (int value) {
+		sHumidity.setValue(value);
+	}
+	
+	public void setSoilMoistureDisplay (int value) {
+		sSoilMoisture.setValue(value);
+	}
+	
+	public void setTempDisplayActive (boolean displayOn) {
+		sTemperature.setEnabled(displayOn);
+	}
+	
+	public void setTempTargetDisplayActive (boolean displayOn) {
+		sTemperatureTarget.setEnabled(displayOn);
+	}
+	
+	public void setHumidDisplayActive (boolean displayOn) {
+		sHumidity.setEnabled(displayOn);
+	}
+	
+	public void setSoilMoistDisplayActive (boolean displayOn) {
+		sSoilMoisture.setEnabled(displayOn);
+	}
+
+	public void setFurnaceChecked (boolean boxChecked) {
+		cbFurnace.setSelected(boxChecked);
+	}
+	
+	public void setAirConditionerChecked (boolean boxChecked) {
+		cbAirConditioner.setSelected(boxChecked);
+	}
+	
+	public void setHumidifierChecked (boolean boxChecked) {
+		cbHumidifier.setSelected(boxChecked);
+	}
+	
+	public void setSprinklerChecked (boolean boxChecked) {
+		cbSprinkler.setSelected(boxChecked);
 	}
 }

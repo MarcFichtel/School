@@ -11,10 +11,11 @@
 public class GSModel {
 
 	private int temperature;
-	private int temperatureInit;
 	private int temperatureTarget;
 	private int humidity;
+	private int humidityTarget;
 	private int soilMoisture;
+	private int soilMoistureTarget;
 	private int furnaceEfficiency;
 	private int conditionerEfficiency;
 	private int humidifierEfficiency;
@@ -34,13 +35,85 @@ public class GSModel {
 	private int sampleRateTemp;
 	private int sampleRateHumid;
 	private int sampleRateSoilMoist;
+	private boolean furnaceOn = false;
+	private boolean airConditionerOn = false;
+	private boolean humidifierOn = false;
+	private boolean sprinklerOn = false;
+	private String weather;
+	
+	
+	public boolean checkFurnace () {
+		
+		boolean furnaceOn = false;
+		
+		if (temperature < temperatureTarget - 3) {
+			setFurnaceOn(true);
+			furnaceOn = true;
+		} 
+		
+		if (temperature >= temperatureTarget) {
+			setFurnaceOn(false);
+			furnaceOn = false;
+		}
+		
+		return furnaceOn;
+	}
+	
+	public boolean checkAirConditioner () {
+		
+		boolean airCondiOn = false;
+		
+		if (temperature > temperatureTarget + 3) {
+			setAirConditionerOn(true);
+			airCondiOn = true;
+		}
+		
+		if (temperature <= temperatureTarget) {
+			setAirConditionerOn(false);
+			airCondiOn = false;
+		}
+		
+		return airCondiOn;
+	}
+	
+	public boolean checkHumidifier () {
+		
+		boolean humidOn = false;
+		
+		if (humidity < humidityTarget - 3) {
+			setHumidifierOn(true);
+			humidOn = true;
+		} 
+		
+		if (humidity >= humidityTarget) {
+			setHumidifierOn(false);
+			humidOn = false;
+		}
+		
+		return humidOn;
+	}
+
+	public boolean checkSprinkler () {
+		
+		boolean sprinklerOn = false;
+		
+		if (soilMoisture < soilMoistureTarget - 3) {
+			setSprinklerOn(true);
+			sprinklerOn = true;
+		} 
+		
+		if (soilMoisture >= soilMoistureTarget) {
+			setSprinklerOn(false);
+			sprinklerOn = false;
+		}
+		
+		return sprinklerOn;
+	}
+	
+	/////////////////////////////////////////////////////////////////////////////////////////
 	
 	public void setTemperature (int newValue) {
 		temperature = newValue;
-	}
-	
-	public void setInitialTemperature (int newValue) {
-		temperatureInit = newValue;
 	}
 	
 	public void setTargetTemperature (int newValue) {
@@ -51,8 +124,16 @@ public class GSModel {
 		humidity = newValue;
 	}
 	
+	public void setHumidityTarget (int newValue) {
+		humidityTarget = newValue;
+	}
+	
 	public void setSoilMoisture (int newValue) {
 		soilMoisture = newValue;
+	}
+	
+	public void setSoilMoistureTarget (int newValue) {
+		soilMoistureTarget = newValue;
 	}
 	
 	public void setFurnaceEfficiency (int newValue) {
@@ -131,12 +212,30 @@ public class GSModel {
 		sampleRateSoilMoist = newValue;
 	}
 	
-	public int getTemperature () {
-		return temperature;
+	public void setFurnaceOn (boolean bool) {
+		furnaceOn = bool;
 	}
 	
-	public int getInitialTemperature () {
-		return temperatureInit;
+	public void setAirConditionerOn (boolean bool) {
+		airConditionerOn = bool;
+	}
+	
+	public void setHumidifierOn (boolean bool) {
+		humidifierOn = bool;
+	}
+	
+	public void setSprinklerOn (boolean bool) {
+		sprinklerOn = bool;
+	}
+	
+	public void setWeather (String newWeather) {
+		weather = newWeather;
+	}
+	
+	/////////////////////////////////////////////////////////////////////////////////////////////////
+	
+	public int getTemperature () {
+		return temperature;
 	}
 	
 	public int getTargetTemperature () {
@@ -147,8 +246,16 @@ public class GSModel {
 		return humidity;
 	}
 	
+	public int getHumidityTarget () {
+		return humidityTarget;
+	}
+	
 	public int getSoilMoisture () {
 		return soilMoisture;
+	}
+	
+	public int getSoilMoistureTarget () {
+		return soilMoistureTarget;
 	}
 	
 	public int getFurnaceEfficiency () {
@@ -225,5 +332,25 @@ public class GSModel {
 	
 	public int getSampleRateSoilMoist () {
 		return sampleRateSoilMoist;
+	}
+	
+	public boolean getFurnaceOn () {
+		return furnaceOn;
+	}
+	
+	public boolean getAirConditionerOn () {
+		return airConditionerOn;
+	}
+	
+	public boolean getHumidifierOn () {
+		return humidifierOn;
+	}
+	
+	public boolean getSprinklerOn () {
+		return sprinklerOn;
+	}
+	
+	public String getWeather () {
+		return weather;
 	}
 }
