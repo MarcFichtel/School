@@ -32,11 +32,7 @@ public class GSController extends Thread {
 				
 				if (this.getId() == 16) {
 	
-					updateTemperature (
-							data.getFurnaceOn(),
-							data.getAirConditionerOn(),
-							data.getWeather());
-					
+					updateTemperature ();
 					Thread.sleep(data.getSampleRateTemp() * 600);
 						
 						
@@ -44,63 +40,76 @@ public class GSController extends Thread {
 				
 				if (this.getId() == 17) {
 						
-					updateHumidity (
-							data.getHumidifierOn(),
-							data.getWeather());
+					updateHumidity ();
 					Thread.sleep(data.getSampleRateHumid() * 600);
 						
 				} 
 				
 				if (this.getId() == 18) {
 						
-					updateSoilMoisture (
-							data.getSprinklerOn(),
-							data.getWeather());
+					updateSoilMoisture ();
 					Thread.sleep(data.getSampleRateSoilMoist() * 600);
 						
 				}
 			
 			} catch (Exception ex) {
-				// something
+				// TODO something
 			}
 		}
 		return;
 	}
 	
-	public void updateTemperature (boolean furnaceOn, boolean airConditionerOn, String weather) {
+	public void updateTemperature () {
 		
-		int temperature = data.getTemperature();
+		int temp = data.getTemperature();
+		int tempTarget = data.getTargetTemperature();
+		boolean furnaceOn = data.getFurnaceOn();
+		boolean airConditionerOn = data.getAirConditionerOn();
+		String weather = data.getWeather();
+		
+		if (weather == "Sunny") {
+			temp += data.getSunnyDayTempChange();
+		} else if (weather == "Cloudy") {
+			temp += data.getCloudyDayTempChange();
+		} else if (weather == "Rainy") {
+			temp += data.getRainyDayTempChange();
+		} else {
+			temp += data.getSnowyDayTempChange();
+		}
 		
 		if (furnaceOn) {
-			temperature += data.getFurnaceEfficiency();
+			temp += data.getFurnaceEfficiency();
 		} else if (airConditionerOn) {
-			temperature += data.getAirConditionerEfficiency();
-		}
-
-		if (weather == "Sunny") {
-			temperature += data.getSunnyDayTempChange();
-		} else if (weather == "Cloudy") {
-			temperature += data.getCloudyDayTempChange();
-		} else if (weather == "Rainy") {
-			temperature += data.getRainyDayTempChange();
-		} else {
-			temperature += data.getSnowyDayTempChange();
+			temp += data.getAirConditionerEfficiency();
 		}
 		
-		data.setTemperature(temperature);
-		ui.setFurnaceChecked(data.checkFurnace());
-		ui.setAirConditionerChecked(data.checkAirConditioner());
-		ui.setTemperatureDisplay(temperature);
+		if (temp < tempTarget - 3) {
+			data.setFurnaceOn(true);
+			ui.setFurnaceChecked(true);
+		} else if (temp >= tempTarget) {
+			data.setFurnaceOn(false);
+			ui.setFurnaceChecked(false);
+		}
+		
+		if (temp > tempTarget + 3) {
+			data.setAirConditionerOn(true);
+			ui.setAirConditionerChecked(true);
+		} else if (temp <= tempTarget) {
+			data.setAirConditionerOn(false);
+			ui.setAirConditionerChecked(false);
+		}
+		
+		data.setTemperature(temp);
+		ui.setTemperatureDisplay(temp);
 	}
 	
-	public void updateHumidity (boolean humidifierOn, String weather) {
+	public void updateHumidity () {
 		
 		int humidity = data.getHumidity();
+		int humidityTarget = data.getTargetHumidity();
+		boolean humidifierOn = data.getHumidifierOn();
+		String weather = data.getWeather();
 		
-		if (humidifierOn) {
-			humidity += data.getHumidifierEfficiency();
-		}
-
 		if (weather == "Sunny") {
 			humidity += data.getSunnyDayHumidChange();
 		} else if (weather == "Cloudy") {
@@ -111,19 +120,29 @@ public class GSController extends Thread {
 			humidity += data.getSnowyDayHumidChange();
 		}
 		
+		if (humidifierOn) {
+			humidity += data.getHumidifierEfficiency();
+		}
+		
+		if (humidity < humidityTarget - 3) {
+			data.setHumidifierOn(true);
+			ui.setHumidifierChecked(true);
+		}  else if (humidity >= humidityTarget) {
+			data.setHumidifierOn(false);
+			ui.setHumidifierChecked(false);
+		}
+		
 		data.setHumidity(humidity);
-		ui.setHumidifierChecked(data.checkHumidifier());
 		ui.setHumidityDisplay(humidity);
 	}
 	
-	public void updateSoilMoisture (boolean sprinklerOn, String weather) {
+	public void updateSoilMoisture () {
 		
 		int soilMoisture = data.getSoilMoisture();
+		int soilMoistureTarget = data.getTargetSoilMoisture();
+		boolean sprinklerOn = data.getSprinklerOn();
+		String weather = data.getWeather();
 		
-		if (sprinklerOn) {
-			soilMoisture += data.getSprinklerEfficiency();
-		}
-
 		if (weather == "Sunny") {
 			soilMoisture += data.getSunnyDaySoilMoistChange();
 		} else if (weather == "Cloudy") {
@@ -134,8 +153,19 @@ public class GSController extends Thread {
 			soilMoisture += data.getSnowyDaySoilMoistChange();
 		}
 		
+		if (sprinklerOn) {
+			soilMoisture += data.getSprinklerEfficiency();
+		}
+
+		if (soilMoisture < soilMoistureTarget - 3) {
+			data.setSprinklerOn(true);
+			ui.setSprinklerChecked(true);
+		}  else if (soilMoisture >= soilMoistureTarget) {
+			data.setSprinklerOn(false);
+			ui.setSprinklerChecked(false);
+		}
+		
 		data.setSoilMoisture(soilMoisture);
-		ui.setSprinklerChecked(data.checkSprinkler());
 		ui.setSoilMoistureDisplay(soilMoisture);
 	}
 	
@@ -155,16 +185,20 @@ public class GSController extends Thread {
 	}
 	
 	public static void startThreads () {
-		controlTemperature.start();
-		controlHumidity.start();
-		controlSoilMoisture.start();
+		if (!controlTemperature.isAlive() &&
+			!controlHumidity.isAlive() &&
+			!controlSoilMoisture.isAlive()) {
+			controlTemperature.start();
+			controlHumidity.start();
+			controlSoilMoisture.start();
+		}
 	}
 	
 	public static void setSimInProgress (boolean simInProgress) {
 		GSController.simInProgress = simInProgress;
 	}
 	
-	public static boolean getSetupComplete () {
+	public static boolean getSimInProgress () {
 		return simInProgress;
 	}
 	

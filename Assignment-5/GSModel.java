@@ -41,75 +41,6 @@ public class GSModel {
 	private boolean sprinklerOn = false;
 	private String weather;
 	
-	
-	public boolean checkFurnace () {
-		
-		boolean furnaceOn = false;
-		
-		if (temperature < temperatureTarget - 3) {
-			setFurnaceOn(true);
-			furnaceOn = true;
-		} 
-		
-		if (temperature >= temperatureTarget) {
-			setFurnaceOn(false);
-			furnaceOn = false;
-		}
-		
-		return furnaceOn;
-	}
-	
-	public boolean checkAirConditioner () {
-		
-		boolean airCondiOn = false;
-		
-		if (temperature > temperatureTarget + 3) {
-			setAirConditionerOn(true);
-			airCondiOn = true;
-		}
-		
-		if (temperature <= temperatureTarget) {
-			setAirConditionerOn(false);
-			airCondiOn = false;
-		}
-		
-		return airCondiOn;
-	}
-	
-	public boolean checkHumidifier () {
-		
-		boolean humidOn = false;
-		
-		if (humidity < humidityTarget - 3) {
-			setHumidifierOn(true);
-			humidOn = true;
-		} 
-		
-		if (humidity >= humidityTarget) {
-			setHumidifierOn(false);
-			humidOn = false;
-		}
-		
-		return humidOn;
-	}
-
-	public boolean checkSprinkler () {
-		
-		boolean sprinklerOn = false;
-		
-		if (soilMoisture < soilMoistureTarget - 3) {
-			setSprinklerOn(true);
-			sprinklerOn = true;
-		} 
-		
-		if (soilMoisture >= soilMoistureTarget) {
-			setSprinklerOn(false);
-			sprinklerOn = false;
-		}
-		
-		return sprinklerOn;
-	}
-	
 	/////////////////////////////////////////////////////////////////////////////////////////
 	
 	public void setTemperature (int newValue) {
@@ -124,7 +55,7 @@ public class GSModel {
 		humidity = newValue;
 	}
 	
-	public void setHumidityTarget (int newValue) {
+	public void setTargetHumidity (int newValue) {
 		humidityTarget = newValue;
 	}
 	
@@ -132,7 +63,7 @@ public class GSModel {
 		soilMoisture = newValue;
 	}
 	
-	public void setSoilMoistureTarget (int newValue) {
+	public void setTargetSoilMoisture (int newValue) {
 		soilMoistureTarget = newValue;
 	}
 	
@@ -246,7 +177,7 @@ public class GSModel {
 		return humidity;
 	}
 	
-	public int getHumidityTarget () {
+	public int getTargetHumidity () {
 		return humidityTarget;
 	}
 	
@@ -254,7 +185,7 @@ public class GSModel {
 		return soilMoisture;
 	}
 	
-	public int getSoilMoistureTarget () {
+	public int getTargetSoilMoisture () {
 		return soilMoistureTarget;
 	}
 	

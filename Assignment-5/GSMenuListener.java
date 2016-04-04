@@ -1,9 +1,18 @@
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.PrintWriter;
+import java.util.Scanner;
 
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+
+
 
 public class GSMenuListener implements ActionListener {
 
@@ -17,28 +26,98 @@ public class GSMenuListener implements ActionListener {
 		this.inputPanels = ui.createInputDialog();
 	}
 	
-	@Override
 	public void actionPerformed(ActionEvent e) {
 		
 		if (e.getActionCommand() == "Start Simulation") {
+			
 			promptAndValidateInput();
-			data.setWeather("Sunny");
 			
 			ui.setTempDisplayActive(true);
 			ui.setTempTargetDisplayActive(true);
 			ui.setHumidDisplayActive(true);
+			ui.setHumidTargetDisplayActive(true);
 			ui.setSoilMoistDisplayActive(true);
+			ui.setSoilMoistTargetDisplayActive(true);
+			
+			ui.setTemperatureTargetDisplay(data.getTargetTemperature());
+			ui.setHumidityTargetDisplay(data.getTargetHumidity());
+			ui.setSoilMoistureTargetDisplay(data.getTargetSoilMoisture());
 			
 			GSController.startThreads();
 			
 		} else if (e.getActionCommand() == "Save Simulation") {
-			// something
+			
+			String saveFileName = JOptionPane.showInputDialog(ui, "Enter save file name:", 
+					null, JOptionPane.QUESTION_MESSAGE);
+			
+			try {
+				PrintWriter saveFile =
+						new PrintWriter(new FileOutputStream(saveFileName + ".txt"));
+			
+				saveFile.println(data.getTemperature());
+				saveFile.println(data.getTargetTemperature());
+				saveFile.println(data.getHumidity());
+				saveFile.println(data.getTargetHumidity());
+				saveFile.println(data.getSoilMoisture());
+				saveFile.println(data.getTargetSoilMoisture());
+				saveFile.println(data.getFurnaceEfficiency());
+				saveFile.println(data.getAirConditionerEfficiency());
+				saveFile.println(data.getHumidifierEfficiency());
+				saveFile.println(data.getSprinklerEfficiency());
+				saveFile.println(data.getSunnyDayTempChange());
+				saveFile.println(data.getCloudyDayTempChange());
+				saveFile.println(data.getRainyDayTempChange());
+				saveFile.println(data.getSnowyDayTempChange());
+				saveFile.println(data.getSunnyDayHumidChange());
+				saveFile.println(data.getCloudyDayHumidChange());
+				saveFile.println(data.getRainyDayHumidChange());
+				saveFile.println(data.getSnowyDayHumidChange());
+				saveFile.println(data.getSunnyDaySoilMoistChange());
+				saveFile.println(data.getCloudyDaySoilMoistChange());
+				saveFile.println(data.getRainyDaySoilMoistChange());
+				saveFile.println(data.getSnowyDaySoilMoistChange());
+				saveFile.println(data.getSampleRateTemp());
+				saveFile.println(data.getSampleRateHumid());
+				saveFile.println(data.getSampleRateSoilMoist());
+				saveFile.println(data.getFurnaceOn());
+				saveFile.println(data.getAirConditionerOn());
+				saveFile.println(data.getHumidifierOn());
+				saveFile.println(data.getSprinklerOn());
+				saveFile.println(data.getWeather());
+
+				JOptionPane.showMessageDialog(ui, "File was saved successfully!", 
+						null, JOptionPane.INFORMATION_MESSAGE);
+				
+				saveFile.close();
+			
+			} catch (FileNotFoundException e1) {
+				JOptionPane.showMessageDialog(ui, "Error saving file.", 
+						null, JOptionPane.ERROR_MESSAGE);
+				
+			}
 			
 		} else if (e.getActionCommand() == "Load Simulation") {
-			// something
+			
+			final JFileChooser fc = new JFileChooser();
+			fc.showOpenDialog(ui);
+			File file = fc.getSelectedFile();
+			Scanner inputStream;
+			
+			try {
+				inputStream = new Scanner(new FileInputStream(file));
+				
+				while (inputStream.hasNextLine()) {
+					System.out.println(inputStream.nextLine());
+				}
+				
+				// TODO Set given values, start simulation
+				
+			} catch (FileNotFoundException e1) {
+				// TODO something
+			}
 			
 		} else {
-			// something
+			// TODO something
 			System.exit(0);
 		}
 		
@@ -61,9 +140,9 @@ public class GSMenuListener implements ActionListener {
 				data.setTemperature(Integer.parseInt(inputFields[0].getText()));
 				data.setTargetTemperature(Integer.parseInt(inputFields[1].getText()));
 				data.setHumidity(Integer.parseInt(inputFields[2].getText()));
-				data.setHumidityTarget(Integer.parseInt(inputFields[3].getText()));
+				data.setTargetHumidity(Integer.parseInt(inputFields[3].getText()));
 				data.setSoilMoisture(Integer.parseInt(inputFields[4].getText()));
-				data.setSoilMoistureTarget(Integer.parseInt(inputFields[5].getText()));
+				data.setTargetSoilMoisture(Integer.parseInt(inputFields[5].getText()));
 				data.setFurnaceEfficiency(Integer.parseInt(inputFields[6].getText()));
 				data.setAirConditionerEfficiency(Integer.parseInt(inputFields[7].getText()));
 				data.setHumidifierEfficiency(Integer.parseInt(inputFields[8].getText()));

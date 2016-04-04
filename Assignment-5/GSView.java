@@ -519,8 +519,16 @@ public class GSView extends JFrame {
 		sHumidity.setValue(value);
 	}
 	
+	public void setHumidityTargetDisplay (int value) {
+		sHumidityTarget.setValue(value);
+	}
+	
 	public void setSoilMoistureDisplay (int value) {
 		sSoilMoisture.setValue(value);
+	}
+	
+	public void setSoilMoistureTargetDisplay (int value) {
+		sSoilMoistureTarget.setValue(value);
 	}
 	
 	public void setTempDisplayActive (boolean displayOn) {
@@ -535,8 +543,16 @@ public class GSView extends JFrame {
 		sHumidity.setEnabled(displayOn);
 	}
 	
+	public void setHumidTargetDisplayActive (boolean displayOn) {
+		sHumidityTarget.setEnabled(displayOn);
+	}
+	
 	public void setSoilMoistDisplayActive (boolean displayOn) {
 		sSoilMoisture.setEnabled(displayOn);
+	}
+	
+	public void setSoilMoistTargetDisplayActive (boolean displayOn) {
+		sSoilMoistureTarget.setEnabled(displayOn);
 	}
 
 	public void setFurnaceChecked (boolean boxChecked) {
