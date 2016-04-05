@@ -23,147 +23,282 @@ import javax.swing.JTextField;
  * -- Course: CPSC 233 
  * -- University of Calgary
  * -- Tutorial 05
- * -- Instructor: Edward Chan 
- * -- Class does something...
+ * -- Instructor: Edwin Chan 
+ * -- Class represents the user interface of the greenhouse simulation
  */
 
-public class GSView extends JFrame {
-
-	private JMenuBar menuBar = new JMenuBar();
-	private JMenu menu = new JMenu("Menu");
-	private JMenuItem menuStart = new JMenuItem("Start Simulation");
-	private JMenuItem menuSave = new JMenuItem("Save Simulation");
-	private JMenuItem menuLoad = new JMenuItem("Load Simulation");
-	private JMenuItem menuExit = new JMenuItem("Exit");
+public class GUI extends JFrame {
 	
-	private JPanel pTopLeft = new JPanel(new GridLayout(4, 1));
-	private JPanel pTopCenter = new JPanel(new GridLayout(4, 1));
-	private JPanel pTopRight = new JPanel(new GridLayout(4, 1));
-	private JPanel pTemperature = new JPanel(new GridLayout(1,2));
-	private JPanel pHumidity = new JPanel(new GridLayout(1,2));
-	private JPanel pSoilMoisture = new JPanel(new GridLayout(1,2));
-	private JPanel pBottomLeft = new JPanel(new GridLayout(4, 1));
-	private JPanel pTempControl = new JPanel(new FlowLayout());
-	private JPanel pBottomCenter = new JPanel(new GridLayout(4, 1));
-	private JPanel pBottomRight = new JPanel(new GridLayout(4, 1));
-	private JPanel pWeatherSelect = new JPanel(new FlowLayout());
-	private JPanel pEditButton = new JPanel(new FlowLayout());
-	
+	/**
+	 * sTemperature: The slider displaying the temperature
+	 */
 	private JSlider sTemperature = new JSlider(JSlider.VERTICAL, 10, 40, 10);
+	
+	/**
+	 * sTemperatureTarget: The slider displaying the target temperature
+	 */
 	private JSlider sTemperatureTarget = new JSlider(JSlider.VERTICAL, 10, 40, 10);
+	
+	/**
+	 * sHumidity: The slider displaying the humidity
+	 */
 	private JSlider sHumidity = new JSlider(JSlider.VERTICAL, 0, 100, 0);
+	
+	/**
+	 * sHumidityTarget: The slider displaying the target humidity
+	 */
 	private JSlider sHumidityTarget = new JSlider(JSlider.VERTICAL, 0, 100, 0);
+	
+	/**
+	 * sSoilMoisture: The slider displaying the soil moisture
+	 */
 	private JSlider sSoilMoisture = new JSlider(JSlider.VERTICAL, 0, 100, 0);
+	
+	/**
+	 * sSoilMoistureTarget: The slider displaying the target soil moisture
+	 */
 	private JSlider sSoilMoistureTarget = new JSlider(JSlider.VERTICAL, 0, 100, 0);
 	
+	/**
+	 * cbFurnace: The check box displaying whether the furnace is running or not 
+	 */
 	private JCheckBox cbFurnace = new JCheckBox("Furnace");
+	
+	/**
+	 * cbAirConditioner: The check box displaying whether the air conditioner is running or not
+	 */
 	private JCheckBox cbAirConditioner = new JCheckBox("Air Conditioner");
+	
+	/**
+	 * cbHumidifier: The check box displaying whether the humidifier is running or not
+	 */
 	private JCheckBox cbHumidifier = new JCheckBox("Humidifier");
+	
+	/**
+	 * cbSprinkler: The check box displaying whether the sprinkler is running or not
+	 */
 	private JCheckBox cbSprinkler = new JCheckBox("Sprinkler System");
 	
-	private JLabel lTitle = new JLabel("Green Thumbs Greenhouses", JLabel.CENTER);
-	private JLabel lSubTitle = new JLabel("Automatic Climate Control", JLabel.CENTER);
-	private JLabel lTemperature = new JLabel("<html><div style = 'text-align: center;'>"
-			+ "Temperature (C)"
-			+ "<br><br>"
-			+ "Actual: "
-			+ "&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp "
-			+ "Target:" 
-			+ "</html>", JLabel.CENTER);
-	private JLabel lHumidity = new JLabel("<html><div style = 'text-align: center;'>"
-			+ "Humidity (%)"
-			+ "<br><br>"
-			+ "Actual: "
-			+ "&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp "
-			+ "Target:" 
-			+ "</html>", JLabel.CENTER);
-	private JLabel lSoilMoisture = new JLabel("<html><div style = 'text-align: center;'>"
-			+ "Soil Moisture (%)"
-			+ "<br><br>"
-			+ "Actual: "
-			+ "&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp "
-			+ "Target:" 
-			+ "</html>", JLabel.CENTER);
-	private JLabel lWeather = new JLabel("Weather Condition:", JLabel.CENTER);
-	private JLabel lInputText01 = new JLabel("Enter initial temperature:");
-	private JLabel lInputText02 = new JLabel("Enter desired temperature:");
-	private JLabel lInputText03 = new JLabel("Enter humidity:");
-	private JLabel lInputText04 = new JLabel("Enter desired humidity:");
-	private JLabel lInputText05 = new JLabel("Enter soil moisture:");
-	private JLabel lInputText06 = new JLabel("Enter desired soil moisture:");
-	private JLabel lInputText07 = new JLabel("Enter furnace efficiency:");
-	private JLabel lInputText08 = new JLabel("Enter air conditioner efficiency:");
-	private JLabel lInputText09 = new JLabel("Enter humidifier efficiency:");
-	private JLabel lInputText10 = new JLabel("Enter sprinkler system efficiency:");
-	private JLabel lInputText11 = new JLabel("Enter temperature change on sunny days:");
-	private JLabel lInputText12 = new JLabel("Enter temperature change on cloudy days:");
-	private JLabel lInputText13 = new JLabel("Enter temperature change on rainy days:");
-	private JLabel lInputText14 = new JLabel("Enter temperature change on snowy days:");
-	private JLabel lInputText15 = new JLabel("Enter humidity change on sunny days:");
-	private JLabel lInputText16 = new JLabel("Enter humidity change on cloudy days:");
-	private JLabel lInputText17 = new JLabel("Enter humidity change on rainy days:");
-	private JLabel lInputText18 = new JLabel("Enter humidity change on snowy days:");
-	private JLabel lInputText19 = new JLabel("Enter soil moisture change on sunny days:");
-	private JLabel lInputText20 = new JLabel("Enter soil moisture change on cloudy days:");
-	private JLabel lInputText21 = new JLabel("Enter soil moisture change on rainy days:");
-	private JLabel lInputText22 = new JLabel("Enter soil moisture change on snowy days:");
-	private JLabel lInputText23 = new JLabel("Enter temperature display sample rate:");
-	private JLabel lInputText24 = new JLabel("Enter humidity display sample rate:");
-	private JLabel lInputText25 = new JLabel("Enter soil moisture display sample rate:");
-	private JLabel lInputText26 = new JLabel("Select the initial weather condition:");
-	
+	/**
+	 * tfInput01: The 1. user input text field (prompting for temperature)
+	 */
 	private JTextField tfInput01 = new JTextField("20", 4);
+	
+	/**
+	 * tfInput02: The 2. user input text field (prompting for target temperature)
+	 */
 	private JTextField tfInput02 = new JTextField("25", 4);
+	
+	/**
+	 * tfInput03: The 3. user input text field (prompting for humidity)
+	 */
 	private JTextField tfInput03 = new JTextField("50", 4);
+	
+	/**
+	 * tfInput04: The 4. user input text field (prompting for target humidity)
+	 */
 	private JTextField tfInput04 = new JTextField("50", 4);
+	
+	/**
+	 * tfInput05: The 5. user input text field (prompting for soil moisture)
+	 */
 	private JTextField tfInput05 = new JTextField("50", 4);
+	
+	/**
+	 * tfInput06: The 6. user input text field (prompting for target soil moisture)
+	 */
 	private JTextField tfInput06 = new JTextField("50", 4);
+	
+	/**
+	 * tfInput07: The 7. user input text field (prompting for furnace efficiency)
+	 */
 	private JTextField tfInput07 = new JTextField("2", 4);
+	
+	/**
+	 * tfInput08: The 8. user input text field (prompting for air conditioner efficiency)
+	 */
 	private JTextField tfInput08 = new JTextField("-2", 4);
+	
+	/**
+	 * tfInput09: The 9. user input text field (prompting for humidifier efficiency)
+	 */
 	private JTextField tfInput09 = new JTextField("2", 4);
+	
+	/**
+	 * tfInput10: The 10. user input text field (prompting for sprinkler efficiency)
+	 */
 	private JTextField tfInput10 = new JTextField("2", 4);
+	
+	/**
+	 * tfInput11: The 11. user input text field (prompting for )
+	 */
 	private JTextField tfInput11 = new JTextField("1", 4);
+	
+	/**
+	 * tfInput12: The 12. user input text field (prompting for )
+	 */
 	private JTextField tfInput12 = new JTextField("0", 4);
+	
+	/**
+	 * tfInput13: The 13. user input text field (prompting for )
+	 */
 	private JTextField tfInput13 = new JTextField("0", 4);
+	
+	/**
+	 * tfInput14: The 14. user input text field (prompting for )
+	 */
 	private JTextField tfInput14 = new JTextField("-1", 4);
+	
+	/**
+	 * tfInput15: The 15. user input text field (prompting for )
+	 */
 	private JTextField tfInput15 = new JTextField("-1", 4);
+	
+	/**
+	 * tfInput16: The 16. user input text field (prompting for )
+	 */
 	private JTextField tfInput16 = new JTextField("0", 4);
+	
+	/**
+	 * tfInput17: The 17. user input text field (prompting for )
+	 */
 	private JTextField tfInput17 = new JTextField("1", 4);
+	
+	/**
+	 * tfInput18: The 18. user input text field (prompting for )
+	 */
 	private JTextField tfInput18 = new JTextField("0", 4);
+	
+	/**
+	 * tfInput19: The 19. user input text field (prompting for )
+	 */
 	private JTextField tfInput19 = new JTextField("0", 4);
+	
+	/**
+	 * tfInput20: The 20. user input text field (prompting for )
+	 */
 	private JTextField tfInput20 = new JTextField("0", 4);
+	
+	/**
+	 * tfInput21: The 21. user input text field (prompting for )
+	 */
 	private JTextField tfInput21 = new JTextField("1", 4);
+	
+	/**
+	 * tfInput22: The 22. user input text field (prompting for )
+	 */
 	private JTextField tfInput22 = new JTextField("0", 4);
+	
+	/**
+	 * tfInput23: The 23. user input text field (prompting for )
+	 */
 	private JTextField tfInput23 = new JTextField("1", 4);
+	
+	/**
+	 * tfInput24: The 24. user input text field (prompting for )
+	 */
 	private JTextField tfInput24 = new JTextField("1", 4);
+	
+	/**
+	 * tfInput25: The 25. user input text field (prompting for )
+	 */
 	private JTextField tfInput25 = new JTextField("1", 4);
 	
-	private Hashtable<Integer, JLabel> temperatureLabels = new Hashtable<Integer, JLabel>();
-	private Hashtable<Integer, JLabel> humidityLabels = new Hashtable<Integer, JLabel>();
-	private Hashtable<Integer, JLabel> soilMoistureLabels = new Hashtable<Integer, JLabel>();
-	
+	/**
+	 * bEditSimulation: The button for editing the current simulation
+	 */
 	private JButton bEditSimulation  = new JButton("Edit current simulation");
 	
+	/**
+	 * comboWeather: The main frame weather drop down
+	 */
 	private JComboBox<String> comboWeather = new JComboBox<String>();
+	
+	/**
+	 * comboWeatherSelect: The user input weather drop down (user input step 5)
+	 */
 	private JComboBox<String> comboWeatherSelect = new JComboBox<String>();
 	
- 	public GSView() {
-		super("Greenhouse Simulation");
-		setSize(700, 700); 
-		setLayout(new GridLayout(3, 3));
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	/**
+	 * Constructor sets up the JFrame
+	 */
+ 	public GUI() {
+		super("Greenhouse Simulation");					// Set frame title
+		setSize(700, 700); 								// Set frame size
+		setLayout(new GridLayout(3, 3));				// Set 3x3 grid layout
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);	// Set default close operation
 	}
 	
+ 	/**
+ 	 * Sets up the GUI and adds an action listener
+ 	 * @param menuListener: The menu action listener
+ 	 */
 	public void initUI (ActionListener menuListener) {
 		
+		// Create menu components
+		JMenuBar menuBar = new JMenuBar();
+		JMenu menu = new JMenu("Menu");
+		JMenuItem menuStart = new JMenuItem("Start Simulation");
+		JMenuItem menuSave = new JMenuItem("Save Simulation");
+		JMenuItem menuLoad = new JMenuItem("Load Simulation");
+		JMenuItem menuExit = new JMenuItem("Exit");
+		
+		// Create grid panels
+		JPanel pTopLeft = new JPanel(new GridLayout(4, 1));
+		JPanel pTopCenter = new JPanel(new GridLayout(4, 1));
+		JPanel pTopRight = new JPanel(new GridLayout(4, 1));
+		JPanel pTemperature = new JPanel(new GridLayout(1,2));
+		JPanel pHumidity = new JPanel(new GridLayout(1,2));
+		JPanel pSoilMoisture = new JPanel(new GridLayout(1,2));
+		JPanel pBottomLeft = new JPanel(new GridLayout(4, 1));
+		JPanel pTempControl = new JPanel(new FlowLayout());
+		JPanel pBottomCenter = new JPanel(new GridLayout(4, 1));
+		JPanel pBottomRight = new JPanel(new GridLayout(4, 1));
+		JPanel pWeatherSelect = new JPanel(new FlowLayout());
+		JPanel pEditButton = new JPanel(new FlowLayout());
+		
+		// Create various labels
+		JLabel lTitle = new JLabel("Green Thumbs Greenhouses", JLabel.CENTER);
+		JLabel lSubTitle = new JLabel("Automatic Climate Control", JLabel.CENTER);
+		JLabel lTemperature = new JLabel("<html><div style = 'text-align: center;'>"
+				+ "Temperature (C)"
+				+ "<br><br>"
+				+ "Actual: "
+				+ "&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp "
+				+ "Target:" 
+				+ "</html>", JLabel.CENTER);
+		JLabel lHumidity = new JLabel("<html><div style = 'text-align: center;'>"
+				+ "Humidity (%)"
+				+ "<br><br>"
+				+ "Actual: "
+				+ "&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp "
+				+ "Target:" 
+				+ "</html>", JLabel.CENTER);
+		JLabel lSoilMoisture = new JLabel("<html><div style = 'text-align: center;'>"
+				+ "Soil Moisture (%)"
+				+ "<br><br>"
+				+ "Actual: "
+				+ "&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp "
+				+ "Target:" 
+				+ "</html>", JLabel.CENTER);
+		JLabel lWeather = new JLabel("Weather Condition:", JLabel.CENTER);
+		
+		// Create hash tables for slider labeling
+		Hashtable<Integer, JLabel> temperatureLabels = new Hashtable<Integer, JLabel>();
+		Hashtable<Integer, JLabel> humidityLabels = new Hashtable<Integer, JLabel>();
+		Hashtable<Integer, JLabel> soilMoistureLabels = new Hashtable<Integer, JLabel>();
+		
+		// Adjust title font and placement
 		lTitle.setFont(new Font("Georgia", Font.BOLD, 15));
 		lSubTitle.setFont(new Font("Georgia", Font.ITALIC, 13));
 		lTitle.setVerticalAlignment(JLabel.BOTTOM);
 		lSubTitle.setVerticalAlignment(JLabel.TOP);
 		
+		// Adjust check box placement
 		cbHumidifier.setHorizontalAlignment((int)Button.CENTER_ALIGNMENT);
 		cbSprinkler.setHorizontalAlignment((int)Button.CENTER_ALIGNMENT);
 		
+		// Fill slider label hash tables with values to be displayed
 		for (int i = 10; i < 41; i+= 5) {
 			temperatureLabels.put(new Integer(i), new JLabel("  " + Integer.toString(i) + "°"));
 		}
@@ -174,6 +309,7 @@ public class GSView extends JFrame {
 			soilMoistureLabels.put(new Integer(i), new JLabel("  " + Integer.toString(i) + "%"));
 		}
 		
+		// Connect label hash tables to sliders
 		sTemperature.setLabelTable(temperatureLabels);
 		sTemperatureTarget.setLabelTable(temperatureLabels);
 		sHumidity.setLabelTable(humidityLabels);
@@ -181,6 +317,7 @@ public class GSView extends JFrame {
 		sSoilMoisture.setLabelTable(soilMoistureLabels);
 		sSoilMoistureTarget.setLabelTable(soilMoistureLabels);
 		
+		// Display slider labels
 		sTemperature.setPaintLabels(true);
 		sTemperatureTarget.setPaintLabels(true);
 		sHumidity.setPaintLabels(true);
@@ -188,6 +325,7 @@ public class GSView extends JFrame {
 		sSoilMoisture.setPaintLabels(true);
 		sSoilMoistureTarget.setPaintLabels(true);
 		
+		// Define and display slider ticks
 		sTemperature.setMajorTickSpacing(1);
 		sTemperature.setPaintTicks(true);
 		sTemperatureTarget.setMajorTickSpacing(1);
@@ -201,18 +339,27 @@ public class GSView extends JFrame {
 		sSoilMoistureTarget.setMajorTickSpacing(5);
 		sSoilMoistureTarget.setPaintTicks(true);
 		
+		// Create weather drop down in main frame
+		comboWeather.addItem(new String("Sunny"));
+		comboWeather.addItem(new String("Cloudy"));
+		comboWeather.addItem(new String("Rainy"));
+		comboWeather.addItem(new String("Snowy"));
+		
+		// Disable all interactive components when program is started
 		sTemperature.setEnabled(false);
 		sTemperatureTarget.setEnabled(false);
 		sHumidity.setEnabled(false);
 		sHumidityTarget.setEnabled(false);
 		sSoilMoisture.setEnabled(false);
 		sSoilMoistureTarget.setEnabled(false);
+		bEditSimulation.setEnabled(false); 	// TODO add setter
+		cbFurnace.setEnabled(false);		// TODO add setter
+		cbAirConditioner.setEnabled(false);	// TODO add setter
+		cbHumidifier.setEnabled(false);		// TODO add setter
+		cbSprinkler.setEnabled(false);		// TODO add setter
+		comboWeather.setEnabled(false); 	// TODO add setter
 		
-		comboWeather.addItem(new String("Sunny"));
-		comboWeather.addItem(new String("Cloudy"));
-		comboWeather.addItem(new String("Rainy"));
-		comboWeather.addItem(new String("Snowy"));
-		
+		// Add start menu to main frame
 		menu.add(menuStart);
 		menu.add(menuSave);
 		menu.add(menuLoad);
@@ -220,78 +367,124 @@ public class GSView extends JFrame {
 		menuBar.add(menu);
 		this.setJMenuBar(menuBar);
 		
+		// Add menu listener to menu items
 		menuStart.addActionListener(menuListener);
 		menuSave.addActionListener(menuListener);
 		menuLoad.addActionListener(menuListener);
 		menuExit.addActionListener(menuListener);
 		
+		// Add components to top left panel
 		pTopLeft.add(new JLabel(""));
 		pTopLeft.add(new JLabel(""));
 		pTopLeft.add(new JLabel(""));
 		pTopLeft.add(lTemperature);
 		
+		// Add components to top center panel
 		pTopCenter.add(lTitle);
 		pTopCenter.add(lSubTitle);
 		pTopCenter.add(new JLabel(""));
 		pTopCenter.add(lHumidity);
 		
+		// Add components to top right panel
 		pTopRight.add(new JLabel(""));
 		pTopRight.add(new JLabel(""));
 		pTopRight.add(new JLabel(""));
 		pTopRight.add(lSoilMoisture);
 		
+		// Add components to temperature panel (center left)
 		pTemperature.add(sTemperature);
 		pTemperature.add(sTemperatureTarget);
 		
+		// Add components to humidity panel (center)
 		pHumidity.add(sHumidity);
 		pHumidity.add(sHumidityTarget);
 		
+		// Add components to soil moisture panel (center right)
 		pSoilMoisture.add(sSoilMoisture);
 		pSoilMoisture.add(sSoilMoistureTarget);
 		
+		// Add components to temperature sub-panel
 		pTempControl.add(new JLabel(" "));
 		pTempControl.add(cbFurnace);
 		pTempControl.add(new JLabel("              "));
 		pTempControl.add(cbAirConditioner);
 		
+		// Add weather drop down to a panel
 		pWeatherSelect.add(comboWeather);
 		
+		// Add components to bottom left panel
 		pBottomLeft.add(pTempControl);
 		pBottomLeft.add(lWeather);
 		pBottomLeft.add(pWeatherSelect);
 		pBottomLeft.add(new JLabel(""));
 		
+		// Add components to bottom center panel
 		pBottomCenter.add(cbHumidifier);
 		pBottomCenter.add(new JLabel(""));
 		pBottomCenter.add(new JLabel(""));
 		pBottomCenter.add(new JLabel(""));
 		
+		// Add edit button to a panel
 		pEditButton.add(new JLabel(""));
 		pEditButton.add(bEditSimulation);
 		pEditButton.add(new JLabel(""));
 		
+		// Add components to bottom right panel
 		pBottomRight.add(cbSprinkler);
 		pBottomRight.add(new JLabel(""));
 		pBottomRight.add(new JLabel(""));
 		pBottomRight.add(pEditButton);
 		
+		// Add all grid panels to the frame in order
 		this.getContentPane().add(pTopLeft);
 		this.getContentPane().add(pTopCenter);
-		this.getContentPane().add(pTopRight);
-		
+		this.getContentPane().add(pTopRight);	
 		this.getContentPane().add(pTemperature);
 		this.getContentPane().add(pHumidity);
-		this.getContentPane().add(pSoilMoisture);
-		
+		this.getContentPane().add(pSoilMoisture);	
 		this.getContentPane().add(pBottomLeft);
 		this.getContentPane().add(pBottomCenter);
 		this.getContentPane().add(pBottomRight);
 		
+		// Make frame visible
 		this.setVisible(true);
 	}
 	
-	public JPanel[] createInputDialog () {
+	/**
+	 * Creates an array of panels containing user input components
+	 * @return inputPanels: The array of panels containing user input components
+	 */
+	public JPanel[] createInputPanels () {
 		
+		// Create user input help text labels
+		JLabel lInputText01 = new JLabel("Enter initial temperature:");
+		JLabel lInputText02 = new JLabel("Enter desired temperature:");
+		JLabel lInputText03 = new JLabel("Enter humidity:");
+		JLabel lInputText04 = new JLabel("Enter desired humidity:");
+		JLabel lInputText05 = new JLabel("Enter soil moisture:");
+		JLabel lInputText06 = new JLabel("Enter desired soil moisture:");
+		JLabel lInputText07 = new JLabel("Enter furnace efficiency:");
+		JLabel lInputText08 = new JLabel("Enter air conditioner efficiency:");
+		JLabel lInputText09 = new JLabel("Enter humidifier efficiency:");
+		JLabel lInputText10 = new JLabel("Enter sprinkler system efficiency:");
+		JLabel lInputText11 = new JLabel("Enter temperature change on sunny days:");
+		JLabel lInputText12 = new JLabel("Enter temperature change on cloudy days:");
+		JLabel lInputText13 = new JLabel("Enter temperature change on rainy days:");
+		JLabel lInputText14 = new JLabel("Enter temperature change on snowy days:");
+		JLabel lInputText15 = new JLabel("Enter humidity change on sunny days:");
+		JLabel lInputText16 = new JLabel("Enter humidity change on cloudy days:");
+		JLabel lInputText17 = new JLabel("Enter humidity change on rainy days:");
+		JLabel lInputText18 = new JLabel("Enter humidity change on snowy days:");
+		JLabel lInputText19 = new JLabel("Enter soil moisture change on sunny days:");
+		JLabel lInputText20 = new JLabel("Enter soil moisture change on cloudy days:");
+		JLabel lInputText21 = new JLabel("Enter soil moisture change on rainy days:");
+		JLabel lInputText22 = new JLabel("Enter soil moisture change on snowy days:");
+		JLabel lInputText23 = new JLabel("Enter temperature display sample rate:");
+		JLabel lInputText24 = new JLabel("Enter humidity display sample rate:");
+		JLabel lInputText25 = new JLabel("Enter soil moisture display sample rate:");
+		JLabel lInputText26 = new JLabel("Select the initial weather condition:");
+		
+		// Create user input sub-panels
 		JPanel pInput01 = new JPanel(new FlowLayout());
 		JPanel pInput02 = new JPanel(new FlowLayout());
 		JPanel pInput03 = new JPanel(new FlowLayout());
@@ -318,12 +511,15 @@ public class GSView extends JFrame {
 		JPanel pInput24 = new JPanel(new FlowLayout());
 		JPanel pInput25 = new JPanel(new FlowLayout());
 		JPanel pInput26 = new JPanel(new FlowLayout());
+		
+		// Create user input panels for each input step
 		JPanel pInputStep1 = new JPanel(new GridLayout(10, 2));
 		JPanel pInputStep2 = new JPanel(new GridLayout(4, 2));
 		JPanel pInputStep3 = new JPanel(new GridLayout(4, 2));
 		JPanel pInputStep4 = new JPanel(new GridLayout(4, 2));
 		JPanel pInputStep5 = new JPanel(new GridLayout(4, 2));
 		
+		// Add items to user input weather drop down
 		if (comboWeatherSelect.getItemCount() == 0) {
 			comboWeatherSelect.addItem(new String("Sunny"));
 			comboWeatherSelect.addItem(new String("Cloudy"));
@@ -331,6 +527,7 @@ public class GSView extends JFrame {
 			comboWeatherSelect.addItem(new String("Snowy"));
 		}
 		
+		// Add all components to their respective panels
 		pInput01.add(tfInput01);
 		pInput01.add(new JLabel("°C           "));
 		pInputStep1.add(lInputText01);
@@ -460,17 +657,28 @@ public class GSView extends JFrame {
 		pInputStep5.add(lInputText26);
 		pInputStep5.add(pInput26);
 		
+		// Add sub panels to 5 main input panels
 		JPanel[] inputPanels = new JPanel[5];
 		inputPanels[0] = pInputStep1;
 		inputPanels[1] = pInputStep2;
 		inputPanels[2] = pInputStep3;
 		inputPanels[3] = pInputStep4;
 		inputPanels[4] = pInputStep5;
+		
+		// Return 5 main input panels
 		return inputPanels;
 	}
 	
+	/**
+	 * Get an array of all user input text fields
+	 * @return inputFieldsStep1: The array of user input text fields
+	 */
 	public JTextField[] getInputFields () {
+		
+		// Create array of user input text fields
 		JTextField[] inputFieldsStep1 = new JTextField[25];
+		
+		// Add user input text fields to array
 		inputFieldsStep1[0] = tfInput01;
 		inputFieldsStep1[1] = tfInput02;
 		inputFieldsStep1[2] = tfInput03;
@@ -496,77 +704,151 @@ public class GSView extends JFrame {
 		inputFieldsStep1[22] = tfInput23;
 		inputFieldsStep1[23] = tfInput24;
 		inputFieldsStep1[24] = tfInput25;
+		
+		// Return array of user input text fields
 		return inputFieldsStep1;
 	}
 
-	public JComboBox<String> getWeatherInput () {
+	/**
+	 * Get the user input weather drop down (user input step 5)
+	 * @return comboWeatherSelect: The user input weather drop down
+	 */
+	public JComboBox<String> getWeatherUserSelection () {
 		return comboWeatherSelect;
 	}
 	
-	public JComboBox<String> getWeatherSelection () {
+	/**
+	 * Get the main frame weather drop down
+	 * @return comboWeather: The main frame weather drop down
+	 */
+	public JComboBox<String> getWeatherDropDown () {
 		return comboWeather;
 	}
 	
+	/**
+	 * Set the temperature display slider
+	 * @param value: The new temperature display slider value
+	 */
 	public void setTemperatureDisplay (int value) {
 		sTemperature.setValue(value);
 	}
 	
+	/**
+	 * Set the temperature target display slider
+	 * @param value: The new temperature target display slider value
+	 */
 	public void setTemperatureTargetDisplay (int value) {
 		sTemperatureTarget.setValue(value);
 	}
 	
+	/**
+	 * Set the humidity display slider
+	 * @param value: The new humidity display slider value
+	 */
 	public void setHumidityDisplay (int value) {
 		sHumidity.setValue(value);
 	}
 	
+	/**
+	 * Set the humidity target display slider
+	 * @param value: The new temperature display slider value
+	 */
 	public void setHumidityTargetDisplay (int value) {
 		sHumidityTarget.setValue(value);
 	}
 	
+	/**
+	 * Set the soil moisture display slider
+	 * @param value: The new soil moisture display slider value
+	 */
 	public void setSoilMoistureDisplay (int value) {
 		sSoilMoisture.setValue(value);
 	}
 	
+	/**
+	 * Set the soil moisture target display slider
+	 * @param value: The new soil moisture target display slider value
+	 */
 	public void setSoilMoistureTargetDisplay (int value) {
 		sSoilMoistureTarget.setValue(value);
 	}
 	
+	/**
+	 * Activate or deactivate the temperature display slider
+	 * @param displayOn: Is the display active or not
+	 */
 	public void setTempDisplayActive (boolean displayOn) {
 		sTemperature.setEnabled(displayOn);
 	}
 	
+	/**
+	 * Activate or deactivate the temperature target display slider
+	 * @param displayOn: Is the display active or not
+	 */
 	public void setTempTargetDisplayActive (boolean displayOn) {
 		sTemperatureTarget.setEnabled(displayOn);
 	}
 	
+	/**
+	 * Activate or deactivate the humidity display slider
+	 * @param displayOn: Is the display active or not
+	 */
 	public void setHumidDisplayActive (boolean displayOn) {
 		sHumidity.setEnabled(displayOn);
 	}
 	
+	/**
+	 * Activate or deactivate the humidity target display slider
+	 * @param displayOn: Is the display active or not
+	 */
 	public void setHumidTargetDisplayActive (boolean displayOn) {
 		sHumidityTarget.setEnabled(displayOn);
 	}
 	
+	/**
+	 * Activate or deactivate the soil moisture display slider
+	 * @param displayOn: Is the display active or not
+	 */
 	public void setSoilMoistDisplayActive (boolean displayOn) {
 		sSoilMoisture.setEnabled(displayOn);
 	}
 	
+	/**
+	 * Activate or deactivate the soil moisture target display slider
+	 * @param displayOn: Is the display active or not
+	 */
 	public void setSoilMoistTargetDisplayActive (boolean displayOn) {
 		sSoilMoistureTarget.setEnabled(displayOn);
 	}
 
+	/**
+	 * Select or deselect the furnace check box
+	 * @param boxChecked: Is the box checked or not
+	 */
 	public void setFurnaceChecked (boolean boxChecked) {
 		cbFurnace.setSelected(boxChecked);
 	}
 	
+	/**
+	 * Select or deselect the air conditioner check box
+	 * @param boxChecked: Is the box checked or not
+	 */
 	public void setAirConditionerChecked (boolean boxChecked) {
 		cbAirConditioner.setSelected(boxChecked);
 	}
 	
+	/**
+	 * Select or deselect the humidifier check box
+	 * @param boxChecked: Is the box checked or not
+	 */
 	public void setHumidifierChecked (boolean boxChecked) {
 		cbHumidifier.setSelected(boxChecked);
 	}
 	
+	/**
+	 * Select or deselect the sprinkler check box
+	 * @param boxChecked: Is the box checked or not
+	 */
 	public void setSprinklerChecked (boolean boxChecked) {
 		cbSprinkler.setSelected(boxChecked);
 	}
