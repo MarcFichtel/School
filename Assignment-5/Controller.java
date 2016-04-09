@@ -1,3 +1,5 @@
+import javax.swing.JOptionPane;
+
 /** 
  * @author Marc-Andre Fichtel
  * -- Assignment 5
@@ -34,6 +36,26 @@ public class Controller extends Thread {
 	 * device2: The second device the controller may need to maintain the environment
 	 */
 	private Device device2;
+	
+	/**
+	 * temperatureControl: Regulates temperature
+	 */
+	private static Controller temperatureControl;
+	
+	/**
+	 * humidityControl: Regulates humidity
+	 */
+	private static Controller humidityControl;
+	
+	/**
+	 * soilMoistureControl: Regulates soil moisture
+	 */
+	private static Controller soilMoistureControl;
+	
+	/**
+	 * logControl: Updates the simulation log
+	 */
+	private static LogController logControl;
 	
 	/**
 	 * targetValue: The desired value the controller uses to coordinate devices
@@ -164,24 +186,33 @@ public class Controller extends Thread {
 				
 				// Update the value after all calculations, update display
 				if (this.getId() == 15) {
+					
+					// Update new temperature value
 					greenhouse.setTemperature(value);
 					ui.setTemperatureDisplay(value);
+					
 				} else if (this.getId() == 16) {
+					
+					// Update new humidity value
 					greenhouse.setHumidity(value);
 					ui.setHumidityDisplay(value);
 				} else {
+					
+					// Update new air moisture value
 					greenhouse.setSoilMoisture(value);
 					ui.setSoilMoistureDisplay(value);
 				}
+				
+				
 				
 				// Wait for specified sample rate until next update
 				Thread.sleep(sampleRate * 1000);
 			}
 		
-		// In case of errors, let user know what went wrong
-		// TODO add various exceptions to cover all error cases
+		// In case of errors, let user know something went wrong
 		} catch (Exception ex) {
-			// TODO
+			JOptionPane.showMessageDialog(ui, "Error running threads: " + ex.getMessage(), 
+					"Error", JOptionPane.ERROR_MESSAGE);
 		}
 	}
 	
@@ -191,20 +222,19 @@ public class Controller extends Thread {
 	 * @param humidityControl: The humidity control thread
 	 * @param soilMoistureControl: The soil moisture control thread
 	 */
-	public static void startThreads (
-			Controller temperatureControl,
-			Controller humidityControl,
-			Controller soilMoistureControl) {
+	public static void startThreads () {
 		
 		// Check, if control threads are already running
 		if (!temperatureControl.isAlive() &&
 			!humidityControl.isAlive() &&
-			!soilMoistureControl.isAlive()) {
+			!soilMoistureControl.isAlive() &&
+			!logControl.isAlive()) {
 			
 			// If not, start them
 			temperatureControl.start();
 			humidityControl.start();
 			soilMoistureControl.start();
+			logControl.start();
 		}
 	}
 	
@@ -227,22 +257,21 @@ public class Controller extends Thread {
 		Device sprinkler = new Device();
 		
 		// Create environment controllers
-		Controller temperatureControl = new Controller(ui, env, furnace, ac, "temperatureControl");
-		Controller humidityControl = new Controller(ui, env, humidifier, null, "humidityControl");
-		Controller soilMoistureControl = new Controller(ui, env, sprinkler, null, "soilMoistureControl");
+		temperatureControl = new Controller(ui, env, furnace, ac, "temperatureControl");
+		humidityControl = new Controller(ui, env, humidifier, null, "humidityControl");
+		soilMoistureControl = new Controller(ui, env, sprinkler, null, "soilMoistureControl");
+		
+		// Create a log controller
+		logControl = new LogController (ui, env,
+				furnace, ac, humidifier, sprinkler,
+				temperatureControl, humidityControl, soilMoistureControl);
 		
 		// Set up the gui and add a menu listener
 		ui.initUI(new MenuListener(
-				ui,
-				env, 
-				temperatureControl,
-				humidityControl,
-				soilMoistureControl,
-				furnace,
-				ac,
-				humidifier,
-				sprinkler));
-		
+				ui, env, 
+				furnace, ac, humidifier, sprinkler,
+				temperatureControl, humidityControl, 
+				soilMoistureControl, logControl));
 	}
 
 	/**

@@ -3,7 +3,7 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.util.Scanner;
 
@@ -40,21 +40,6 @@ public class MenuListener implements ActionListener {
 	private Greenhouse greenhouse;
 	
 	/**
-	 * tempControl: The temperature controller
-	 */
-	private Controller tempControl;
-	
-	/**
-	 * humidControl: The humidity controller
-	 */
-	private Controller humidControl;
-	
-	/**
-	 * soilMoistControl: The soil moisture controller
-	 */
-	private Controller soilMoistControl;
-	
-	/**
 	 * furnace: The furnace device used to increase temperature
 	 */
 	private Device furnace;
@@ -75,6 +60,26 @@ public class MenuListener implements ActionListener {
 	private Device sprinklerSystem;
 	
 	/**
+	 * tempControl: The temperature controller
+	 */
+	private Controller tempControl;
+	
+	/**
+	 * humidControl: The humidity controller
+	 */
+	private Controller humidControl;
+	
+	/**
+	 * soilMoistControl: The soil moisture controller
+	 */
+	private Controller soilMoistControl;
+	
+	/**
+	 * logControl: The log controller
+	 */
+	private LogController logControl;
+	
+	/**
 	 * Constructor assigns given values
 	 * @param ui: The simulation's gui
 	 * @param greenhouse: The simulation greenhouse
@@ -89,25 +94,26 @@ public class MenuListener implements ActionListener {
 	public MenuListener (
 			GUI ui, 
 			Greenhouse greenhouse,
-			Controller tempControl,
-			Controller humidControl,
-			Controller soilMoistControl,
 			Device furnace,
 			Device airConditioner,
 			Device humidifier,
-			Device sprinklerSystem) {
+			Device sprinklerSystem,
+			Controller tempControl,
+			Controller humidControl,
+			Controller soilMoistControl,
+			LogController logControl) {
 		
 		// Assign given values
 		this.ui = ui;
 		this.greenhouse = greenhouse;
-		this.tempControl = tempControl;
-		this.humidControl = humidControl;
-		this.soilMoistControl = soilMoistControl;
 		this.furnace = furnace;
 		this.airConditioner = airConditioner;
 		this.humidifier = humidifier;
 		this.sprinklerSystem = sprinklerSystem;
-		
+		this.tempControl = tempControl;
+		this.humidControl = humidControl;
+		this.soilMoistControl = soilMoistControl;
+		this.logControl = logControl;
 	}
 	
 	/**
@@ -143,59 +149,35 @@ public class MenuListener implements ActionListener {
 			
 			// Prompt user for the save file's name
 			String saveFileName = JOptionPane.showInputDialog(ui, "Enter save file name:", 
-					null, JOptionPane.QUESTION_MESSAGE);
+					"Save File", JOptionPane.QUESTION_MESSAGE);
 			
 			// Use try/catch to cover any possible error exceptions
 			try {
-				// Create a new text file with the given name
-				PrintWriter saveFile =
-						new PrintWriter(new FileOutputStream(saveFileName + ".txt"));
-			
-				// Write the current simulation's state into the text file
-				saveFile.println(greenhouse.getTemperature());
-				saveFile.println(tempControl.getTarget());
-				saveFile.println(greenhouse.getHumidity());
-				saveFile.println(humidControl.getTarget());
-				saveFile.println(greenhouse.getSoilMoisture());
-				saveFile.println(soilMoistControl.getTarget());
-				saveFile.println(furnace.getEfficiency());
-				saveFile.println(airConditioner.getEfficiency());
-				saveFile.println(humidifier.getEfficiency());
-				saveFile.println(sprinklerSystem);
-				saveFile.println(tempControl.getSunnyDayChange());
-				saveFile.println(tempControl.getCloudyDayChange());
-				saveFile.println(tempControl.getRainyDayChange());
-				saveFile.println(tempControl.getSnowyDayChange());
-				saveFile.println(humidControl.getSunnyDayChange());
-				saveFile.println(humidControl.getCloudyDayChange());
-				saveFile.println(humidControl.getRainyDayChange());
-				saveFile.println(humidControl.getSnowyDayChange());
-				saveFile.println(soilMoistControl.getSunnyDayChange());
-				saveFile.println(soilMoistControl.getCloudyDayChange());
-				saveFile.println(soilMoistControl.getRainyDayChange());
-				saveFile.println(soilMoistControl.getSnowyDayChange());
-				saveFile.println(tempControl.getSampleRate());
-				saveFile.println(humidControl.getSampleRate());
-				saveFile.println(soilMoistControl.getSampleRate());
-				saveFile.println(furnace.getDeviceActive());
-				saveFile.println(airConditioner.getDeviceActive());
-				saveFile.println(humidifier.getDeviceActive());
-				saveFile.println(sprinklerSystem.getDeviceActive());
-				saveFile.println(greenhouse.getWeather());
-
-				// Inform user that the simulation was successfully saved
-				// TODO only do this if cancel was not clicked
-				JOptionPane.showMessageDialog(ui, "File was saved successfully!", 
-						null, JOptionPane.INFORMATION_MESSAGE);
+				// Check if cancel or ok was clicked
+				if (saveFileName != null) {
+					
+					// Create a new text file with the given name
+					PrintWriter saveFile =
+							new PrintWriter(new FileWriter(saveFileName + ".txt"));
 				
-				// Close the newly created save file
-				saveFile.close();
-			
-			// In case of errors, let user know what went wrong
-			// TODO add various exceptions to cover all error cases
-			} catch (FileNotFoundException e1) {
+					// Get log, then write the current simulation's latest state into file
+					String[] log = logControl.getLog();
+					for (String s : log) {
+						saveFile.println(s.substring(s.lastIndexOf(" ")+1));
+					}
+
+					// Inform user that the simulation was successfully saved
+					JOptionPane.showMessageDialog(ui, "File was saved successfully!", 
+							"Save Successful", JOptionPane.INFORMATION_MESSAGE);
+					
+					// Close the newly created save file
+					saveFile.close();
+				}
+				
+			// In case of errors, let user know something went wrong
+			} catch (Exception ex) {
 				JOptionPane.showMessageDialog(ui, "Error saving file.", 
-						null, JOptionPane.ERROR_MESSAGE);
+						"Error", JOptionPane.ERROR_MESSAGE);
 			}
 			
 		// Menu Item: Load Simulation
@@ -216,24 +198,56 @@ public class MenuListener implements ActionListener {
 				// Initialize scanner with FileInputStream to read the file
 				inputStream = new Scanner(new FileInputStream(file));
 				
-				// Iterate through all lines in the text file
-				while (inputStream.hasNextLine()) {
-					System.out.println(inputStream.nextLine());
-					// TODO Set given values, start simulation
-				}
+				// Update simulation with values from the save file
+				greenhouse.setTemperature(Integer.parseInt(inputStream.nextLine()));
+				tempControl.setTarget(Integer.parseInt(inputStream.nextLine()));
+				greenhouse.setHumidity(Integer.parseInt(inputStream.nextLine()));
+				humidControl.setTarget(Integer.parseInt(inputStream.nextLine()));
+				greenhouse.setSoilMoisture(Integer.parseInt(inputStream.nextLine()));
+				soilMoistControl.setTarget(Integer.parseInt(inputStream.nextLine()));
+				furnace.setEfficiency(Integer.parseInt(inputStream.nextLine()));
+				airConditioner.setEfficiency(Integer.parseInt(inputStream.nextLine()));
+				humidifier.setEfficiency(Integer.parseInt(inputStream.nextLine()));
+				sprinklerSystem.setEfficiency(Integer.parseInt(inputStream.nextLine()));
+				tempControl.setSunnyDayChange(Integer.parseInt(inputStream.nextLine()));
+				tempControl.setCloudyDayChange(Integer.parseInt(inputStream.nextLine()));
+				tempControl.setRainyDayChange(Integer.parseInt(inputStream.nextLine()));
+				tempControl.setSnowyDayChange(Integer.parseInt(inputStream.nextLine()));
+				humidControl.setSunnyDayChange(Integer.parseInt(inputStream.nextLine()));
+				humidControl.setCloudyDayChange(Integer.parseInt(inputStream.nextLine()));
+				humidControl.setRainyDayChange(Integer.parseInt(inputStream.nextLine()));
+				humidControl.setSnowyDayChange(Integer.parseInt(inputStream.nextLine()));
+				soilMoistControl.setSunnyDayChange(Integer.parseInt(inputStream.nextLine()));
+				soilMoistControl.setCloudyDayChange(Integer.parseInt(inputStream.nextLine()));
+				soilMoistControl.setRainyDayChange(Integer.parseInt(inputStream.nextLine()));
+				soilMoistControl.setSnowyDayChange(Integer.parseInt(inputStream.nextLine()));
+				tempControl.setSampleRate(Integer.parseInt(inputStream.nextLine()));
+				humidControl.setSampleRate(Integer.parseInt(inputStream.nextLine()));
+				soilMoistControl.setSampleRate(Integer.parseInt(inputStream.nextLine()));
+				furnace.setDeviceActive(Boolean.parseBoolean(inputStream.nextLine()));
+				airConditioner.setDeviceActive(Boolean.parseBoolean(inputStream.nextLine()));
+				humidifier.setDeviceActive(Boolean.parseBoolean(inputStream.nextLine()));
+				sprinklerSystem.setDeviceActive(Boolean.parseBoolean(inputStream.nextLine()));
+				greenhouse.setWeather(inputStream.nextLine());
 				
-			// In case of errors, let user know what went wrong
-			// TODO add various exceptions to cover all error cases
+			// In case of errors, let user know something went wrong
 			} catch (FileNotFoundException e1) {
-				// TODO something
+				JOptionPane.showMessageDialog(ui, "Error loading file.", 
+						"Error", JOptionPane.ERROR_MESSAGE);
 			}
 			
 		// Menu Item: Exit Program
 		} else {
-			// TODO something
-			System.exit(0);
+			
+			// Prompt user to confirm exiting the program
+			int exitProgramChoice = JOptionPane.showConfirmDialog(ui, "Exit Program?", 
+					"Exit Program?", JOptionPane.OK_CANCEL_OPTION);
+			
+			// Exit program if user gives confirmation
+			if (exitProgramChoice == 0) {
+				System.exit(0);
+			}
 		}
-		
 	}
 	
 	/**
@@ -276,7 +290,6 @@ public class MenuListener implements ActionListener {
 				step1Done = true;
 			
 			// In case of errors, let user know what went wrong
-			// TODO add various exceptions to cover all error cases
 			} catch (Exception ex) {
 				JOptionPane.showMessageDialog(ui, "Please enter valid information.", 
 						null, JOptionPane.ERROR_MESSAGE);
@@ -399,7 +412,7 @@ public class MenuListener implements ActionListener {
 		// If all steps were passed successfully, start the simulation and controllers
 		if (step1Done && step2Done && step3Done && step4Done && step5Done) {
 			Controller.setSimInProgress(true);
-			Controller.startThreads(tempControl, humidControl, soilMoistControl);
+			Controller.startThreads();
 		}
 	}
 
