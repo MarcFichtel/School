@@ -145,12 +145,11 @@ public class ButtonListener implements ActionListener, ChangeListener {
 				}
 			}
 			
-			// Make header column names (simulation duration)
+			// Make header column names (simulation duration - 1 simulation second = 1 actual minute)
 			updateFrequency = logControl.getUpdateFrequency();
 			String[] columnHeader = new String[cols];
 			int hours = 0;
 			int minutes = 0;
-			int seconds = 0;
 			
 			for (int i = 0; i < cols; i++) {
 				
@@ -160,34 +159,21 @@ public class ButtonListener implements ActionListener, ChangeListener {
 				
 				// Show time log step in other column headers
 				} else {
-					hours = (i/60/60) * updateFrequency;
-					minutes = (i/60 - i/60/60) * updateFrequency;
-					seconds = (i%60) * updateFrequency;
+					hours = (i/60 - i/60/60) * updateFrequency;
+					minutes = (i%60) * updateFrequency;
 
 					// Adjust time display to show two digit zeros
-					if (seconds < 10 && minutes > 10 && hours > 10) {
-						columnHeader[i] = hours + ":" + minutes + ":0" + seconds;
+					if (minutes < 10 && hours > 10) {
+						columnHeader[i] = hours + ":0" + minutes + ":00";
 					
-					} else if (seconds > 10 && minutes < 10 && hours > 10) {
-						columnHeader[i] = hours + ":0" + minutes + ":" + seconds;
+					} else if (minutes > 10 && hours < 10) {
+						columnHeader[i] = "0" + hours + ":" + minutes + ":00";
 					
-					} else if (seconds > 10 && minutes > 10 && hours < 10) {
-						columnHeader[i] = "0" + hours + ":" + minutes + ":" + seconds;
-					
-					} else if (seconds < 10 && minutes < 10 && hours > 10) {
-						columnHeader[i] = hours + ":0" + minutes + ":0" + seconds;
-					
-					} else if (seconds < 10 && minutes > 10 &&hours < 10) {
-						columnHeader[i] = "0" + hours + ":" + minutes + ":0" + seconds;
-					
-					} else if (seconds > 10 && minutes < 10 && hours < 10) {
-						columnHeader[i] = "0" + hours + ":0" + minutes + ":" + seconds;
-					
-					} else if (seconds < 10 && minutes < 10 && hours < 10) {
-						columnHeader[i] = "0" + hours + ":0" + minutes + ":0" + seconds;
+					} else if (minutes > 10 && hours > 10) {
+						columnHeader[i] = hours + ":" + minutes + ":00";
 					
 					} else {
-						columnHeader[i] = hours + ":" + minutes + ":" + seconds;
+						columnHeader[i] = "0" + hours + ":0" + minutes + ":00";
 					}
 				}
 			}
