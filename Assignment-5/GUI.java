@@ -5,6 +5,7 @@ import java.awt.GridLayout;
 import java.awt.event.ActionListener;
 import java.util.Hashtable;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -16,6 +17,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
+import javax.swing.KeyStroke;
 
 /** 
  * @author Marc-Andre Fichtel
@@ -207,7 +209,22 @@ public class GUI extends JFrame {
 	/**
 	 * bEditSimulation: The button for editing the current simulation
 	 */
-	private JButton bEditSimulation  = new JButton("Edit current simulation");
+	private JButton bEditSimulation  = new JButton("Edit Sim.");
+	
+	/**
+	 * bPauseSimulation: The button for pausing the current simulation
+	 */
+	private JButton bPauseSimulation  = new JButton("Pause");
+	
+	/**
+	 * bResumeSimulation: The button for resuming the current simulation
+	 */
+	private JButton bResumeSimulation  = new JButton("Resume");
+	
+	/**
+	 * bShowLog: The button for showing the simulation's log
+	 */
+	private JButton bShowLog  = new JButton("Show Log");
 	
 	/**
 	 * comboWeather: The main frame weather drop down
@@ -220,12 +237,37 @@ public class GUI extends JFrame {
 	private JComboBox<String> comboWeatherSelect = new JComboBox<String>();
 	
 	/**
+	 * iconRed: Icon holding a red dot
+	 */
+	private ImageIcon iconRed = new ImageIcon("red.gif");
+	
+	/**
+	 * iconGreen: Icon holding a green dot
+	 */
+	private ImageIcon iconGreen = new ImageIcon("green.jpg");
+	
+	/**
+	 * tempStatus: Label displaying the temperature's status
+	 */
+	private JLabel tempStatus = new JLabel();
+	
+	/**
+	 * humidStatus: Label displaying the humidity's status
+	 */
+	private JLabel humidStatus = new JLabel();
+	
+	/**
+	 * soilMoistStatus: Label displaying the soil moisture's status
+	 */
+	private JLabel soilMoistStatus = new JLabel();
+	
+	/**
 	 * Constructor sets up the JFrame
 	 */
  	public GUI() {
 		super("Greenhouse Simulation");					// Set frame title
-		setSize(700, 700); 								// Set frame size
-		setLayout(new GridLayout(3, 3));				// Set 3x3 grid layout
+		setSize(750, 900); 								// Set frame size
+		setLayout(new GridLayout(3, 3, 10, 10));				// Set 3x3 grid layout
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);	// Set default close operation
 	}
 	
@@ -238,10 +280,16 @@ public class GUI extends JFrame {
 		// Create menu components
 		JMenuBar menuBar = new JMenuBar();
 		JMenu menu = new JMenu("Menu");
-		JMenuItem menuStart = new JMenuItem("Start Simulation");
-		JMenuItem menuSave = new JMenuItem("Save Simulation");
-		JMenuItem menuLoad = new JMenuItem("Load Simulation");
-		JMenuItem menuExit = new JMenuItem("Exit");
+		JMenuItem menuStart = new JMenuItem("Start simulation");
+		JMenuItem menuSave = new JMenuItem("Save current simulation");
+		JMenuItem menuLoad = new JMenuItem("Load simulation");
+		JMenuItem menuExit = new JMenuItem("Exit program");
+		
+		// Set menu item short cuts
+		menuStart.setAccelerator(KeyStroke.getKeyStroke("F1"));
+		menuSave.setAccelerator(KeyStroke.getKeyStroke("F2"));
+		menuLoad.setAccelerator(KeyStroke.getKeyStroke("F3"));
+		menuExit.setAccelerator(KeyStroke.getKeyStroke("F4"));
 		
 		// Create grid panels
 		JPanel pTopLeft = new JPanel(new GridLayout(4, 1));
@@ -255,7 +303,11 @@ public class GUI extends JFrame {
 		JPanel pBottomCenter = new JPanel(new GridLayout(4, 1));
 		JPanel pBottomRight = new JPanel(new GridLayout(4, 1));
 		JPanel pWeatherSelect = new JPanel(new FlowLayout());
-		JPanel pEditButton = new JPanel(new FlowLayout());
+		JPanel pEditButtonsLeft = new JPanel(new GridLayout(2, 2, 10, 10));
+		JPanel pEditButtonsRight = new JPanel(new GridLayout(2, 2, 10, 10));
+		JPanel pTempStatus = new JPanel(new GridLayout(3,3));
+		JPanel pHumidStatus = new JPanel(new GridLayout(3,3));
+		JPanel pSoilMoistStatus = new JPanel(new GridLayout(3,3));
 		
 		// Create various labels
 		JLabel lTitle = new JLabel("Green Thumbs Greenhouses", JLabel.CENTER);
@@ -339,6 +391,11 @@ public class GUI extends JFrame {
 		sSoilMoistureTarget.setMajorTickSpacing(5);
 		sSoilMoistureTarget.setPaintTicks(true);
 		
+		// Give target sliders name for change listener accessibility
+		sTemperatureTarget.setName("TempTarget");
+		sHumidityTarget.setName("HumidTarget");
+		sSoilMoistureTarget.setName("SoilMoistTarget");
+		
 		// Create weather drop down in main frame
 		comboWeather.addItem(new String("Sunny"));
 		comboWeather.addItem(new String("Cloudy"));
@@ -352,12 +409,15 @@ public class GUI extends JFrame {
 		sHumidityTarget.setEnabled(false);
 		sSoilMoisture.setEnabled(false);
 		sSoilMoistureTarget.setEnabled(false);
-		bEditSimulation.setEnabled(false); 	// TODO add setter
-		cbFurnace.setEnabled(false);		// TODO add setter
-		cbAirConditioner.setEnabled(false);	// TODO add setter
-		cbHumidifier.setEnabled(false);		// TODO add setter
-		cbSprinkler.setEnabled(false);		// TODO add setter
-		comboWeather.setEnabled(false); 	// TODO add setter
+		bEditSimulation.setEnabled(false);
+		bPauseSimulation.setEnabled(false);
+		bResumeSimulation.setEnabled(false);
+		bShowLog.setEnabled(false);
+		cbFurnace.setEnabled(false);	
+		cbAirConditioner.setEnabled(false);	
+		cbHumidifier.setEnabled(false);		
+		cbSprinkler.setEnabled(false);	
+		comboWeather.setEnabled(false);
 		
 		// Add start menu to main frame
 		menu.add(menuStart);
@@ -373,22 +433,55 @@ public class GUI extends JFrame {
 		menuLoad.addActionListener(menuListener);
 		menuExit.addActionListener(menuListener);
 		
+		// Add components to temperature status panel (done to resize icon)
+		pTempStatus.add(new JLabel(""));
+		pTempStatus.add(new JLabel(""));
+		pTempStatus.add(new JLabel(""));
+		pTempStatus.add(new JLabel(""));
+		pTempStatus.add(new JLabel(""));
+		pTempStatus.add(new JLabel(""));
+		pTempStatus.add(new JLabel(""));
+		pTempStatus.add(tempStatus);
+		pTempStatus.add(new JLabel(""));
+		
+		// Add components to humidity status panel (done to resize icon)
+		pHumidStatus.add(new JLabel(""));
+		pHumidStatus.add(new JLabel(""));
+		pHumidStatus.add(new JLabel(""));
+		pHumidStatus.add(new JLabel(""));
+		pHumidStatus.add(new JLabel(""));
+		pHumidStatus.add(new JLabel(""));
+		pHumidStatus.add(new JLabel(""));
+		pHumidStatus.add(humidStatus);
+		pHumidStatus.add(new JLabel(""));
+		
+		// Add components to soil moisture status panel (done to resize icon)
+		pSoilMoistStatus.add(new JLabel(""));
+		pSoilMoistStatus.add(new JLabel(""));
+		pSoilMoistStatus.add(new JLabel(""));
+		pSoilMoistStatus.add(new JLabel(""));
+		pSoilMoistStatus.add(new JLabel(""));
+		pSoilMoistStatus.add(new JLabel(""));
+		pSoilMoistStatus.add(new JLabel(""));
+		pSoilMoistStatus.add(soilMoistStatus);
+		pSoilMoistStatus.add(new JLabel(""));
+		
 		// Add components to top left panel
 		pTopLeft.add(new JLabel(""));
 		pTopLeft.add(new JLabel(""));
-		pTopLeft.add(new JLabel(""));
+		pTopLeft.add(pTempStatus);
 		pTopLeft.add(lTemperature);
 		
 		// Add components to top center panel
 		pTopCenter.add(lTitle);
 		pTopCenter.add(lSubTitle);
-		pTopCenter.add(new JLabel(""));
+		pTopCenter.add(pHumidStatus);
 		pTopCenter.add(lHumidity);
 		
 		// Add components to top right panel
 		pTopRight.add(new JLabel(""));
 		pTopRight.add(new JLabel(""));
-		pTopRight.add(new JLabel(""));
+		pTopRight.add(pSoilMoistStatus);
 		pTopRight.add(lSoilMoisture);
 		
 		// Add components to temperature panel (center left)
@@ -418,22 +511,29 @@ public class GUI extends JFrame {
 		pBottomLeft.add(pWeatherSelect);
 		pBottomLeft.add(new JLabel(""));
 		
+		// Add simulation edit buttons to a panel
+		pEditButtonsLeft.add(new JLabel(""));
+		pEditButtonsLeft.add(bPauseSimulation);
+		pEditButtonsLeft.add(new JLabel(""));
+		pEditButtonsLeft.add(bEditSimulation);
+				
+		// Add simulation edit buttons to a panel
+		pEditButtonsRight.add(bResumeSimulation);
+		pEditButtonsRight.add(new JLabel(""));
+		pEditButtonsRight.add(bShowLog);
+		pEditButtonsRight.add(new JLabel(""));
+		
 		// Add components to bottom center panel
 		pBottomCenter.add(cbHumidifier);
 		pBottomCenter.add(new JLabel(""));
+		pBottomCenter.add(pEditButtonsLeft);
 		pBottomCenter.add(new JLabel(""));
-		pBottomCenter.add(new JLabel(""));
-		
-		// Add edit button to a panel
-		pEditButton.add(new JLabel(""));
-		pEditButton.add(bEditSimulation);
-		pEditButton.add(new JLabel(""));
-		
+				
 		// Add components to bottom right panel
 		pBottomRight.add(cbSprinkler);
 		pBottomRight.add(new JLabel(""));
+		pBottomRight.add(pEditButtonsRight);
 		pBottomRight.add(new JLabel(""));
-		pBottomRight.add(pEditButton);
 		
 		// Add all grid panels to the frame in order
 		this.getContentPane().add(pTopLeft);
@@ -772,54 +872,6 @@ public class GUI extends JFrame {
 	public void setSoilMoistureTargetDisplay (int value) {
 		sSoilMoistureTarget.setValue(value);
 	}
-	
-	/**
-	 * Activate or deactivate the temperature display slider
-	 * @param displayOn: Is the display active or not
-	 */
-	public void setTempDisplayActive (boolean displayOn) {
-		sTemperature.setEnabled(displayOn);
-	}
-	
-	/**
-	 * Activate or deactivate the temperature target display slider
-	 * @param displayOn: Is the display active or not
-	 */
-	public void setTempTargetDisplayActive (boolean displayOn) {
-		sTemperatureTarget.setEnabled(displayOn);
-	}
-	
-	/**
-	 * Activate or deactivate the humidity display slider
-	 * @param displayOn: Is the display active or not
-	 */
-	public void setHumidDisplayActive (boolean displayOn) {
-		sHumidity.setEnabled(displayOn);
-	}
-	
-	/**
-	 * Activate or deactivate the humidity target display slider
-	 * @param displayOn: Is the display active or not
-	 */
-	public void setHumidTargetDisplayActive (boolean displayOn) {
-		sHumidityTarget.setEnabled(displayOn);
-	}
-	
-	/**
-	 * Activate or deactivate the soil moisture display slider
-	 * @param displayOn: Is the display active or not
-	 */
-	public void setSoilMoistDisplayActive (boolean displayOn) {
-		sSoilMoisture.setEnabled(displayOn);
-	}
-	
-	/**
-	 * Activate or deactivate the soil moisture target display slider
-	 * @param displayOn: Is the display active or not
-	 */
-	public void setSoilMoistTargetDisplayActive (boolean displayOn) {
-		sSoilMoistureTarget.setEnabled(displayOn);
-	}
 
 	/**
 	 * Select or deselect the furnace check box
@@ -851,5 +903,74 @@ public class GUI extends JFrame {
 	 */
 	public void setSprinklerChecked (boolean boxChecked) {
 		cbSprinkler.setSelected(boxChecked);
+	}
+	
+	/**
+	 * Toggle temperature status icon
+	 */
+	public void setTempStatus (boolean statusGood) {
+		if (statusGood) {
+			tempStatus.setIcon(iconGreen);
+		} else {
+			tempStatus.setIcon(iconRed);
+		}
+	}
+	
+	/**
+	 * Toggle humidity status icon
+	 */
+	public void setHumidStatus (boolean statusGood) {
+		if (statusGood) {
+			humidStatus.setIcon(iconGreen);
+		} else {
+			humidStatus.setIcon(iconRed);
+		}
+	}
+	
+	/**
+	 * Toggle soil moisture status icon
+	 */
+	public void setSoilMoistStatus (boolean statusGood) {
+		if (statusGood) {
+			soilMoistStatus.setIcon(iconGreen);
+		} else {
+			soilMoistStatus.setIcon(iconRed);
+		}
+	}
+	
+	/**
+	 * Enable all displays except resume button when simulation is not running
+	 * @param bool: Enable or disable pause state
+	 */
+	public void setSimulationRunning (boolean bool) {
+		sTemperature.setEnabled(bool);
+		sTemperatureTarget.setEnabled(bool);
+		sHumidity.setEnabled(bool);
+		sHumidityTarget.setEnabled(bool);
+		sSoilMoisture.setEnabled(bool);
+		sSoilMoistureTarget.setEnabled(bool);
+		bEditSimulation.setEnabled(!bool);
+		bPauseSimulation.setEnabled(bool);
+		bResumeSimulation.setEnabled(!bool);
+		bShowLog.setEnabled(!bool);
+		cbFurnace.setEnabled(bool);
+		cbAirConditioner.setEnabled(bool);
+		cbHumidifier.setEnabled(bool);
+		cbSprinkler.setEnabled(bool);
+		comboWeather.setEnabled(bool);
+		tempStatus.setEnabled(bool);
+		humidStatus.setEnabled(bool);
+		soilMoistStatus.setEnabled(bool);
+	}
+	
+	public void addButtonListener (ButtonListener listener) {
+		sTemperatureTarget.addChangeListener(listener);
+		sHumidityTarget.addChangeListener(listener);
+		sSoilMoistureTarget.addChangeListener(listener);
+		bEditSimulation.addActionListener(listener);
+		bPauseSimulation.addActionListener(listener);
+		bResumeSimulation.addActionListener(listener);
+		bShowLog.addActionListener(listener);
+		comboWeather.addActionListener(listener);
 	}
 }

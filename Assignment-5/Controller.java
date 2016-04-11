@@ -13,9 +13,14 @@ import javax.swing.JOptionPane;
 public class Controller extends Thread {
 
 	/**
-	 * simInProgress: Is a simulation currently in progress or not
+	 * simInProgress: Is the simulation currently in progress or not
 	 */
 	private static boolean simInProgress = false;
+	
+	/**
+	 * simPause: Is the simulation paused or not
+	 */
+	private static boolean simPaused = false;
 	
 	/**
 	 * ui: The simulation's user interface
@@ -56,6 +61,16 @@ public class Controller extends Thread {
 	 * logControl: Updates the simulation log
 	 */
 	private static LogController logControl;
+	
+	/**
+	 * tempControlThreadID: The temperature controller's thread id
+	 */
+	private static long tempControlThreadID;
+	
+	/**
+	 * humidControlThreadID: The humidity controller's thread id
+	 */
+	private static long humidControlThreadID;
 	
 	/**
 	 * targetValue: The desired value the controller uses to coordinate devices
@@ -132,15 +147,15 @@ public class Controller extends Thread {
 				int value = 0; 
 				boolean device1On = device1.getDeviceActive();
 				boolean device2On = false;
-				String weather = greenhouse.getWeather();
-				
+				int weather = greenhouse.getWeatherIndex();
+								
 				// Temperature controller gets temperature value (°C) & second device
-				if (this.getId() == 15) {
+				if (this.getId() == tempControlThreadID) {
 					value = greenhouse.getTemperature();
 					device2On = device2.getDeviceActive();
-					
-				// Humidity controller gets humidity value (%)
-				} else if (this.getId() == 16) {
+
+					// Humidity controller gets humidity value (%)
+				} else if (this.getId() == humidControlThreadID) {
 					value = greenhouse.getHumidity();
 				
 				// Soil Moisture controller gets soil moisture value (%)
@@ -149,11 +164,11 @@ public class Controller extends Thread {
 				}
 				
 				// Change value depending on weather condition change rate
-				if (weather == "Sunny") {
+				if (weather == 0) {
 					value += sunnyDayChange;
-				} else if (weather == "Cloudy") {
+				} else if (weather == 1) {
 					value += cloudyDayChange;
-				} else if (weather == "Rainy") {
+				} else if (weather == 2) {
 					value += rainyDayChange;
 				} else {
 					value += snowyDayChange;
@@ -166,47 +181,120 @@ public class Controller extends Thread {
 					value += device2.getEfficiency();
 				}
 				
-				// Change first device's state depending on proximity of value to the target
+				// Activate first device depending on proximity of value to the target
 				if (value < targetValue - 3) {
 					device1.setDeviceActive(true);
-					ui.setFurnaceChecked(true);
+					
+					// Activate device's check box in ui
+					if (this.getId() == tempControlThreadID) {
+						ui.setFurnaceChecked(true);
+					} else if (this.getId() == humidControlThreadID) {
+						ui.setHumidifierChecked(true);
+					} else {
+						ui.setSprinklerChecked(true);
+					}
+				
+				// Activate first device depending on proximity of value to the target
 				} else if (value >= targetValue) {
 					device1.setDeviceActive(false);
-					ui.setFurnaceChecked(false);
+					
+					// Deactivate device's check box in ui
+					if (this.getId() == tempControlThreadID) {
+						ui.setFurnaceChecked(false);
+					} else if (this.getId() == humidControlThreadID) {
+						ui.setHumidifierChecked(false);
+					} else {
+						ui.setSprinklerChecked(false);
+					}
 				}
 				
-				// Change second device's (Air Conditioner) state depending on proximity of value to the target
-				if (this.getId() == 15 && value > targetValue + 3) {
+				// Change a second device's (Air Conditioner only) state depending on proximity of value to the target
+				if (this.getId() == tempControlThreadID && value > targetValue + 3) {
 					device2.setDeviceActive(true);
 					ui.setAirConditionerChecked(true);
-				} else if (this.getId() == 15 && value <= targetValue) {
+				} else if (this.getId() == tempControlThreadID && value <= targetValue) {
 					device2.setDeviceActive(false);
 					ui.setAirConditionerChecked(false);
 				}
 				
-				// Update the value after all calculations, update display
-				if (this.getId() == 15) {
+				// Update temperature after all calculations, update display
+				if (this.getId() == tempControlThreadID) {			
+					
+					// Keep value within range
+					if (value > 40) {
+						value = 40;
+					} else if (value < 10) {
+						value = 10;
+					}
 					
 					// Update new temperature value
 					greenhouse.setTemperature(value);
 					ui.setTemperatureDisplay(value);
 					
-				} else if (this.getId() == 16) {
+					// Update status icon
+					if (value >= targetValue - 4 &&
+						value <= targetValue + 4) {
+						ui.setTempStatus(true);
+					} else {
+						ui.setTempStatus(false);
+					}
+					
+				// Update humidity after all calculations, update display
+				} else if (this.getId() == humidControlThreadID) {
+					
+					// Keep value within range
+					if (value > 100) {
+						value = 100;
+					} else if (value < 0) {
+						value = 0;
+					}
 					
 					// Update new humidity value
 					greenhouse.setHumidity(value);
 					ui.setHumidityDisplay(value);
-				} else {
+					
+					// Update status icon
+					if (value >= targetValue - 4 &&
+						value <= targetValue + 4) {
+						ui.setHumidStatus(true);
+					} else {
+						ui.setHumidStatus(false);
+					}
+				
+				// Update soil moisture after all calculations, update display
+				} else {					
+					
+					// Keep value within range
+					if (value > 100) {
+						value = 100;
+					} else if (value < 0) {
+						value = 0;
+					}
 					
 					// Update new air moisture value
 					greenhouse.setSoilMoisture(value);
 					ui.setSoilMoistureDisplay(value);
+					
+					// Update status icon
+					if (value >= targetValue - 4 &&
+						value <= targetValue + 4) {
+						ui.setSoilMoistStatus(true);
+					} else {
+						ui.setSoilMoistStatus(false);
+					}
 				}
-				
-				
 				
 				// Wait for specified sample rate until next update
 				Thread.sleep(sampleRate * 1000);
+				
+				// If simulation is paused, keep threads looping until it is resumed
+				// TODO check if there's a better way to do this
+				for (;;) {
+					if (!simPaused) {
+						break;
+					}
+					Thread.sleep(sampleRate * 1000);
+				}
 			}
 		
 		// In case of errors, let user know something went wrong
@@ -261,17 +349,30 @@ public class Controller extends Thread {
 		humidityControl = new Controller(ui, env, humidifier, null, "humidityControl");
 		soilMoistureControl = new Controller(ui, env, sprinkler, null, "soilMoistureControl");
 		
+		// Get the newly created controller's thread ids (because names don't seem to work)
+		setTempControlThreadID(temperatureControl.getId());
+		setHumidControlThreadID(humidityControl.getId());
+		
 		// Create a log controller
 		logControl = new LogController (ui, env,
 				furnace, ac, humidifier, sprinkler,
 				temperatureControl, humidityControl, soilMoistureControl);
 		
-		// Set up the gui and add a menu listener
-		ui.initUI(new MenuListener(
+		// Create a new menu listener
+		MenuListener menuListener = new MenuListener (
 				ui, env, 
 				furnace, ac, humidifier, sprinkler,
 				temperatureControl, humidityControl, 
-				soilMoistureControl, logControl));
+				soilMoistureControl, logControl);
+		
+		// Set up the gui and add the menu listener
+		ui.initUI(menuListener);
+		
+		// Add a listener to all interactive ui elements
+		ui.addButtonListener(new ButtonListener(
+				ui, env,
+				temperatureControl, humidityControl,
+				soilMoistureControl, menuListener, logControl));
 	}
 
 	/**
@@ -288,6 +389,38 @@ public class Controller extends Thread {
 	 */
 	public static void setSimInProgress (boolean bool) {
 		simInProgress = bool;
+	}
+	
+	/**
+	 * Get whether the simulation is paused or not
+	 * @return simPaused: The current simulation status
+	 */
+	public static boolean getSimPaused () {
+		return simPaused;
+	}
+	
+	/**
+	 * Set whether the current simulation is paused or not
+	 * @param bool: Is simulation paused or not
+	 */
+	public static void setSimPaused (boolean bool) {
+		simPaused = bool;
+	}
+	
+	/**
+	 * Set the temperature controller's thread id (since names don't seem to work)
+	 * @param id: The controller's thread id
+	 */
+	public static void setTempControlThreadID (long id) {
+		tempControlThreadID = id;
+	}
+	
+	/**
+	 * Set the humidity controller's thread id (since names don't seem to work)
+	 * @param id: The controller's thread id
+	 */
+	public static void setHumidControlThreadID (long id) {
+		humidControlThreadID = id;
 	}
 	
 	/**

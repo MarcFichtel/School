@@ -63,6 +63,11 @@ public class LogController extends Thread {
 	private String[] log = new String[30];
 	
 	/**
+	 * updateInterval: The log update frequency in seconds
+	 */
+	private int updateInterval;
+	
+	/**
 	 * Constructor assigns given values
 	 * @param ui: The GUI
 	 * @param env: The greenhouse
@@ -135,10 +140,11 @@ public class LogController extends Thread {
 				ac.getDeviceActive(),
 				humidifier.getDeviceActive(),
 				sprinkler.getDeviceActive(),
-				env.getWeather());
+				env.getWeatherIndex());
 		
-			// Update log while simulation is in progress
-			while (Controller.getSimInProgress()) {
+			// Update log while simulation is in progress and running
+			while (Controller.getSimInProgress() &&
+					!Controller.getSimPaused()) {
 				updateLog(env.getTemperature(),
 					temperatureControl.getTarget(),
 					env.getHumidity(),
@@ -168,14 +174,11 @@ public class LogController extends Thread {
 					ac.getDeviceActive(),
 					humidifier.getDeviceActive(),
 					sprinkler.getDeviceActive(),
-					env.getWeather());
+					env.getWeatherIndex());
 				
 				// Wait for longest of 3 sample rates before updating log again
-				int logSampleRate = Integer.max(
-						temperatureControl.getSampleRate(), humidityControl.getSampleRate());
-				logSampleRate = Integer.max(
-						logSampleRate, soilMoistureControl.getSampleRate());
-				Thread.sleep(logSampleRate * 1000);
+				updateInterval = getUpdateFrequency();
+				Thread.sleep(updateInterval * 1000);
 			}
 			
 		// In case of errors, let user know something went wrong
@@ -218,7 +221,7 @@ public class LogController extends Thread {
 			boolean airCondiOn,
 			boolean humidifierOn,
 			boolean sprinklerOn,
-			String weather) {
+			int weatherIndex) {
 		
 		log[0] = "Temperature: " + String.valueOf(temperature);
 		log[1] = "Temperature Target: " + String.valueOf(temperatureTarget);
@@ -249,7 +252,7 @@ public class LogController extends Thread {
 		log[26] = "Air Conditioner On: " + String.valueOf(airCondiOn);
 		log[27] = "Humidifier On: " + String.valueOf(humidifierOn);
 		log[28] = "Sprinkler On: " + String.valueOf(sprinklerOn);
-		log[29] = "Weather: " + weather;
+		log[29] = "Weather: " + weatherIndex;
 	}
 	
 	/**
@@ -285,40 +288,53 @@ public class LogController extends Thread {
 			boolean airCondiOn,
 			boolean humidifierOn,
 			boolean sprinklerOn,
-			String weather) {
+			int weatherIndex) {
 		
-		log[0] += " | " + String.valueOf(temperature);
-		log[1] += " | " + String.valueOf(temperatureTarget);
-		log[2] += " | " + String.valueOf(humidity);
-		log[3] += " | " + String.valueOf(humidityTarget);
-		log[4] += " | " + String.valueOf(soilMoisture);
-		log[5] += " | " + String.valueOf(soilMoistureTarget);
-		log[6] += " | " + String.valueOf(furnaceEfficiency);
-		log[7] += " | " + String.valueOf(airCondiEfficiency);
-		log[8] += " | " + String.valueOf(humidifierEfficiency);
-		log[9] += " | " + String.valueOf(sprinklerEfficiency);
-		log[10] += " | " + String.valueOf(sunnyTempChange);
-		log[11] += " | " + String.valueOf(cloudyTempChange);
-		log[12] += " | " + String.valueOf(rainyTempChange);
-		log[13] += " | " + String.valueOf(snowyTempChange);
-		log[14] += " | " + String.valueOf(sunnyHumidChange);
-		log[15] += " | " + String.valueOf(cloudyHumidChange);
-		log[16] += " | " + String.valueOf(rainyHumidChange);
-		log[17] += " | " + String.valueOf(snowyHumidChange);
-		log[18] += " | " + String.valueOf(sunnySoilMoistChange);
-		log[19] += " | " + String.valueOf(cloudySoilMoistChange);
-		log[20] += " | " + String.valueOf(rainySoilMoistChange);
-		log[21] += " | " + String.valueOf(snowySoilMoistChange);
-		log[22] += " | " + String.valueOf(tempSampleRate);
-		log[23] += " | " + String.valueOf(humidSampleRate);
-		log[24] += " | " + String.valueOf(soilMoistSampleRate);
-		log[25] += " | " + String.valueOf(furnaceOn);
-		log[26] += " | " + String.valueOf(airCondiOn);
-		log[27] += " | " + String.valueOf(humidifierOn);
-		log[28] += " | " + String.valueOf(sprinklerOn);
-		log[29] += " | " + weather;
+		log[0] += "," + String.valueOf(temperature);
+		log[1] += "," + String.valueOf(temperatureTarget);
+		log[2] += "," + String.valueOf(humidity);
+		log[3] += "," + String.valueOf(humidityTarget);
+		log[4] += "," + String.valueOf(soilMoisture);
+		log[5] += "," + String.valueOf(soilMoistureTarget);
+		log[6] += "," + String.valueOf(furnaceEfficiency);
+		log[7] += "," + String.valueOf(airCondiEfficiency);
+		log[8] += "," + String.valueOf(humidifierEfficiency);
+		log[9] += "," + String.valueOf(sprinklerEfficiency);
+		log[10] += "," + String.valueOf(sunnyTempChange);
+		log[11] += "," + String.valueOf(cloudyTempChange);
+		log[12] += "," + String.valueOf(rainyTempChange);
+		log[13] += "," + String.valueOf(snowyTempChange);
+		log[14] += "," + String.valueOf(sunnyHumidChange);
+		log[15] += "," + String.valueOf(cloudyHumidChange);
+		log[16] += "," + String.valueOf(rainyHumidChange);
+		log[17] += "," + String.valueOf(snowyHumidChange);
+		log[18] += "," + String.valueOf(sunnySoilMoistChange);
+		log[19] += "," + String.valueOf(cloudySoilMoistChange);
+		log[20] += "," + String.valueOf(rainySoilMoistChange);
+		log[21] += "," + String.valueOf(snowySoilMoistChange);
+		log[22] += "," + String.valueOf(tempSampleRate);
+		log[23] += "," + String.valueOf(humidSampleRate);
+		log[24] += "," + String.valueOf(soilMoistSampleRate);
+		log[25] += "," + String.valueOf(furnaceOn);
+		log[26] += "," + String.valueOf(airCondiOn);
+		log[27] += "," + String.valueOf(humidifierOn);
+		log[28] += "," + String.valueOf(sprinklerOn);
+		log[29] += "," + weatherIndex;
 	}
 
+	/**
+	 * Compute frequency at which log is updated
+	 */
+	public int getUpdateFrequency () {
+		
+		// Wait for longest of 3 sample rates before updating log again
+		updateInterval = Integer.max(
+				temperatureControl.getSampleRate(), humidityControl.getSampleRate());
+		updateInterval = Integer.max(
+				updateInterval, soilMoistureControl.getSampleRate());
+		return updateInterval;
+	}
+	
 	/**
 	 * Get the log
 	 * @return log: The log String array

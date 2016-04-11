@@ -28,7 +28,7 @@ public class Greenhouse {
 	/**
 	 * The weather
 	 */
-	private String weather;
+	private int weatherIndex;
 	
 	/**
 	 * Get the greenhouse's temperature
@@ -79,18 +79,19 @@ public class Greenhouse {
 	}
 	
 	/**
-	 * Get the weather
-	 * @return weather: The current weather
+	 * Get the weather index
+	 * @return weatherIndex: The current weather index
 	 */
-	public String getWeather () {
-		return weather;
+	public int getWeatherIndex () {
+		return weatherIndex;
 	}
 	
 	/**
-	 * Set the weather
-	 * @param newWeather: The new weather
+	 * Set the weather index
+	 * @param newWeatherIndex: The new weather index
+	 * @return 
 	 */
-	public void setWeather (String newWeather) {
-		weather = newWeather;
+	public void setWeatherIndex (int newWeatherIndex) {
+		weatherIndex = newWeatherIndex;
 	}
 }

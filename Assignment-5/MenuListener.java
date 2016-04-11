@@ -35,9 +35,9 @@ public class MenuListener implements ActionListener {
 	private JPanel[] inputPanels;
 	
 	/**
-	 * greenhouse: The simulation greenhouse
+	 * env: The simulation greenhouse
 	 */
-	private Greenhouse greenhouse;
+	private Greenhouse env;
 	
 	/**
 	 * furnace: The furnace device used to increase temperature
@@ -93,7 +93,7 @@ public class MenuListener implements ActionListener {
 	 */
 	public MenuListener (
 			GUI ui, 
-			Greenhouse greenhouse,
+			Greenhouse env,
 			Device furnace,
 			Device airConditioner,
 			Device humidifier,
@@ -105,7 +105,7 @@ public class MenuListener implements ActionListener {
 		
 		// Assign given values
 		this.ui = ui;
-		this.greenhouse = greenhouse;
+		this.env = env;
 		this.furnace = furnace;
 		this.airConditioner = airConditioner;
 		this.humidifier = humidifier;
@@ -126,26 +126,11 @@ public class MenuListener implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		
 		// Menu Item: Start Simulation
-		if (e.getActionCommand() == "Start Simulation") {
-			
-			// Get user input
-			promptAndValidateInput();
-			
-			// Activate display sliders
-			ui.setTempDisplayActive(true);
-			ui.setTempTargetDisplayActive(true);
-			ui.setHumidDisplayActive(true);
-			ui.setHumidTargetDisplayActive(true);
-			ui.setSoilMoistDisplayActive(true);
-			ui.setSoilMoistTargetDisplayActive(true);
-			
-			// Set sliders' target values given by user
-			ui.setTemperatureTargetDisplay(tempControl.getTarget());
-			ui.setHumidityTargetDisplay(humidControl.getTarget());
-			ui.setSoilMoistureTargetDisplay(soilMoistControl.getTarget());
+		if (e.getActionCommand() == "Start simulation") {
+			promptAndValidateInput(); 	// Get and validate user input
 			
 		// Menu Item: Save Simulation
-		} else if (e.getActionCommand() == "Save Simulation") {
+		} else if (e.getActionCommand() == "Save current simulation") {
 			
 			// Prompt user for the save file's name
 			String saveFileName = JOptionPane.showInputDialog(ui, "Enter save file name:", 
@@ -181,7 +166,7 @@ public class MenuListener implements ActionListener {
 			}
 			
 		// Menu Item: Load Simulation
-		} else if (e.getActionCommand() == "Load Simulation") {
+		} else if (e.getActionCommand() == "Load simulation") {
 			
 			// Create and display new file picker
 			final JFileChooser fc = new JFileChooser();
@@ -195,43 +180,70 @@ public class MenuListener implements ActionListener {
 			
 			// Use try/catch to cover any possible error exceptions
 			try {
-				// Initialize scanner with FileInputStream to read the file
-				inputStream = new Scanner(new FileInputStream(file));
-				
-				// Update simulation with values from the save file
-				greenhouse.setTemperature(Integer.parseInt(inputStream.nextLine()));
-				tempControl.setTarget(Integer.parseInt(inputStream.nextLine()));
-				greenhouse.setHumidity(Integer.parseInt(inputStream.nextLine()));
-				humidControl.setTarget(Integer.parseInt(inputStream.nextLine()));
-				greenhouse.setSoilMoisture(Integer.parseInt(inputStream.nextLine()));
-				soilMoistControl.setTarget(Integer.parseInt(inputStream.nextLine()));
-				furnace.setEfficiency(Integer.parseInt(inputStream.nextLine()));
-				airConditioner.setEfficiency(Integer.parseInt(inputStream.nextLine()));
-				humidifier.setEfficiency(Integer.parseInt(inputStream.nextLine()));
-				sprinklerSystem.setEfficiency(Integer.parseInt(inputStream.nextLine()));
-				tempControl.setSunnyDayChange(Integer.parseInt(inputStream.nextLine()));
-				tempControl.setCloudyDayChange(Integer.parseInt(inputStream.nextLine()));
-				tempControl.setRainyDayChange(Integer.parseInt(inputStream.nextLine()));
-				tempControl.setSnowyDayChange(Integer.parseInt(inputStream.nextLine()));
-				humidControl.setSunnyDayChange(Integer.parseInt(inputStream.nextLine()));
-				humidControl.setCloudyDayChange(Integer.parseInt(inputStream.nextLine()));
-				humidControl.setRainyDayChange(Integer.parseInt(inputStream.nextLine()));
-				humidControl.setSnowyDayChange(Integer.parseInt(inputStream.nextLine()));
-				soilMoistControl.setSunnyDayChange(Integer.parseInt(inputStream.nextLine()));
-				soilMoistControl.setCloudyDayChange(Integer.parseInt(inputStream.nextLine()));
-				soilMoistControl.setRainyDayChange(Integer.parseInt(inputStream.nextLine()));
-				soilMoistControl.setSnowyDayChange(Integer.parseInt(inputStream.nextLine()));
-				tempControl.setSampleRate(Integer.parseInt(inputStream.nextLine()));
-				humidControl.setSampleRate(Integer.parseInt(inputStream.nextLine()));
-				soilMoistControl.setSampleRate(Integer.parseInt(inputStream.nextLine()));
-				furnace.setDeviceActive(Boolean.parseBoolean(inputStream.nextLine()));
-				airConditioner.setDeviceActive(Boolean.parseBoolean(inputStream.nextLine()));
-				humidifier.setDeviceActive(Boolean.parseBoolean(inputStream.nextLine()));
-				sprinklerSystem.setDeviceActive(Boolean.parseBoolean(inputStream.nextLine()));
-				greenhouse.setWeather(inputStream.nextLine());
+				// Check if file was chosen or cancel was clicked
+				if (file != null) {
+					
+					// Initialize scanner with FileInputStream to read the file
+					inputStream = new Scanner(new FileInputStream(file));
+					
+					// Update simulation with values from the save file
+					env.setTemperature(Integer.parseInt(inputStream.nextLine()));
+					tempControl.setTarget(Integer.parseInt(inputStream.nextLine()));
+					env.setHumidity(Integer.parseInt(inputStream.nextLine()));
+					humidControl.setTarget(Integer.parseInt(inputStream.nextLine()));
+					env.setSoilMoisture(Integer.parseInt(inputStream.nextLine()));
+					soilMoistControl.setTarget(Integer.parseInt(inputStream.nextLine()));
+					furnace.setEfficiency(Integer.parseInt(inputStream.nextLine()));
+					airConditioner.setEfficiency(Integer.parseInt(inputStream.nextLine()));
+					humidifier.setEfficiency(Integer.parseInt(inputStream.nextLine()));
+					sprinklerSystem.setEfficiency(Integer.parseInt(inputStream.nextLine()));
+					tempControl.setSunnyDayChange(Integer.parseInt(inputStream.nextLine()));
+					tempControl.setCloudyDayChange(Integer.parseInt(inputStream.nextLine()));
+					tempControl.setRainyDayChange(Integer.parseInt(inputStream.nextLine()));
+					tempControl.setSnowyDayChange(Integer.parseInt(inputStream.nextLine()));
+					humidControl.setSunnyDayChange(Integer.parseInt(inputStream.nextLine()));
+					humidControl.setCloudyDayChange(Integer.parseInt(inputStream.nextLine()));
+					humidControl.setRainyDayChange(Integer.parseInt(inputStream.nextLine()));
+					humidControl.setSnowyDayChange(Integer.parseInt(inputStream.nextLine()));
+					soilMoistControl.setSunnyDayChange(Integer.parseInt(inputStream.nextLine()));
+					soilMoistControl.setCloudyDayChange(Integer.parseInt(inputStream.nextLine()));
+					soilMoistControl.setRainyDayChange(Integer.parseInt(inputStream.nextLine()));
+					soilMoistControl.setSnowyDayChange(Integer.parseInt(inputStream.nextLine()));
+					tempControl.setSampleRate(Integer.parseInt(inputStream.nextLine()));
+					humidControl.setSampleRate(Integer.parseInt(inputStream.nextLine()));
+					soilMoistControl.setSampleRate(Integer.parseInt(inputStream.nextLine()));
+					furnace.setDeviceActive(Boolean.parseBoolean(inputStream.nextLine()));
+					airConditioner.setDeviceActive(Boolean.parseBoolean(inputStream.nextLine()));
+					humidifier.setDeviceActive(Boolean.parseBoolean(inputStream.nextLine()));
+					sprinklerSystem.setDeviceActive(Boolean.parseBoolean(inputStream.nextLine()));
+					env.setWeatherIndex(Integer.parseInt(inputStream.nextLine()));
+					
+					// Update ui with loaded values
+					ui.setTemperatureDisplay(env.getTemperature());
+					ui.setTemperatureTargetDisplay(tempControl.getTarget());
+					ui.setHumidityDisplay(env.getHumidity());
+					ui.setHumidityTargetDisplay(humidControl.getTarget());
+					ui.setSoilMoistureDisplay(env.getSoilMoisture());
+					ui.setSoilMoistureTargetDisplay(soilMoistControl.getTarget());
+					ui.setFurnaceChecked(furnace.getDeviceActive());
+					ui.setAirConditionerChecked(airConditioner.getDeviceActive());
+					ui.setHumidifierChecked(humidifier.getDeviceActive());
+					ui.setSprinklerChecked(sprinklerSystem.getDeviceActive());
+					ui.getWeatherDropDown().setSelectedIndex(env.getWeatherIndex());
+					
+					// Start simulation, if none was in progress before loading
+					if (!Controller.getSimInProgress()) {
+						Controller.setSimInProgress(true);
+						Controller.startThreads();
+					}
+					
+					// Pause loaded simulation to allow user to view its final state (can be resumed)
+					Controller.setSimPaused(true);
+					ui.setSimulationRunning(false);
+				}
 				
 			// In case of errors, let user know something went wrong
-			} catch (FileNotFoundException e1) {
+			} catch (FileNotFoundException ex) {
 				JOptionPane.showMessageDialog(ui, "Error loading file.", 
 						"Error", JOptionPane.ERROR_MESSAGE);
 			}
@@ -275,11 +287,11 @@ public class MenuListener implements ActionListener {
 			// Check if given values are of the correct format (integers)
 			try {
 				// If input is valid, assign it to its respective storage location
-				greenhouse.setTemperature(Integer.parseInt(inputFields[0].getText()));
+				env.setTemperature(Integer.parseInt(inputFields[0].getText()));
 				tempControl.setTarget(Integer.parseInt(inputFields[1].getText()));
-				greenhouse.setHumidity(Integer.parseInt(inputFields[2].getText()));
+				env.setHumidity(Integer.parseInt(inputFields[2].getText()));
 				humidControl.setTarget(Integer.parseInt(inputFields[3].getText()));
-				greenhouse.setSoilMoisture(Integer.parseInt(inputFields[4].getText()));
+				env.setSoilMoisture(Integer.parseInt(inputFields[4].getText()));
 				soilMoistControl.setTarget(Integer.parseInt(inputFields[5].getText()));
 				furnace.setEfficiency(Integer.parseInt(inputFields[6].getText()));
 				airConditioner.setEfficiency(Integer.parseInt(inputFields[7].getText()));
@@ -312,8 +324,7 @@ public class MenuListener implements ActionListener {
 				// Mark step 2 as done
 				step2Done = true;
 			
-			// In case of errors, let user know what went wrong
-			// TODO add various exceptions to cover all error cases
+			// In case of errors, let user know something went wrong
 			} catch (Exception ex) {
 				JOptionPane.showMessageDialog(ui, "Please enter valid information.", 
 						null, JOptionPane.ERROR_MESSAGE);
@@ -336,8 +347,7 @@ public class MenuListener implements ActionListener {
 				// Mark step 3 as done
 				step3Done = true;
 			
-			// In case of errors, let user know what went wrong
-			// TODO add various exceptions to cover all error cases
+			// In case of errors, let user know something went wrong
 			} catch (Exception ex) {
 				JOptionPane.showMessageDialog(ui, "Please enter valid information.", 
 						null, JOptionPane.ERROR_MESSAGE);
@@ -360,8 +370,7 @@ public class MenuListener implements ActionListener {
 				// Mark step 4 as done
 				step4Done = true;
 			
-			// In case of errors, let user know what went wrong
-			// TODO add various exceptions to cover all error cases
+			// In case of errors, let user know something went wrong
 			} catch (Exception ex) {
 				JOptionPane.showMessageDialog(ui, "Please enter valid information.", 
 						null, JOptionPane.ERROR_MESSAGE);
@@ -385,34 +394,39 @@ public class MenuListener implements ActionListener {
 				
 				// Set the weather condition depending on the chosen drop down item
 				if (weatherSelection == 0) {
-					greenhouse.setWeather("Sunny");
+					env.setWeatherIndex(0);
 					ui.getWeatherDropDown().setSelectedIndex(0);
 				} else if (weatherSelection == 1) {
-					greenhouse.setWeather("Cloudy");
+					env.setWeatherIndex(1);
 					ui.getWeatherDropDown().setSelectedIndex(1);
 				} else if (weatherSelection == 2) {
-					greenhouse.setWeather("Rainy");
+					env.setWeatherIndex(2);
 					ui.getWeatherDropDown().setSelectedIndex(2);
 				} else {
-					greenhouse.setWeather("Snowy");
+					env.setWeatherIndex(3);
 					ui.getWeatherDropDown().setSelectedIndex(3);
 				}
 				
 				// Mark step 5 as done
 				step5Done = true;
 				
-			// In case of errors, let user know what went wrong
-			// TODO add various exceptions to cover all error cases
+			// In case of errors, let user know something went wrong
 			} catch (Exception ex) {
 				JOptionPane.showMessageDialog(ui, "Please enter valid information.", 
 						null, JOptionPane.ERROR_MESSAGE);
 			}
 		}
 		
-		// If all steps were passed successfully, start the simulation and controllers
+		// If input is valid, start simulation and controllers, enable displays
 		if (step1Done && step2Done && step3Done && step4Done && step5Done) {
 			Controller.setSimInProgress(true);
 			Controller.startThreads();
+			ui.setSimulationRunning(true);
+			
+			// Set sliders' target values given by user
+			ui.setTemperatureTargetDisplay(tempControl.getTarget());
+			ui.setHumidityTargetDisplay(humidControl.getTarget());
+			ui.setSoilMoistureTargetDisplay(soilMoistControl.getTarget());
 		}
 	}
 
