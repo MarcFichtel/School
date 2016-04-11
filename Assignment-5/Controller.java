@@ -63,6 +63,11 @@ public class Controller extends Thread {
 	private static LogController logControl;
 	
 	/**
+	 * timeControl: Updates the simulation run time
+	 */
+	private static TimeController timeControl;
+	
+	/**
 	 * tempControlThreadID: The temperature controller's thread id
 	 */
 	private static long tempControlThreadID;
@@ -316,13 +321,15 @@ public class Controller extends Thread {
 		if (!temperatureControl.isAlive() &&
 			!humidityControl.isAlive() &&
 			!soilMoistureControl.isAlive() &&
-			!logControl.isAlive()) {
+			!logControl.isAlive() &&
+			!timeControl.isAlive()) {
 			
 			// If not, start them
 			temperatureControl.start();
 			humidityControl.start();
 			soilMoistureControl.start();
 			logControl.start();
+			timeControl.start();
 		}
 	}
 	
@@ -357,6 +364,9 @@ public class Controller extends Thread {
 		logControl = new LogController (ui, env,
 				furnace, ac, humidifier, sprinkler,
 				temperatureControl, humidityControl, soilMoistureControl);
+		
+		// Create a time controller
+		timeControl = new TimeController (ui);
 		
 		// Create a new menu listener
 		MenuListener menuListener = new MenuListener (

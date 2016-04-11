@@ -20,10 +20,9 @@ import javax.swing.table.TableColumnModel;
  * -- Class handles button behavior (Pause, Resume, Edit, Change weather, Change target value)
  */
 
-// TODO The hours field was not tested because reasons...
-// TODO The step time is incorrect when any sample rate is edited throughout a simulation
-// TODO Might look good to also have the timer constantly going in a corner of the ui 
-// TODO Log is not included in save file, so loaded simulations cannot show log from before
+// TODO Bug: The step time is incorrect when any sample rate is edited throughout a simulation
+// TODO Missing feature: Log is not included in save file, so loaded simulations cannot show log from before
+// TODO Nice-To-Have: Get column header (run time) from Time Controller to avoid code duplication
 public class ButtonListener implements ActionListener, ChangeListener {
 
 	/**

@@ -262,6 +262,11 @@ public class GUI extends JFrame {
 	private JLabel soilMoistStatus = new JLabel();
 	
 	/**
+	 * runTime: Label displaying the current simulation's run time
+	 */
+	private JLabel runTime = new JLabel("00:00:00");
+	
+	/**
 	 * Constructor sets up the JFrame
 	 */
  	public GUI() {
@@ -308,6 +313,7 @@ public class GUI extends JFrame {
 		JPanel pTempStatus = new JPanel(new GridLayout(3,3));
 		JPanel pHumidStatus = new JPanel(new GridLayout(3,3));
 		JPanel pSoilMoistStatus = new JPanel(new GridLayout(3,3));
+		JPanel pRunTime = new JPanel(new GridLayout(1,3));
 		
 		// Create various labels
 		JLabel lTitle = new JLabel("Green Thumbs Greenhouses", JLabel.CENTER);
@@ -464,7 +470,7 @@ public class GUI extends JFrame {
 		pSoilMoistStatus.add(new JLabel(""));
 		pSoilMoistStatus.add(new JLabel(""));
 		pSoilMoistStatus.add(soilMoistStatus);
-		pSoilMoistStatus.add(new JLabel(""));
+		pSoilMoistStatus.add(new JLabel(""));		
 		
 		// Add components to top left panel
 		pTopLeft.add(new JLabel(""));
@@ -478,8 +484,13 @@ public class GUI extends JFrame {
 		pTopCenter.add(pHumidStatus);
 		pTopCenter.add(lHumidity);
 		
+		// Add components to run time panel
+		pRunTime.add(new JLabel(""));
+		pRunTime.add(new JLabel(""));
+		pRunTime.add(runTime);
+		
 		// Add components to top right panel
-		pTopRight.add(new JLabel(""));
+		pTopRight.add(pRunTime);
 		pTopRight.add(new JLabel(""));
 		pTopRight.add(pSoilMoistStatus);
 		pTopRight.add(lSoilMoisture);
@@ -939,6 +950,14 @@ public class GUI extends JFrame {
 	}
 	
 	/**
+	 * Set the simulation run time display
+	 * @param time: The run time
+	 */
+	public void setRunTime (String time) {
+		runTime.setText(time);
+	}
+	
+	/**
 	 * Enable all displays except resume button when simulation is not running
 	 * @param bool: Enable or disable pause state
 	 */
@@ -961,6 +980,7 @@ public class GUI extends JFrame {
 		tempStatus.setEnabled(bool);
 		humidStatus.setEnabled(bool);
 		soilMoistStatus.setEnabled(bool);
+		runTime.setEnabled(bool);
 	}
 	
 	public void addButtonListener (ButtonListener listener) {
