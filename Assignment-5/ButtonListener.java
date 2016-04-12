@@ -1,3 +1,5 @@
+package GreenhouseSimulator;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -21,8 +23,7 @@ import javax.swing.table.TableColumnModel;
  */
 
 // TODO Bug: The step time is incorrect when any sample rate is edited throughout a simulation
-// TODO Missing feature: Log is not included in save file, so loaded simulations cannot show log from before
-// TODO Nice-To-Have: Get column header (run time) from Time Controller to avoid code duplication
+// TODO Missing feature: Log is not included in save file (only final values), so loaded simulations cannot show log from before
 public class ButtonListener implements ActionListener, ChangeListener {
 
 	/**
@@ -78,6 +79,7 @@ public class ButtonListener implements ActionListener, ChangeListener {
 	 * @param humidControl: The humidity controller
 	 * @param soilMoistControl: The soil moisture controller
 	 * @param menuListener: The menu event handler
+	 * @param logControl: The log controller
 	 */
 	public ButtonListener (
 			GUI ui, 

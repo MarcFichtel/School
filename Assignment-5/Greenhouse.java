@@ -1,3 +1,5 @@
+package GreenhouseSimulator;
+
 /** 
  * @author Marc-Andre Fichtel
  * -- Assignment 5
@@ -89,7 +91,6 @@ public class Greenhouse {
 	/**
 	 * Set the weather index
 	 * @param newWeatherIndex: The new weather index
-	 * @return 
 	 */
 	public void setWeatherIndex (int newWeatherIndex) {
 		weatherIndex = newWeatherIndex;

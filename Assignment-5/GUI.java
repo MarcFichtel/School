@@ -1,3 +1,5 @@
+package GreenhouseSimulator;
+
 import java.awt.Button;
 import java.awt.FlowLayout;
 import java.awt.Font;
@@ -787,37 +789,37 @@ public class GUI extends JFrame {
 	public JTextField[] getInputFields () {
 		
 		// Create array of user input text fields
-		JTextField[] inputFieldsStep1 = new JTextField[25];
+		JTextField[] inputFields = new JTextField[25];
 		
 		// Add user input text fields to array
-		inputFieldsStep1[0] = tfInput01;
-		inputFieldsStep1[1] = tfInput02;
-		inputFieldsStep1[2] = tfInput03;
-		inputFieldsStep1[3] = tfInput04;
-		inputFieldsStep1[4] = tfInput05;
-		inputFieldsStep1[5] = tfInput06;
-		inputFieldsStep1[6] = tfInput07;
-		inputFieldsStep1[7] = tfInput08;
-		inputFieldsStep1[8] = tfInput09;
-		inputFieldsStep1[9] = tfInput10;
-		inputFieldsStep1[10] = tfInput11;
-		inputFieldsStep1[11] = tfInput12;
-		inputFieldsStep1[12] = tfInput13;
-		inputFieldsStep1[13] = tfInput14;
-		inputFieldsStep1[14] = tfInput15;
-		inputFieldsStep1[15] = tfInput16;
-		inputFieldsStep1[16] = tfInput17;
-		inputFieldsStep1[17] = tfInput18;
-		inputFieldsStep1[18] = tfInput19;
-		inputFieldsStep1[19] = tfInput20;
-		inputFieldsStep1[20] = tfInput21;
-		inputFieldsStep1[21] = tfInput22;
-		inputFieldsStep1[22] = tfInput23;
-		inputFieldsStep1[23] = tfInput24;
-		inputFieldsStep1[24] = tfInput25;
+		inputFields[0] = tfInput01;
+		inputFields[1] = tfInput02;
+		inputFields[2] = tfInput03;
+		inputFields[3] = tfInput04;
+		inputFields[4] = tfInput05;
+		inputFields[5] = tfInput06;
+		inputFields[6] = tfInput07;
+		inputFields[7] = tfInput08;
+		inputFields[8] = tfInput09;
+		inputFields[9] = tfInput10;
+		inputFields[10] = tfInput11;
+		inputFields[11] = tfInput12;
+		inputFields[12] = tfInput13;
+		inputFields[13] = tfInput14;
+		inputFields[14] = tfInput15;
+		inputFields[15] = tfInput16;
+		inputFields[16] = tfInput17;
+		inputFields[17] = tfInput18;
+		inputFields[18] = tfInput19;
+		inputFields[19] = tfInput20;
+		inputFields[20] = tfInput21;
+		inputFields[21] = tfInput22;
+		inputFields[22] = tfInput23;
+		inputFields[23] = tfInput24;
+		inputFields[24] = tfInput25;
 		
 		// Return array of user input text fields
-		return inputFieldsStep1;
+		return inputFields;
 	}
 
 	/**
@@ -918,6 +920,7 @@ public class GUI extends JFrame {
 	
 	/**
 	 * Toggle temperature status icon
+	 * @param statusGood: Is the temperature status good or not
 	 */
 	public void setTempStatus (boolean statusGood) {
 		if (statusGood) {
@@ -929,6 +932,7 @@ public class GUI extends JFrame {
 	
 	/**
 	 * Toggle humidity status icon
+	 * @param statusGood: Is the humidity status good or not
 	 */
 	public void setHumidStatus (boolean statusGood) {
 		if (statusGood) {
@@ -940,6 +944,7 @@ public class GUI extends JFrame {
 	
 	/**
 	 * Toggle soil moisture status icon
+	 * @param statusGood: Is the soil moisture status good or not
 	 */
 	public void setSoilMoistStatus (boolean statusGood) {
 		if (statusGood) {
@@ -983,6 +988,10 @@ public class GUI extends JFrame {
 		runTime.setEnabled(bool);
 	}
 	
+	/**
+	 * Add a listener to all interactive gui elements
+	 * @param listener: The listener specifying each element's behavior
+	 */
 	public void addButtonListener (ButtonListener listener) {
 		sTemperatureTarget.addChangeListener(listener);
 		sHumidityTarget.addChangeListener(listener);

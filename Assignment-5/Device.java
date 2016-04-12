@@ -1,3 +1,5 @@
+package GreenhouseSimulator;
+
 /** 
  * @author Marc-Andre Fichtel
  * -- Assignment 5

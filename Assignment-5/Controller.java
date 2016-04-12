@@ -1,3 +1,5 @@
+package GreenhouseSimulator;
+
 import javax.swing.JOptionPane;
 
 /** 
@@ -10,6 +12,7 @@ import javax.swing.JOptionPane;
  * -- Class runs the program, and is the superclass for controllers coordinating the simulation
  */
 
+// TODO Nice-to-have: Streamline variable names across all classes
 public class Controller extends Thread {
 
 	/**
@@ -113,14 +116,12 @@ public class Controller extends Thread {
 	 * @param greenhouse: The greenhouse environment
 	 * @param device1: The first environment maintenance device
 	 * @param device2: The second environment maintenance device
-	 * @param name: The controller's name (TODO check if needed)
 	 */
 	public Controller (
 			GUI ui,
 			Greenhouse greenhouse,
 			Device device1,
-			Device device2,
-			String name) {
+			Device device2) {
 		
 		// Invoke Thread superclass constructor
 		super();
@@ -130,7 +131,6 @@ public class Controller extends Thread {
 		this.greenhouse = greenhouse;
 		this.device1 = device1;
 		this.device2 = device2;
-		this.setName(name); 		// TODO check if needed
 	}
 	
 	/**
@@ -311,9 +311,6 @@ public class Controller extends Thread {
 	
 	/**
 	 * Start controller threads, if they're not already running
-	 * @param temperatureControl: The temperature control thread
-	 * @param humidityControl: The humidity control thread
-	 * @param soilMoistureControl: The soil moisture control thread
 	 */
 	public static void startThreads () {
 		
@@ -352,9 +349,9 @@ public class Controller extends Thread {
 		Device sprinkler = new Device();
 		
 		// Create environment controllers
-		temperatureControl = new Controller(ui, env, furnace, ac, "temperatureControl");
-		humidityControl = new Controller(ui, env, humidifier, null, "humidityControl");
-		soilMoistureControl = new Controller(ui, env, sprinkler, null, "soilMoistureControl");
+		temperatureControl = new Controller(ui, env, furnace, ac);
+		humidityControl = new Controller(ui, env, humidifier, null);
+		soilMoistureControl = new Controller(ui, env, sprinkler, null);
 		
 		// Get the newly created controller's thread ids (because names don't seem to work)
 		setTempControlThreadID(temperatureControl.getId());

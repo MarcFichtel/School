@@ -1,4 +1,16 @@
+package GreenhouseSimulator;
 
+/** 
+ * @author Marc-Andre Fichtel
+ * -- Assignment 5
+ * -- Course: CPSC 233 
+ * -- University of Calgary
+ * -- Tutorial 05
+ * -- Instructor: Edwin Chan 
+ * -- Class keeps track of simulation time and updates display thereof
+ */
+
+// TODO Nice-to-have: Make a getTime() method which LogController can use
 public class TimeController extends Thread {
 
 	/**
@@ -13,7 +25,7 @@ public class TimeController extends Thread {
 	
 	/**
 	 * Constructor assigns given values
-	 * @param ui
+	 * @param ui: The application's GUI
 	 */
 	public TimeController (GUI ui) {
 		this.ui = ui;

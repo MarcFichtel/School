@@ -1,3 +1,5 @@
+package GreenhouseSimulator;
+
 import javax.swing.JOptionPane;
 
 /** 
@@ -190,6 +192,36 @@ public class LogController extends Thread {
 	
 	/**
 	 * Initialized the log
+	 * @param temperature: The simulation's temperature
+	 * @param temperatureTarget: The temperature target
+	 * @param humidity: The simulation's humidity
+	 * @param humidityTarget: The humidity target
+	 * @param soilMoisture: The simulation's soil moisture
+	 * @param soilMoistureTarget: The soil moisture target
+	 * @param furnaceEfficiency: Furnace device efficiency
+	 * @param airCondiEfficiency: Air conditioner device efficiency
+	 * @param humidifierEfficiency: Humidifier device efficiency
+	 * @param sprinklerEfficiency: Sprinkler device efficiency
+	 * @param sunnyTempChange: Temperature change rate on sunny days
+	 * @param cloudyTempChange: Temperature change rate on cloudy days
+	 * @param rainyTempChange: Temperature change rate on rainy days
+	 * @param snowyTempChange: Temperature change rate on snowy days
+	 * @param sunnyHumidChange: Humidity change rate on sunny days
+	 * @param cloudyHumidChange: Humidity change rate on cloudy days
+	 * @param rainyHumidChange: Humidity change rate on rainy days
+	 * @param snowyHumidChange: Humidity change rate on snowy days
+	 * @param sunnySoilMoistChange: Soil moisture change rate on sunny days
+	 * @param cloudySoilMoistChange: Soil moisture change rate on cloudy days
+	 * @param rainySoilMoistChange: Soil moisture change rate on rainy days
+	 * @param snowySoilMoistChange: Soil moisture change rate on snowy days
+	 * @param tempSampleRate: Temperature display sample rate
+	 * @param humidSampleRate: Humidity display sample rate
+	 * @param soilMoistSampleRate: Soil moisture display sample rate
+	 * @param furnaceOn: Is furnace active or not
+	 * @param airCondiOn: Is air conditioner active or not
+	 * @param humidifierOn: Is humidifier active or not
+	 * @param sprinklerOn: Is sprinkler active or not
+	 * @param weatherIndex: The index of the current weather selection
 	 */
 	public void initLog (
 			int temperature,
@@ -257,6 +289,36 @@ public class LogController extends Thread {
 	
 	/**
 	 * Updates the log
+	 * @param temperature: The simulation's temperature
+	 * @param temperatureTarget: The temperature target
+	 * @param humidity: The simulation's humidity
+	 * @param humidityTarget: The humidity target
+	 * @param soilMoisture: The simulation's soil moisture
+	 * @param soilMoistureTarget: The soil moisture target
+	 * @param furnaceEfficiency: Furnace device efficiency
+	 * @param airCondiEfficiency: Air conditioner device efficiency
+	 * @param humidifierEfficiency: Humidifier device efficiency
+	 * @param sprinklerEfficiency: Sprinkler device efficiency
+	 * @param sunnyTempChange: Temperature change rate on sunny days
+	 * @param cloudyTempChange: Temperature change rate on cloudy days
+	 * @param rainyTempChange: Temperature change rate on rainy days
+	 * @param snowyTempChange: Temperature change rate on snowy days
+	 * @param sunnyHumidChange: Humidity change rate on sunny days
+	 * @param cloudyHumidChange: Humidity change rate on cloudy days
+	 * @param rainyHumidChange: Humidity change rate on rainy days
+	 * @param snowyHumidChange: Humidity change rate on snowy days
+	 * @param sunnySoilMoistChange: Soil moisture change rate on sunny days
+	 * @param cloudySoilMoistChange: Soil moisture change rate on cloudy days
+	 * @param rainySoilMoistChange: Soil moisture change rate on rainy days
+	 * @param snowySoilMoistChange: Soil moisture change rate on snowy days
+	 * @param tempSampleRate: Temperature display sample rate
+	 * @param humidSampleRate: Humidity display sample rate
+	 * @param soilMoistSampleRate: Soil moisture display sample rate
+	 * @param furnaceOn: Is furnace active or not
+	 * @param airCondiOn: Is air conditioner active or not
+	 * @param humidifierOn: Is humidifier active or not
+	 * @param sprinklerOn: Is sprinkler active or not
+	 * @param weatherIndex: The index of the current weather selection
 	 */
 	public void updateLog (
 			int temperature,
@@ -324,6 +386,7 @@ public class LogController extends Thread {
 
 	/**
 	 * Compute frequency at which log is updated
+	 * @return updateInterval: The highest sample rate of the three environment controllers
 	 */
 	public int getUpdateFrequency () {
 		

@@ -1,3 +1,5 @@
+package GreenhouseSimulator;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -82,14 +84,15 @@ public class MenuListener implements ActionListener {
 	/**
 	 * Constructor assigns given values
 	 * @param ui: The simulation's gui
-	 * @param greenhouse: The simulation greenhouse
-	 * @param tempControl: The temperature controller
-	 * @param humidControl: The humidity controller
-	 * @param soilMoistControl: The soil moisture controller
+	 * @param env: The simulation greenhouse
 	 * @param furnace: The furnace device
 	 * @param airConditioner: The air conditioner device
 	 * @param humidifier: The humidifier device
 	 * @param sprinklerSystem: The sprinkler device
+	 * @param tempControl: The temperature controller
+	 * @param humidControl: The humidity controller
+	 * @param soilMoistControl: The soil moisture controller
+	 * @param logControl: The log controller
 	 */
 	public MenuListener (
 			GUI ui, 
