@@ -292,7 +292,8 @@ public class GUI extends JFrame {
 		JMenuItem menuLoad = new JMenuItem("Load simulation");
 		JMenuItem menuExit = new JMenuItem("Exit program");
 		
-		// Set menu item short cuts
+		// Set menu and menu item short cuts
+		menu.setMnemonic('M');	// Need to press Alt-M, binding action purely to M button is more complicated
 		menuStart.setAccelerator(KeyStroke.getKeyStroke("F1"));
 		menuSave.setAccelerator(KeyStroke.getKeyStroke("F2"));
 		menuLoad.setAccelerator(KeyStroke.getKeyStroke("F3"));

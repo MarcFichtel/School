@@ -4,7 +4,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.util.Scanner;
@@ -190,36 +189,68 @@ public class MenuListener implements ActionListener {
 					inputStream = new Scanner(new FileInputStream(file));
 					
 					// Update simulation with values from the save file
-					env.setTemperature(Integer.parseInt(inputStream.nextLine()));
-					tempControl.setTarget(Integer.parseInt(inputStream.nextLine()));
-					env.setHumidity(Integer.parseInt(inputStream.nextLine()));
-					humidControl.setTarget(Integer.parseInt(inputStream.nextLine()));
-					env.setSoilMoisture(Integer.parseInt(inputStream.nextLine()));
-					soilMoistControl.setTarget(Integer.parseInt(inputStream.nextLine()));
-					furnace.setEfficiency(Integer.parseInt(inputStream.nextLine()));
-					airConditioner.setEfficiency(Integer.parseInt(inputStream.nextLine()));
-					humidifier.setEfficiency(Integer.parseInt(inputStream.nextLine()));
-					sprinklerSystem.setEfficiency(Integer.parseInt(inputStream.nextLine()));
-					tempControl.setSunnyDayChange(Integer.parseInt(inputStream.nextLine()));
-					tempControl.setCloudyDayChange(Integer.parseInt(inputStream.nextLine()));
-					tempControl.setRainyDayChange(Integer.parseInt(inputStream.nextLine()));
-					tempControl.setSnowyDayChange(Integer.parseInt(inputStream.nextLine()));
-					humidControl.setSunnyDayChange(Integer.parseInt(inputStream.nextLine()));
-					humidControl.setCloudyDayChange(Integer.parseInt(inputStream.nextLine()));
-					humidControl.setRainyDayChange(Integer.parseInt(inputStream.nextLine()));
-					humidControl.setSnowyDayChange(Integer.parseInt(inputStream.nextLine()));
-					soilMoistControl.setSunnyDayChange(Integer.parseInt(inputStream.nextLine()));
-					soilMoistControl.setCloudyDayChange(Integer.parseInt(inputStream.nextLine()));
-					soilMoistControl.setRainyDayChange(Integer.parseInt(inputStream.nextLine()));
-					soilMoistControl.setSnowyDayChange(Integer.parseInt(inputStream.nextLine()));
-					tempControl.setSampleRate(Integer.parseInt(inputStream.nextLine()));
-					humidControl.setSampleRate(Integer.parseInt(inputStream.nextLine()));
-					soilMoistControl.setSampleRate(Integer.parseInt(inputStream.nextLine()));
-					furnace.setDeviceActive(Boolean.parseBoolean(inputStream.nextLine()));
-					airConditioner.setDeviceActive(Boolean.parseBoolean(inputStream.nextLine()));
-					humidifier.setDeviceActive(Boolean.parseBoolean(inputStream.nextLine()));
-					sprinklerSystem.setDeviceActive(Boolean.parseBoolean(inputStream.nextLine()));
-					env.setWeatherIndex(Integer.parseInt(inputStream.nextLine()));
+					// For each line in the save file, update the last recorded value in that line
+					// TODO Update simulation log with all recorded values to be able to view saved log in the application
+					String line = inputStream.nextLine();
+					env.setTemperature(Integer.parseInt(line.substring(line.lastIndexOf(",")+1)));
+					line = inputStream.nextLine();
+					tempControl.setTarget(Integer.parseInt(line.substring(line.lastIndexOf(",")+1)));
+					line = inputStream.nextLine();
+					env.setHumidity(Integer.parseInt(line.substring(line.lastIndexOf(",")+1)));
+					line = inputStream.nextLine();
+					humidControl.setTarget(Integer.parseInt(line.substring(line.lastIndexOf(",")+1)));
+					line = inputStream.nextLine();
+					env.setSoilMoisture(Integer.parseInt(line.substring(line.lastIndexOf(",")+1)));
+					line = inputStream.nextLine();
+					soilMoistControl.setTarget(Integer.parseInt(line.substring(line.lastIndexOf(",")+1)));
+					line = inputStream.nextLine();
+					furnace.setEfficiency(Integer.parseInt(line.substring(line.lastIndexOf(",")+1)));
+					line = inputStream.nextLine();
+					airConditioner.setEfficiency(Integer.parseInt(line.substring(line.lastIndexOf(",")+1)));
+					line = inputStream.nextLine();
+					humidifier.setEfficiency(Integer.parseInt(line.substring(line.lastIndexOf(",")+1)));
+					line = inputStream.nextLine();
+					sprinklerSystem.setEfficiency(Integer.parseInt(line.substring(line.lastIndexOf(",")+1)));
+					line = inputStream.nextLine();
+					tempControl.setSunnyDayChange(Integer.parseInt(line.substring(line.lastIndexOf(",")+1)));
+					line = inputStream.nextLine();
+					tempControl.setCloudyDayChange(Integer.parseInt(line.substring(line.lastIndexOf(",")+1)));
+					line = inputStream.nextLine();
+					tempControl.setRainyDayChange(Integer.parseInt(line.substring(line.lastIndexOf(",")+1)));
+					line = inputStream.nextLine();
+					tempControl.setSnowyDayChange(Integer.parseInt(line.substring(line.lastIndexOf(",")+1)));
+					line = inputStream.nextLine();
+					humidControl.setSunnyDayChange(Integer.parseInt(line.substring(line.lastIndexOf(",")+1)));
+					line = inputStream.nextLine();
+					humidControl.setCloudyDayChange(Integer.parseInt(line.substring(line.lastIndexOf(",")+1)));
+					line = inputStream.nextLine();
+					humidControl.setRainyDayChange(Integer.parseInt(line.substring(line.lastIndexOf(",")+1)));
+					line = inputStream.nextLine();
+					humidControl.setSnowyDayChange(Integer.parseInt(line.substring(line.lastIndexOf(",")+1)));
+					line = inputStream.nextLine();
+					soilMoistControl.setSunnyDayChange(Integer.parseInt(line.substring(line.lastIndexOf(",")+1)));
+					line = inputStream.nextLine();
+					soilMoistControl.setCloudyDayChange(Integer.parseInt(line.substring(line.lastIndexOf(",")+1)));
+					line = inputStream.nextLine();
+					soilMoistControl.setRainyDayChange(Integer.parseInt(line.substring(line.lastIndexOf(",")+1)));
+					line = inputStream.nextLine();
+					soilMoistControl.setSnowyDayChange(Integer.parseInt(line.substring(line.lastIndexOf(",")+1)));
+					line = inputStream.nextLine();
+					tempControl.setSampleRate(Integer.parseInt(line.substring(line.lastIndexOf(",")+1)));
+					line = inputStream.nextLine();
+					humidControl.setSampleRate(Integer.parseInt(line.substring(line.lastIndexOf(",")+1)));
+					line = inputStream.nextLine();
+					soilMoistControl.setSampleRate(Integer.parseInt(line.substring(line.lastIndexOf(",")+1)));
+					line = inputStream.nextLine();
+					furnace.setDeviceActive(Boolean.parseBoolean(line.substring(line.lastIndexOf(",")+1)));
+					line = inputStream.nextLine();
+					airConditioner.setDeviceActive(Boolean.parseBoolean(line.substring(line.lastIndexOf(",")+1)));
+					line = inputStream.nextLine();
+					humidifier.setDeviceActive(Boolean.parseBoolean(line.substring(line.lastIndexOf(",")+1)));
+					line = inputStream.nextLine();
+					sprinklerSystem.setDeviceActive(Boolean.parseBoolean(line.substring(line.lastIndexOf(",")+1)));
+					line = inputStream.nextLine();
+					env.setWeatherIndex(Integer.parseInt(line.substring(line.lastIndexOf(",")+1)));
 					
 					// Update ui with loaded values
 					ui.setTemperatureDisplay(env.getTemperature());
@@ -246,7 +277,7 @@ public class MenuListener implements ActionListener {
 				}
 				
 			// In case of errors, let user know something went wrong
-			} catch (FileNotFoundException ex) {
+			} catch (Exception ex) {
 				JOptionPane.showMessageDialog(ui, "Error loading file.", 
 						"Error", JOptionPane.ERROR_MESSAGE);
 			}
