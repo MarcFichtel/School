@@ -28,20 +28,22 @@ public class MatrixMultiplication {
 	public static void GetMatrixInput () throws Exception {
 		
 		// Prompt user for first matrix's dimensions
-		System.out.print("Enter first matrix's dimensions.\nRows: ");
+		System.out.print("Enter first matrix's dimensions.\nRows (between 1 and 5): ");
 		matrixARows = input.nextInt(); 			// Prompt for # of rows						
-		System.out.print("Columns: ");
+		System.out.print("Columns (between 1 and 5): ");
 		matrixACols = input.nextInt();			// Prompt for # of columns
 
 		// Prompt user for second matrix's dimensions
-		System.out.print("\nEnter second matrix's dimensions.\nRows: ");												
+		System.out.print("\nEnter second matrix's dimensions.\nRows (between 1 and 5): ");												
 		matrixBRows = input.nextInt(); 			// Prompt for # of rows		
-		System.out.print("Columns: ");
+		System.out.print("Columns (between 1 and 5): ");
 		matrixBCols = input.nextInt();			// Prompt for # of columns
 		
 		// Check, if correct dimension values were entered (i.e. values greater than 0)
-		if (matrixARows < 1 || matrixACols < 1 ||
-			matrixBRows < 1 || matrixBCols < 1) {
+		if (matrixARows < 1 || matrixARows > 5 ||
+			matrixACols < 1 || matrixACols > 5 ||
+			matrixBRows < 1 || matrixBRows > 5 ||
+			matrixBCols < 1 || matrixBCols > 5) {
 			
 			// Throw exception
 			throw new Exception ("Incorrect dimension values entered.");
@@ -59,8 +61,8 @@ public class MatrixMultiplication {
 		
 		// Prompt user for first matrix's entries
 		System.out.println("\nEnter first matrix's entries.");
-		for (int i = 0; i < matrixARows; i++) {			// Iterate over rows
-			for (int j = 0; j < matrixACols; j++) {		// Iterate over columns
+		for (int i = 0; i < matrixARows; i++) {			// Iterate the counter i over elements in matrixARows starting from 0
+			for (int j = 0; j < matrixACols; j++) {		// Iterate the counter j over elements in matrixACols starting from 0
 				System.out.print("Entry " + (i+1) + "x" + (j+1) + ": ");
 				matrixA[i][j] = input.nextInt();		// Prompt user for each matrix entry
 			}
@@ -68,8 +70,8 @@ public class MatrixMultiplication {
 		
 		// Prompt user for second matrix's entries
 		System.out.println("\nEnter second matrix's entries.");
-		for (int i = 0; i < matrixBRows; i++) {			// Iterate over rows
-			for (int j = 0; j < matrixBCols; j++) {		// Iterate over columns
+		for (int i = 0; i < matrixBRows; i++) {			// Iterate the counter i over elements in matrixBRows starting from 0
+			for (int j = 0; j < matrixBCols; j++) {		// Iterate the counter j over elements in matrixBCols starting from 0
 				System.out.print("Entry " + (i+1) + "x" + (j+1) + ": ");
 				matrixB[i][j] = input.nextInt();		// Prompt user for each matrix entry
 			}
@@ -87,19 +89,20 @@ public class MatrixMultiplication {
 	public static int[][] MultiplyMatrices (int[][] matrixA, int[][] matrixB) {
 
 		// Create result matrix with the proper dimensions
-		int[][] result = new int[matrixARows][matrixBCols];;
+		int[][] result = new int[matrixARows][matrixBCols];
 
 		// Use 3 for loops for the calculations:
-		// 1. loop: Iterate over rows
+		// 1. loop: Iterate the counter i over elements in matrixARows starting from 0
 		for (int i = 0; i < matrixARows; i++) {
 			
-			// 2. loop: Iterate over columns
+			// 2. loop: Iterate the counter j over elements in matrixBCols starting from 0
 			for (int j = 0; j < matrixBCols; j++) {
 				
-				// 3. loop: Calculate required sums to get each matrix entry
+				// 3. loop: Iterate the counter k over elements in matrixACols starting from 0
+				// Each loop here represents one calculation required to sum up each matrix entry
 				for (int k = 0; k < matrixACols; k++) {
 					
-					// Perform calculations based on given formula
+					// Perform calculations based on given formula for matrix multiplication
 					result[i][j] += matrixA[i][k] * matrixB[k][j]; 
 				}
 			}
@@ -118,8 +121,8 @@ public class MatrixMultiplication {
 		
 		// Display first matrix
 		System.out.println("\nFirst matrix: ");
-		for (int i = 0; i < matrixA.length; i++) {			// Iterate over rows
-			for (int j = 0; j < matrixA[0].length; j++) {	// Iterate over columns
+		for (int i = 0; i < matrixA.length; i++) {			// Iterate the counter i over elements (rows) in matrixA starting from 0
+			for (int j = 0; j < matrixA[0].length; j++) {	// Iterate the counter j over elements (columns) in matrixA starting from 0
 				System.out.print(matrixA[i][j] + "\t"); 	// Print each entry
 			}
 			System.out.print("\n");							// Go to next line after each row
@@ -127,17 +130,17 @@ public class MatrixMultiplication {
 		
 		// Display second matrix
 		System.out.println("Second matrix: ");
-		for (int i = 0; i < matrixB.length; i++) {			// Iterate over rows
-			for (int j = 0; j < matrixB[0].length; j++) {	// Iterate over columns
+		for (int i = 0; i < matrixB.length; i++) {			// Iterate the counter i over elements (rows) in matrixB starting from 0
+			for (int j = 0; j < matrixB[0].length; j++) {	// Iterate the counter j over elements (columns) in matrixB starting from 0
 					System.out.print(matrixB[i][j] + "\t"); // Print each entry
 				}
 			System.out.print("\n");							// Go to next line after each row
 		}
 				
 		// Display third matrix
-		System.out.println("Third matrix: ");
-		for (int i = 0; i < matrixC.length; i++) {			// Iterate over rows
-			for (int j = 0; j < matrixC[0].length; j++) {	// Iterate over columns
+		System.out.println("Third matrix obtained by multipliying the first two matrices: ");
+		for (int i = 0; i < matrixC.length; i++) {			// Iterate the counter i over elements (rows) in matrixC starting from 0
+			for (int j = 0; j < matrixC[0].length; j++) {	// Iterate the counter j over elements (columns) in matrixC starting from 0
 				System.out.print(matrixC[i][j] + "\t"); 	// Print each entry
 			}
 			System.out.print("\n");							// Go to next line after each row
@@ -153,7 +156,7 @@ public class MatrixMultiplication {
 			matrixC = MultiplyMatrices (matrixA, matrixB);	// SP2: Perform matrix multiplication
 			DisplayMatrices (matrixA, matrixB, matrixC);	// SP3: Display all matrices
 		
-		// If an error occurs, print the error, and inform user
+		// If an exception occurs, print its error message, and inform user
 		} catch (Exception ex) {	
 			System.out.println("\n" + ex.toString() + "\nProgram terminated.");
 		
