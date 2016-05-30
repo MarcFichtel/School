@@ -8,24 +8,23 @@ import java.util.Scanner;
 public class MatrixMultiplication {
 
 	static Scanner input = new Scanner(System.in); 	// Initialize scanner for user input
-	static int matrixARows;							// First matrix's # of rows
-	static int matrixACols;							// First matrix's # of columns
-	static int matrixBRows;							// Second matrix's # of rows
-	static int matrixBCols;							// Second matrix's # of columns
-	static int[][] matrixA;							// The first matrix
-	static int[][] matrixB;							// The second matrix
-	static int[][] matrixC;							// The result of multiplying matrices A and B
+	static int[][] matrixA;							// Declare the first matrix
+	static int[][] matrixB;							// Declare the second matrix
+	static int[][] matrixC;							// Declare the third matrix obtained by multiplying matrices A and B
 	
-	// Get all user inputs (matrix dimensions and entries)
+	// Method prompts user for all inputs (matrix dimensions and entries)
 	// Preconditions: 
 	//	~ An input scanner has been initialized
-	// 	~ 4 global integer variables for first two matrices' dimensions have been declared
 	// 	~ 2 global 2D-integer arrays for first two matrices have been declared
 	// Postconditions:
-	// 	~ 4 global integer variables for first two matrices' dimensions have been initialized, 
-	// 		are greater than zero, and the first matrix's columns is equal to the second matrix's rows
-	// 	~ 2 global 2D-integer arrays for first two matrices have been initialized and filled with integer entries
+	// 	~ 2 global 2D-integer arrays for first two matrices, which have compatible dimensions 
+	// 		(for matrix multiplication) have been initialized and filled with integer entries
 	public static void GetMatrixInput () throws Exception {
+		
+		int matrixARows;						// First matrix's # of rows
+		int matrixACols;						// First matrix's # of columns
+		int matrixBRows;						// Second matrix's # of rows
+		int matrixBCols;						// Second matrix's # of columns
 		
 		// Prompt user for first matrix's dimensions
 		System.out.print("Enter first matrix's dimensions.\nRows (between 1 and 5): ");
@@ -80,27 +79,25 @@ public class MatrixMultiplication {
 	
 	// Method takes two square matrices as arguments and attempts to multiply them
 	// Preconditions:
-	// 	~ 4 global integer variables for first two matrices' dimensions have been initialized, 
-	// 		are greater than zero, and the first matrix's columns is equal to the second matrix's rows
-	// 	~ 2 global 2D-integer arrays for first two matrices have been initialized and filled with integer entries
+	// 	~ 2 local 2D-integer arrays for first two matrices have been initialized and filled with integer entries
 	// 	~ The global 2D-integer array for third matrix has been declared
 	// Postconditions:
 	// 	~ The global 2D-integer array for third matrix has been initialized and filled with integer entries
 	public static int[][] MultiplyMatrices (int[][] matrixA, int[][] matrixB) {
 
 		// Create result matrix with the proper dimensions
-		int[][] result = new int[matrixARows][matrixBCols];
+		int[][] result = new int[matrixA.length][matrixB[0].length];
 
 		// Use 3 for loops for the calculations:
 		// 1. loop: Iterate the counter i over elements in matrixARows starting from 0
-		for (int i = 0; i < matrixARows; i++) {
+		for (int i = 0; i < matrixA.length; i++) {
 			
 			// 2. loop: Iterate the counter j over elements in matrixBCols starting from 0
-			for (int j = 0; j < matrixBCols; j++) {
+			for (int j = 0; j < matrixB[0].length; j++) {
 				
 				// 3. loop: Iterate the counter k over elements in matrixACols starting from 0
 				// Each loop here represents one calculation required to sum up each matrix entry
-				for (int k = 0; k < matrixACols; k++) {
+				for (int k = 0; k < matrixA[0].length; k++) {
 					
 					// Perform calculations based on given formula for matrix multiplication
 					result[i][j] += matrixA[i][k] * matrixB[k][j]; 
