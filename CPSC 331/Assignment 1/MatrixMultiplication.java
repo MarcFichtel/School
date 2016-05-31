@@ -7,82 +7,132 @@ import java.util.Scanner;
 // Class performs matrix multiplication with matrices given by user
 public class MatrixMultiplication {
 
-	static Scanner input = new Scanner(System.in); 	// Initialize scanner for user input
-	static int[][] matrixA;							// Declare the first matrix
-	static int[][] matrixB;							// Declare the second matrix
-	static int[][] matrixC;							// Declare the third matrix obtained by multiplying matrices A and B
+	static int[][] matrixA;		// Declare the first matrix
+	static int[][] matrixB;		// Declare the second matrix
+	static int[][] matrixC;		// Declare the third matrix
+								// 	(result of the multiplication)
 	
-	// Method prompts user for all inputs (matrix dimensions and entries)
-	// Preconditions: 
-	//	~ An input scanner has been initialized
-	// 	~ 2 global 2D-integer arrays for first two matrices have been declared
-	// Postconditions:
-	// 	~ 2 global 2D-integer arrays for first two matrices, which have compatible dimensions 
-	// 		(for matrix multiplication) have been initialized and filled with integer entries
+	// Method prompts user for all inputs (matrix dimensions and entries) 
+	// Precondition P1 - Inputs include:
+	//		~ matrixA and matrixB: Globally declared uninitialized 
+	//			static 2D integer arrays
+	//		~ User integer input for number of dimensions of matrixA and matrixB, 
+	//			each between 1 and 5, where matrixA’s number of columns is equal 
+	//			to matrixB’s number of rows.
+	//		~ User integer input for every entry of matrixA and matrixB.
+	//	Postcondition Q1:
+	//		~ matrixA: A globally declared initialized static 2D integer array 
+	//			with number of rows m and number of columns n, where 0 < m, n < 6.
+	//		~ matrixB: A globally declared initialized static 2D integer array 
+	//			with number of rows n and number of columns k, where 0 < n, k < 6.
+	//			--> SP1 was successfully executed
+	//	Precondition P2 - Inputs include:
+	//		~ matrixA and matrixB: Globally declared uninitialized static 2D integer arrays
+	//		~ User integer input for number of dimensions of matrixA and matrixB, 
+	//			where any one of them is smaller than 1 or greater than 5, and matrixA’s 
+	//			number of columns is equal to matrixB’s number of rows.
+	//		~ User integer input for every entry of matrixA and matrixB.
+	//	Postcondition Q2:
+	//		~ An exception (Dimensions out of range) is thrown.
+	//			--> SP1 was unsuccessful (an error occurred)
+	// Precondition P3 - Inputs include:
+	//		~ matrixA and matrixB: Globally declared uninitialized static 2D integer arrays
+	//		~ User integer input for number of dimensions of matrixA and matrixB, each 
+	//			between 1 and 5, where matrixA’s number of columns is not equal to 
+	//			matrixB’s number of rows.
+	//		~ User integer input for every entry of matrixA and matrixB.
+	//	Postcondition Q3:
+	//		~ An exception (Incompatible matrix dimensions) is thrown.
+	//			--> SP1 was unsuccessful (an error occurred)
+	//	Precondition P4 - Inputs include:
+	//		~ matrixA and matrixB: Globally declared uninitialized static 2D integer arrays
+	//		~ User input of any type other than integer
+	//	Postcondition Q4:
+	//		~ An exception (Input mismatch) is thrown.
+	//			--> SP1 was unsuccessful (an error occurred)
 	public static void GetMatrixInput () throws Exception {
 		
-		int matrixARows;						// First matrix's # of rows
-		int matrixACols;						// First matrix's # of columns
-		int matrixBRows;						// Second matrix's # of rows
-		int matrixBCols;						// Second matrix's # of columns
+		// Initialize scanner for user input
+		Scanner input = new Scanner(System.in); 	
+		
+		int matrixARows;		// First matrix's # of rows
+		int matrixACols;		// First matrix's # of columns
+		int matrixBRows;		// Second matrix's # of rows
+		int matrixBCols;		// Second matrix's # of columns
 		
 		// Prompt user for first matrix's dimensions
-		System.out.print("Enter first matrix's dimensions.\nRows (between 1 and 5): ");
+		System.out.print("Enter first matrix's dimensions."
+						+ "\nRows (between 1 and 5): ");
 		matrixARows = input.nextInt(); 			// Prompt for # of rows						
 		System.out.print("Columns (between 1 and 5): ");
 		matrixACols = input.nextInt();			// Prompt for # of columns
 
 		// Prompt user for second matrix's dimensions
-		System.out.print("\nEnter second matrix's dimensions.\nRows (between 1 and 5): ");												
+		System.out.print("\nEnter second matrix's dimensions."
+						+ "\nRows (between 1 and 5): ");												
 		matrixBRows = input.nextInt(); 			// Prompt for # of rows		
 		System.out.print("Columns (between 1 and 5): ");
 		matrixBCols = input.nextInt();			// Prompt for # of columns
 		
-		// Check, if correct dimension values were entered (i.e. values greater than 0)
+		// Check, if dimension values are invalid (between 1 and 5)
 		if (matrixARows < 1 || matrixARows > 5 ||
 			matrixACols < 1 || matrixACols > 5 ||
 			matrixBRows < 1 || matrixBRows > 5 ||
 			matrixBCols < 1 || matrixBCols > 5) {
 			
-			// Throw exception
+			// Throw exception, if any dimension value is invalid
 			throw new Exception ("Incorrect dimension values entered.");
 		}
 		
-		// If compatible dimensions were entered, initialize matrices, else throw an exception
+		// If dimensions are valid, initialize matrices, else throw an exception
 		if (matrixACols == matrixBRows) {
-			matrixA = new int[matrixARows][matrixACols]; 			// Initialize first matrix
-			matrixB = new int[matrixBRows][matrixBCols];			// Initialize second matrix
+			matrixA = new int[matrixARows][matrixACols]; // Initialize first matrix
+			matrixB = new int[matrixBRows][matrixBCols]; // Initialize second matrix
 		} else {
 			
 			// Throw exception
-			throw new Exception ("Matrix dimensions are incompatible for multiplication.");
+			throw new Exception (
+				"Matrix dimensions are incompatible for multiplication.");
 		}
 		
 		// Prompt user for first matrix's entries
 		System.out.println("\nEnter first matrix's entries.");
-		for (int i = 0; i < matrixARows; i++) {			// Iterate the counter i over elements in matrixARows starting from 0
-			for (int j = 0; j < matrixACols; j++) {		// Iterate the counter j over elements in matrixACols starting from 0
+		
+		// Iterate the counter i over elements in matrixARows starting from 0
+		for (int i = 0; i < matrixARows; i++) {			
+			
+			// Iterate the counter j over elements in matrixACols starting from 0
+			for (int j = 0; j < matrixACols; j++) {		
 				System.out.print("Entry " + (i+1) + "x" + (j+1) + ": ");
-				matrixA[i][j] = input.nextInt();		// Prompt user for each matrix entry
+				matrixA[i][j] = input.nextInt();	// Prompt user for each matrix entry
 			}
 		}
 		
 		// Prompt user for second matrix's entries
 		System.out.println("\nEnter second matrix's entries.");
-		for (int i = 0; i < matrixBRows; i++) {			// Iterate the counter i over elements in matrixBRows starting from 0
-			for (int j = 0; j < matrixBCols; j++) {		// Iterate the counter j over elements in matrixBCols starting from 0
+		
+		// Iterate the counter i over elements in matrixBRows starting from 0
+		for (int i = 0; i < matrixBRows; i++) {			
+			
+			// Iterate the counter j over elements in matrixBCols starting from 0
+			for (int j = 0; j < matrixBCols; j++) {		
 				System.out.print("Entry " + (i+1) + "x" + (j+1) + ": ");
-				matrixB[i][j] = input.nextInt();		// Prompt user for each matrix entry
+				matrixB[i][j] = input.nextInt();	// Prompt user for each matrix entry
 			}
 		}
+		// Close input scanner
+		input.close();
 	}
 	
-	// Method takes two square matrices as arguments and attempts to multiply them
-	// Preconditions:
-	// 	~ 2 local 2D-integer arrays for first two matrices have been initialized and filled with integer entries
-	// 	~ The global 2D-integer array for third matrix has been declared
-	// Postconditions:
-	// 	~ The global 2D-integer array for third matrix has been initialized and filled with integer entries
+	// Method takes two square matrices as arguments and multiplies them
+	// Precondition P5:
+	//		~ matrixA: A globally declared initialized static 2D integer array 
+	// 			with number of rows m and number of columns n.
+	//		~ matrixB: A globally declared initialized static 2D integer array 
+	// 			with number of rows n and number of columns k.
+	// Postcondition Q5:
+	//		~ matrixC: A globally declared initialized static 2D integer array 
+	//			with number of rows m and number of columns k.
 	public static int[][] MultiplyMatrices (int[][] matrixA, int[][] matrixB) {
 
 		// Create result matrix with the proper dimensions
@@ -110,16 +160,25 @@ public class MatrixMultiplication {
 	}
 
 	// Method displays three given matrices in rectangular form
-	// Preconditions: 
-	// 	~ All global 2D-integer arrays for three matrices have been initialized and filled with integer entries
-	// Postconditions:
-	// 	~ All global 2D-integer arrays for three matrices have been displayed to the user
+	// Precondition P6:
+	// 		~ matrixA: A globally declared initialized static 2D integer array 
+	// 			with number of rows m and number of columns n.
+	// 		~ matrixB: A globally declared initialized static 2D integer array 
+	//			with number of rows n and number of columns k.
+	// 		~ matrixC: A globally declared initialized static 2D integer array 
+	//			with number of rows m and number of columns k.
+	// Postcondition Q6:
+	// 		~ matrixA, matrixB, and matrixC have been printed to the console in square matrix format.
 	public static void DisplayMatrices (int[][] matrixA, int[][] matrixB, int[][] matrixC) {
 		
 		// Display first matrix
 		System.out.println("\nFirst matrix: ");
-		for (int i = 0; i < matrixA.length; i++) {			// Iterate the counter i over elements (rows) in matrixA starting from 0
-			for (int j = 0; j < matrixA[0].length; j++) {	// Iterate the counter j over elements (columns) in matrixA starting from 0
+		
+		// Iterate the counter i over elements (rows) in matrixA starting from 0
+		for (int i = 0; i < matrixA.length; i++) {			
+			
+			// Iterate the counter j over elements (columns) in matrixA starting from 0
+			for (int j = 0; j < matrixA[0].length; j++) {	
 				System.out.print(matrixA[i][j] + "\t"); 	// Print each entry
 			}
 			System.out.print("\n");							// Go to next line after each row
@@ -127,8 +186,12 @@ public class MatrixMultiplication {
 		
 		// Display second matrix
 		System.out.println("Second matrix: ");
-		for (int i = 0; i < matrixB.length; i++) {			// Iterate the counter i over elements (rows) in matrixB starting from 0
-			for (int j = 0; j < matrixB[0].length; j++) {	// Iterate the counter j over elements (columns) in matrixB starting from 0
+		
+		// Iterate the counter i over elements (rows) in matrixB starting from 0
+		for (int i = 0; i < matrixB.length; i++) {			
+			
+			// Iterate the counter j over elements (columns) in matrixB starting from 0
+			for (int j = 0; j < matrixB[0].length; j++) {	
 					System.out.print(matrixB[i][j] + "\t"); // Print each entry
 				}
 			System.out.print("\n");							// Go to next line after each row
@@ -136,8 +199,12 @@ public class MatrixMultiplication {
 				
 		// Display third matrix
 		System.out.println("Third matrix obtained by multipliying the first two matrices: ");
-		for (int i = 0; i < matrixC.length; i++) {			// Iterate the counter i over elements (rows) in matrixC starting from 0
-			for (int j = 0; j < matrixC[0].length; j++) {	// Iterate the counter j over elements (columns) in matrixC starting from 0
+		
+		// Iterate the counter i over elements (rows) in matrixC starting from 0
+		for (int i = 0; i < matrixC.length; i++) {			
+		
+			// Iterate the counter j over elements (columns) in matrixC starting from 0
+			for (int j = 0; j < matrixC[0].length; j++) {	
 				System.out.print(matrixC[i][j] + "\t"); 	// Print each entry
 			}
 			System.out.print("\n");							// Go to next line after each row
@@ -155,11 +222,11 @@ public class MatrixMultiplication {
 		
 		// If an exception occurs, print its error message, and inform user
 		} catch (Exception ex) {	
-			System.out.println("\n" + ex.toString() + "\nProgram terminated.");
+			System.out.println("\n" + ex.toString());
 		
-		// Close input scanner once program is done
+		// At the end of the program, let user know it is done
 		} finally {
-			input.close();
+			System.out.println("\nProgram terminated.");
 		}
 	}
 }
