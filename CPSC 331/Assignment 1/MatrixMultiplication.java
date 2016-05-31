@@ -55,24 +55,19 @@ public class MatrixMultiplication {
 		// Initialize scanner for user input
 		Scanner input = new Scanner(System.in); 	
 		
-		int matrixARows;		// First matrix's # of rows
-		int matrixACols;		// First matrix's # of columns
-		int matrixBRows;		// Second matrix's # of rows
-		int matrixBCols;		// Second matrix's # of columns
-		
 		// Prompt user for first matrix's dimensions
 		System.out.print("Enter first matrix's dimensions."
 						+ "\nRows (between 1 and 5): ");
-		matrixARows = input.nextInt(); 			// Prompt for # of rows						
+		int matrixARows = input.nextInt(); 			// Prompt for # of rows	of first matrix					
 		System.out.print("Columns (between 1 and 5): ");
-		matrixACols = input.nextInt();			// Prompt for # of columns
+		int matrixACols = input.nextInt();			// Prompt for # of columns of first matrix
 
 		// Prompt user for second matrix's dimensions
 		System.out.print("\nEnter second matrix's dimensions."
 						+ "\nRows (between 1 and 5): ");												
-		matrixBRows = input.nextInt(); 			// Prompt for # of rows		
+		int matrixBRows = input.nextInt(); 			// Prompt for # of rows	of decond matrix	
 		System.out.print("Columns (between 1 and 5): ");
-		matrixBCols = input.nextInt();			// Prompt for # of columns
+		int matrixBCols = input.nextInt();			// Prompt for # of columns of decond matrix
 		
 		// Check, if dimension values are invalid (between 1 and 5)
 		if (matrixARows < 1 || matrixARows > 5 ||
@@ -126,12 +121,13 @@ public class MatrixMultiplication {
 	
 	// Method takes two square matrices as arguments and multiplies them
 	// Precondition P5:
-	//		~ matrixA: A globally declared initialized static 2D integer array 
-	// 			with number of rows m and number of columns n.
-	//		~ matrixB: A globally declared initialized static 2D integer array 
-	// 			with number of rows n and number of columns k.
+	//		~ matrixA: A given 2D integer array with number of 
+	//			rows m and number of columns n.
+	//		~ matrixB: A given 2D integer array with number of 
+	//			rows n and number of columns k.
+	// 		~ m, n, k > 0.
 	// Postcondition Q5:
-	//		~ matrixC: A globally declared initialized static 2D integer array 
+	//		~ matrixC: Returns an initialized 2D integer array 
 	//			with number of rows m and number of columns k.
 	public static int[][] MultiplyMatrices (int[][] matrixA, int[][] matrixB) {
 
@@ -161,12 +157,9 @@ public class MatrixMultiplication {
 
 	// Method displays three given matrices in rectangular form
 	// Precondition P6:
-	// 		~ matrixA: A globally declared initialized static 2D integer array 
-	// 			with number of rows m and number of columns n.
-	// 		~ matrixB: A globally declared initialized static 2D integer array 
-	//			with number of rows n and number of columns k.
-	// 		~ matrixC: A globally declared initialized static 2D integer array 
-	//			with number of rows m and number of columns k.
+	// 		~ matrixA: A given 2D integer array 
+	// 		~ matrixB: A given 2D integer array 
+	// 		~ matrixC: A given 2D integer array 
 	// Postcondition Q6:
 	// 		~ matrixA, matrixB, and matrixC have been printed to the console in square matrix format.
 	public static void DisplayMatrices (int[][] matrixA, int[][] matrixB, int[][] matrixC) {
