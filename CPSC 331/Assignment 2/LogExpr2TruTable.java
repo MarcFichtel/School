@@ -1,6 +1,10 @@
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+import javax.script.ScriptException;
+
 // Class represents a program that prompts the user for a 
 // 	logical expression, analyzes it's validity, and then prints 
 // 	a truth table for it to the screen.
@@ -10,6 +14,12 @@ import java.util.Scanner;
 // 		--> https://docs.oracle.com/javase/tutorial/i18n/text/charintro.html
 // 	~ Check, how to find the second occurance of a char in a string
 // 		--> http://stackoverflow.com/questions/19035893/finding-second-occurrence-of-a-substring-in-a-string-in-java
+// 	~ Check truth table representation with binary values, was used as a 
+// 		help to figuring out how to fill independent variable columns in 
+// 		the truth table with truth values
+// 		--> http://www.ee.surrey.ac.uk/Projects/Labview/gatesfunc/TruthFrameSet.htm
+// 	~ Convert boolean expressions in strings to boolean values
+// 		--> http://stackoverflow.com/questions/31811315/how-to-convert-a-string-to-boolean-expression
 
 public class LogExpr2TruTable {
 	
@@ -103,7 +113,7 @@ public class LogExpr2TruTable {
 						if (logExprChars[i] == exprVars.get(x)) {
 							
 							// If already present, continue to next char
-							continue;		// Check next var
+							break;		// Check next var
 			
 						// Check if char is smaller than (i.e. comes before) var
 						} else if (logExprChars[i] < exprVars.get(x)) {
@@ -273,13 +283,16 @@ public class LogExpr2TruTable {
 	// 	~
 	public static String[][] CreateTruthTable (
 								ArrayList<Character> exprVars, 
-								ArrayList<String> exprSubs) {
+								ArrayList<String> exprSubs) throws Exception {
+		
+		// Get # of rows 2^x rows, where x is # of variables + 1 for header row
+		int rows = (int) (Math.pow(2, exprVars.size()) + 1);
 		
 		// Create a 2D String array with the required dimensions
 		String[][] truthTable = new String
 				
-				// Table has 2^x rows, where x is # of variables + 1 for header row
-				[(int) Math.pow(2, exprVars.size()) + 1] 
+				// Give table the proper # of rows
+				[rows] 
 				
 				// Tables has columns = # of variables + # of subexpressions
 				[exprVars.size() + exprSubs.size()];
@@ -300,44 +313,109 @@ public class LogExpr2TruTable {
 			}
 		}
 		
-		// TODO Add truth values for independent variables
+		// Add truth values for the variable columns
 		// Iterate over rows below header with counter i starting at 1
-//		for (int i = 1; i < (int) Math.pow(2, exprVars.size()) + 1; i++) {
-//            
-//			// Iterate over variable columns with counter j starting at the 
-//			// 	max # of variables and going back towards 0
-//			for (int j = exprVars.size() - 1; j >= 0; j--) {
-//				
-//				System.out.println(i + " / 2 ^ " + j + " mod 2 = " + i / (int) Math.pow(2, j) % 2);
-//				
-//				// 
-//				if (i / (int) Math.pow(2, j) % 2 == 0) {
-//					
-//	
-//					truthTable[i][j] = "False";
-//				
-//				
-//				} else {
-//					
-//					
-//					truthTable[i][j] = "True";
-//				}
-//            }
-//        }
-		
-		
-		
-		
-		// TODO remove
-		System.out.println("TT # rows: " + truthTable.length);
-		System.out.println("TT # cols: " + truthTable[0].length);
-		System.out.println("Independent Variables: " + exprVars);
-		System.out.println("Subexpressions: " + exprSubs);
-		for (int i = 0; i < truthTable.length; i++) {
-			for (int j = 0; j < truthTable[i].length; j++) {
-				System.out.print(truthTable[i][j] + "\t");
+		for (int i = 1; i < rows; i++) {
+			
+			// Get the binary representation of the row indices
+			String rowToBinary = Integer.toBinaryString(i - 1);
+			
+			// Check, if the binary string is shorter than the number of columns
+			if (rowToBinary.length() < exprVars.size()) {
+				
+				// If so, note the length of the binary string
+				int x = rowToBinary.length();
+				
+				// Prepend zeros to the binary string until its length is 
+				// 	equal to the number of columns
+				// Iterate over each variable column with 
+				// 	a counter j starting at 0
+				for (int j = 0; j < exprVars.size() - x; j++) {
+					rowToBinary = "0" + rowToBinary; // Prepend 0 to the string
+				}
 			}
-			System.out.println("");
+			
+			// Iterate over columns with counter j starting at 0
+			for (int j = 0; j < exprVars.size(); j++) {
+				
+				// Insert a truth value into the table depending on the
+				// 	binary string value corresponding to each cell
+				// Insert True for 0, False for 1
+				if (rowToBinary.charAt(j) == '0') {
+					truthTable[i][j] = "true";
+				} else {
+					truthTable[i][j] = "false";
+				}
+			}
+		}	
+		
+		// Add truth values for each subexpression
+		// Iterate over columns with counter i starting after the variable columns
+		for (int i = exprVars.size(); i < truthTable[0].length; i++) {
+
+			// Iterate over rows
+			for (int r = 1; r < rows; r++) {
+			
+				String valueStr = ""; 	// Create string to hold the boolean expression
+				
+				// Add each character's logic meaning to the string representation of
+				// 	the boolean expression to be evaluated
+				// Iterate through subexpression characters with counter k starting at 0
+				for (int j = 0; j < truthTable[0][i].length(); j++) {
+					
+					// Look for opening brackets
+					if (truthTable[0][i].charAt(j) == '(') {
+						valueStr = valueStr + "("; 	// Add bracket to string
+						
+					// Look for closing brackets
+					} else if (truthTable[0][i].charAt(j) == ')') {
+						valueStr = valueStr + ")"; 	// Add bracket to string
+					
+					// Look for AND operators
+					} else if (truthTable[0][i].charAt(j) == '*') {
+						valueStr = valueStr + "&&"; 	// Add AND to string
+						
+					// Look for OR operators
+					} else if (truthTable[0][i].charAt(j) == '+') {
+						valueStr = valueStr + "||"; 	// Add OR to string
+					
+					// Look for NOT operators
+					} else if (truthTable[0][i].charAt(j) == '-') {
+						valueStr = valueStr + "!"; 	// Add NOT to string
+					
+					// All other characters are independent variables
+					} else {
+						
+						// Iterate over independent variable columns until
+						// 	the current character has been matched in the header
+						for (int k = 0; k < exprVars.size(); k++) {
+							
+							// Match variable to column
+							if (truthTable[0][i].charAt(j) == truthTable[0][k].charAt(0)) {
+								valueStr = valueStr + 	// Add variable's truth value
+										truthTable[r][k];
+								break;					// Break loop if match was found
+							}
+						}
+					}
+				}
+				
+				// After all characters have been accounted for, convert String to boolean,
+				// 	and insert it into truth table
+				// Use a scripting engine to convert the string expression to a boolean,
+				// and evaluate it
+				ScriptEngineManager mgr = new ScriptEngineManager();
+			    ScriptEngine engine = mgr.getEngineByName("JavaScript");
+				
+			    Boolean valueBool = null; 	// Create a boolean for the result of
+											// 	the evaluated expression
+					
+				// Convert the string expression to a boolean, and evaluate it
+				valueBool = Boolean.valueOf((boolean) engine.eval(valueStr));
+				
+				// Insert boolean into the appropriate truth table cell as a string
+				truthTable[r][i] = valueBool.toString();
+			}
 		}
 		
 		return truthTable;
@@ -350,6 +428,18 @@ public class LogExpr2TruTable {
 	// 	~
 	public static void DisplayTruthTable (String[][] truthTable) {
 		
+		// Iterate over the truth table's rows counter i starting at 0
+		for (int i = 0; i < truthTable.length; i++) {
+			
+			// Iterate over truth table's columns with counter j starting at 0
+			for (int j = 0; j < truthTable[i].length; j++) {
+				
+				// Print each cell's content 
+				System.out.print(truthTable[i][j] + "\t");
+			}
+			// Print a newline to keep table format
+			System.out.println("");
+		}
 	}
 	
 	
