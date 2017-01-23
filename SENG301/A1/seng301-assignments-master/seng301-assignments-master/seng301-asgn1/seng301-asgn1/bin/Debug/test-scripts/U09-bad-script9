@@ -1,0 +1,4 @@
+CREATE(5, 55; -7)
+CONFIGURE([0] "Pepsi", 55)
+UNLOAD([0])
+CHECK_TEARDOWN(0; 0)

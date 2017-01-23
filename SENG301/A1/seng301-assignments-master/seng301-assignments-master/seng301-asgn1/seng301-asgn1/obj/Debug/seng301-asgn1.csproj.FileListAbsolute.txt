@@ -1,0 +1,14 @@
+U:\Tutorials\SENG301\seng301-assignments-master\seng301-assignments-master\seng301-asgn1\seng301-asgn1\bin\Debug\seng301-asgn1.exe.config
+U:\Tutorials\SENG301\seng301-assignments-master\seng301-assignments-master\seng301-asgn1\seng301-asgn1\obj\Debug\seng301-asgn1.csprojResolveAssemblyReference.cache
+U:\Tutorials\SENG301\seng301-assignments-master\seng301-assignments-master\seng301-asgn1\seng301-asgn1\bin\Debug\seng301-asgn1.exe
+U:\Tutorials\SENG301\seng301-assignments-master\seng301-assignments-master\seng301-asgn1\seng301-asgn1\bin\Debug\seng301-asgn1.pdb
+U:\Tutorials\SENG301\seng301-assignments-master\seng301-assignments-master\seng301-asgn1\seng301-asgn1\bin\Debug\grammatica-1.6.dll
+U:\Tutorials\SENG301\seng301-assignments-master\seng301-assignments-master\seng301-asgn1\seng301-asgn1\obj\Debug\seng301-asgn1.exe
+U:\Tutorials\SENG301\seng301-assignments-master\seng301-assignments-master\seng301-asgn1\seng301-asgn1\obj\Debug\seng301-asgn1.pdb
+C:\Users\NewUsername\Desktop\UofC\05_WS2017\SENG301\A1\seng301-assignments-master\seng301-assignments-master\seng301-asgn1\seng301-asgn1\bin\Debug\seng301-asgn1.exe.config
+C:\Users\NewUsername\Desktop\UofC\05_WS2017\SENG301\A1\seng301-assignments-master\seng301-assignments-master\seng301-asgn1\seng301-asgn1\obj\Debug\seng301-asgn1.exe
+C:\Users\NewUsername\Desktop\UofC\05_WS2017\SENG301\A1\seng301-assignments-master\seng301-assignments-master\seng301-asgn1\seng301-asgn1\obj\Debug\seng301-asgn1.pdb
+C:\Users\NewUsername\Desktop\UofC\05_WS2017\SENG301\A1\seng301-assignments-master\seng301-assignments-master\seng301-asgn1\seng301-asgn1\bin\Debug\seng301-asgn1.exe
+C:\Users\NewUsername\Desktop\UofC\05_WS2017\SENG301\A1\seng301-assignments-master\seng301-assignments-master\seng301-asgn1\seng301-asgn1\bin\Debug\seng301-asgn1.pdb
+C:\Users\NewUsername\Desktop\UofC\05_WS2017\SENG301\A1\seng301-assignments-master\seng301-assignments-master\seng301-asgn1\seng301-asgn1\bin\Debug\grammatica-1.6.dll
+C:\Users\NewUsername\Desktop\UofC\05_WS2017\SENG301\A1\seng301-assignments-master\seng301-assignments-master\seng301-asgn1\seng301-asgn1\obj\Debug\seng301-asgn1.csprojResolveAssemblyReference.cache

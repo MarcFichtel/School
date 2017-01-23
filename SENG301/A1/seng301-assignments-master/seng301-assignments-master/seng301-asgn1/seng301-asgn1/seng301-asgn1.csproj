@@ -1,0 +1,94 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{C3DB591F-BE1B-49EB-92E9-A097BC68B453}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>seng301_asgn1</RootNamespace>
+    <AssemblyName>seng301-asgn1</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="grammatica-1.6, Version=1.5.0.29099, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>lib\grammatica-1.6.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="src\Frontend1.Parser\SENG301VMAnalyzer.cs" />
+    <Compile Include="src\Frontend1.Parser\VendingMachineAnalyzer.cs" />
+    <Compile Include="src\Frontend1.Parser\VendingMachineConstants.cs" />
+    <Compile Include="src\Frontend1.Parser\VendingMachineParser.cs" />
+    <Compile Include="src\Frontend1.Parser\VendingMachineTokenizer.cs" />
+    <Compile Include="src\Frontend1\Coin.cs" />
+    <Compile Include="src\Frontend1\Deliverable.cs" />
+    <Compile Include="src\Frontend1\IVendingMachineFactory.cs" />
+    <Compile Include="src\Frontend1\Pop.cs" />
+    <Compile Include="src\Frontend1\VendingMachine.cs" />
+    <Compile Include="src\ScriptProcessor.cs" />
+    <Compile Include="src\VendingMachineFactory.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="test-scripts\T01-good-script" />
+    <None Include="test-scripts\U01-bad-script1" />
+    <None Include="test-scripts\U02-bad-script2" />
+    <None Include="test-scripts\U03-bad-script3" />
+    <None Include="test-scripts\U05-bad-script5" />
+    <None Include="test-scripts\U04-bad-script4" />
+    <None Include="test-scripts\U06-bad-script6" />
+    <None Include="test-scripts\U07-bad-script7" />
+    <None Include="test-scripts\U08-bad-script8" />
+    <None Include="test-scripts\U09-bad-script9" />
+    <None Include="test-scripts\U10-bad-script10" />
+    <None Include="test-scripts\U11-bad-script11" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="test-scripts\README.txt" />
+    <None Include="test-scripts\T02-good-script2" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>xcopy /y $(ProjectDir)\test-scripts test-scripts\</PreBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

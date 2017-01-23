@@ -41,7 +41,6 @@ namespace seng301_asgn1 {
                     Console.WriteLine("..FAIL (which is good)");
                 }
             }
-            // Keep console open before program terminates
             Console.ReadLine();
         }
     }
