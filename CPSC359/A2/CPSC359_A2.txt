@@ -1,0 +1,83 @@
+// CPSC 359
+// Assignment 2
+// Students:
+// ~ Marc-Andre Fichtel, 30014709
+// ~ Cardin Chen, ___
+//
+// Assembly program does the following:
+// ~ Draws objects using asterisks
+// ~ Calculates the total number of asterisks
+// ~ Calculates the mean of asterisks grouped by object
+
+.section 	.init
+.globl 		_start
+
+.section 	.text
+
+// Check if we need to 
+// ~ Ensure alignment
+// ~ Allocate stack space for main
+// ~ Update the frame pointer
+
+
+main:
+	// Print names
+	ADRP r0, authors
+	ADD x0,  x0, :lo12:authors
+	BL printf
+
+start:	
+	// Print instruction
+	ADRP r0, instrct
+	ADD x0,  x0, :lo12:instrct
+	BL printf
+	
+	// Get input
+	
+	// Validate input
+	
+	// Get square width input
+	
+	// Validate square width input
+	
+	// Draw square asterisks
+	
+	// Store square info for summary computation
+	
+	// Get rectangle width input
+	
+	// Validate rectangle width input
+	
+	// Draw rectangle asterisks
+	
+	// Store rectangle asterisks for summary computation
+	
+	// Get triangle height input (Check: Is this how we measure triangles???)
+	
+	// Validate triangle height input
+	
+	// Draw triangle asterisks
+	
+	// Store triangle asterisks for summary computation
+
+	// Compute total number of asterisks
+	
+	// Compute mean of square asterisks
+	
+	// Compute mean of rectangle asterisks
+	
+	// Compute mean of triangle asterisks
+	
+	// Display summary
+	
+	// Exit program
+	
+.section 	.data
+authors: 	.asciz 	"Created by Marc-Andre Fichtel and Cardin Chen"
+instrct: 	.asciz 	"Please enter the number of objects you want to draw.\nPress -1 for Summary or q to exit\n1: Square --- 2: Rectangle --- 3: Triangle"
+instrctEr1: .asciz 	"Wrong format, only q is allowed to exit the program"
+instrctEr2: .asciz 	"Invalid choice, input must be between 1 and 3, or -1 for Summary"
+sqrInstrct: .asciz 	"Please enter square width (must be between 3 and 9)"
+sqrError: 	.asciz 	"Invalid choice, input must be between 3 and 9 for square width"
+summary: 	.asciz 	"Total number of stars: %d\nMean of stars used to draw squares: %f\nMean of stars used to draw rectangles: %f\nMean of stars used to draw triangles: %f\n"
+fmtDone: 	.asciz 	"Exiting program..."
