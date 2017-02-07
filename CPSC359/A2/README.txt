@@ -1,3 +1,4 @@
-<b>CPSC 359<b>
+# CPSC 359
 
-Assignment 2 (work in progress)
+## Assignment 2 
+(work in progress)
