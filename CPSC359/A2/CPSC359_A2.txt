@@ -1,4 +1,5 @@
-// CPSC 359
+//////////////////////////////////////////////////////
+//CPSC 359
 // Assignment 2
 // Students:
 // ~ Marc-Andre Fichtel, 30014709
@@ -8,76 +9,301 @@
 // ~ Draws objects using asterisks
 // ~ Calculates the total number of asterisks
 // ~ Calculates the mean of asterisks grouped by object
+//
+// Register usage
+// ~  r4 = menu choice
+// ~  r5 = width input (for squares and rectangles)
+// ~  r6 = height input (for rectangles and triangles)
+// ~  r7 = number of squares
+// ~  r8 = number of rectangles
+// ~  r9 = number of triangles
+// ~ r10 = number of square asterisks
+// ~ r11 = number of rectangle asterisks
+// ~ r12 = number of triangle asterisks
+//////////////////////////////////////////////////////
 
 .section 	.init
 .globl 		_start
 
+_start: 
+	B 	main
+
 .section 	.text
 
-// Check if we need to 
-// ~ Ensure alignment
-// ~ Allocate stack space for main
-// ~ Update the frame pointer
-
-
 main:
+	// Start program (as seen on lecture slides)
+	MOV 	sp, #0x8000 					// Establish stack pointer
+	BL 	EnableJTAG 					// Enable JTAG
+
+	// Set r7 - r12 = 0
+	MOV 	r7, #0 						// Number of squares = 0
+	MOV 	r8, #0 						// Number of rectangles = 0 
+	MOV 	r9, #0						// Number of triangles = 0
+	MOV 	r10, #0						// Number of square asterisks = 0
+	MOV 	r11, #0						// Number of rectangle asterisks = 0
+	MOV 	r12, #0						// Number of triangle asterisks = 0
+
 	// Print names
-	ADRP r0, authors
-	ADD x0,  x0, :lo12:authors
-	BL printf
+	ADRP 	r0, authors 					// Get string high bits
+	ADD 	r0, r0, :lo12:authors 				// Get string low bits
+	BL 	printf 						// Print string
 
 start:	
 	// Print instruction
-	ADRP r0, instrct
-	ADD x0,  x0, :lo12:instrct
-	BL printf
+	ADRP 	r0, instrct 					// Get string high bits
+	ADD 	r0, r0, :lo12:instrct 				// Get string low bits
+	BL 	printf 						// Print string
 	
-	// Get input
-	
-	// Validate input
-	
-	// Get square width input
-	
-	// Validate square width input
-	
-	// Draw square asterisks
-	
-	// Store square info for summary computation
-	
-	// Get rectangle width input
-	
-	// Validate rectangle width input
-	
-	// Draw rectangle asterisks
-	
-	// Store rectangle asterisks for summary computation
-	
-	// Get triangle height input (Check: Is this how we measure triangles???)
-	
-	// Validate triangle height input
-	
-	// Draw triangle asterisks
-	
-	// Store triangle asterisks for summary computation
+	// Get input into r4
+	// TODO ???
 
-	// Compute total number of asterisks
+	// Validate input
+	CMP 	r4, #-1 					// If menu choice = -1...
+	B.EQ 	summary 					// Go to summary...
+	B.LT 	error1 						// Or to error1, if menu choice < -1
 	
-	// Compute mean of square asterisks
+	CMP 	r4, #1 						// Else if menu choice = 1...
+	B.EQ 	square 						// Go to square
 	
-	// Compute mean of rectangle asterisks
+	CMP 	r4, #2						// Else if menu choice = 2...
+	B.EQ 	rect 						// Go to rect(angle)
 	
-	// Compute mean of triangle asterisks
+	CMP 	r4, #3 						// Else if menu choice = 3...
+	B.EQ 	triangle 					// Go to triangle...
+	B.LT 	error1 						// Or to error1, if menu choice > 3
 	
+	CMP 	r4, 0x71 					// Else if menu choice = q (in hex --> 01110001 in binary)...
+	B.EQ 	exit 						// Go to exit
+	
+	B 	error2 						// Else go to error2 (menu choice was not -1, 1, 2, 3, or q)
+
+error1:
+	ADRP 	r0, instrctEr1 					// Get string high bits
+	ADD 	r0, r0, :lo12:instrctEr1 			// Get string low bits
+	BL 	printf 						// Print string
+	B 	start 						// Return to menu
+
+error2:
+	ADRP 	r0, instrctEr2 					// Get string high bits
+	ADD 	r0, r0, :lo12:instrctEr2 			// Get string low bits
+	BL 	printf 						// Print string
+	B 	start 						// Return to menu
+
+square:
+	// Print square width input instruction
+	ADRP 	r0, widInstrct 					// Get string high bits
+	ADD 	r0, r0, :lo12:widInstrct 			// Get string low bits
+	BL 	printf 						// Print string
+
+	// Get square width input into r5
+	// TODO ???
+
+	// Validate square width input
+	CMP 	r5, #3 						// If width < 3...
+	B.LT 	error3 						// Go to error3
+	CMP 	r5, #9 						// Else if width > 9...
+	B.GT 	error3 						// Go to error3
+	// TODO Validate noninteger input
+
+	// Draw square asterisks
+	MOV 	r0, r5 						// r0 = r5 (width)
+	MOV 	r1, r5 						// r1 = r5 (width)
+	B 	drawTest1 					// Go to drawTest1
+
+draw11:
+	SUB 	r0, r0, #1 					// r0--
+	MOV 	r1, r5 						// r1 = r5 again
+	ADRP 	r0, starEnd					// Get string high bits
+	ADD 	r0, r0, :lo12:starEnd 				// Get string low bits
+	BL 	printf 						// Print string
+	B 	drawTest1 					// Go to drawTest1
+
+draw12:
+	SUB 	r1, r1, #1 					// r1--
+	ADRP 	r0, star					// Get string high bits
+	ADD 	r0, r0, :lo12:star 				// Get string low bits
+	BL 	printf 						// Print string
+
+drawTest1:
+	CMP 	r0, #1 						// If r0 < 1...
+	B.LT 	next1 						// Go to draw11
+	CMP 	r1, #1 						// If r1 > 1...
+	B.GT 	draw12 						// Go to draw12
+	B 	draw11 						// Else go to draw11
+
+next1:
+	// Store square info for summary computation
+	ADD 	r7, r7, #1 					// Increment # of squares
+	LSL 	r5, r5, #1 					// r5 = r5 * 2^1
+	ADD 	r10, r10, r5 					// Add new square asterisks to # of square asterisks
+	B 	start 						// Return to menu
+
+rect:	
+	// Print rectangle width input instruction
+	ADRP 	r0, widInstrct 					// Get string high bits
+	ADD 	r0, r0, :lo12:widInstrct 			// Get string low bits
+	BL 	printf 						// Print string
+
+	// Get rectangle width input
+	// TODO ???
+
+	// Validate rectangle width input
+	CMP 	r5, #3 						// If width < 3...
+	B.LT 	error3 						// Go to error3
+	CMP 	r5, #9 						// Else if width > 9...
+	B.GT 	error3 						// Go to error3
+	// TODO Validate noninteger input
+
+	// Print rectangle height input instruction
+	ADRP 	r0, higInstrct 					// Get string high bits
+	ADD 	r0, r0, :lo12:higInstrct 			// Get string low bits
+	BL 	printf 						// Print string
+
+	// Get rectangle height input
+	// TODO ???
+
+	// Validate rectangle height input
+	CMP 	r6, #3 						// If height < 3...
+	B.LT 	error3 						// Go to error3
+	CMP 	r6, #9 						// Else if height > 9...
+	B.GT 	error3 						// Go to error3
+	// TODO Validate noninteger input
+
+	// Draw rectangle asterisks
+	MOV 	r0, r5 						// r0 = r5 (width)
+	MOV 	r1, r6 						// r1 = r6 (height)
+	B 	drawTest2 					// Go to drawTest2
+
+draw21:
+	SUB 	r0, r0, #1 					// r0--
+	MOV 	r1, r6 						// r1 = r6 again
+	ADRP 	r0, starEnd					// Get string high bits
+	ADD 	r0, r0, :lo12:starEnd 				// Get string low bits
+	BL 	printf 						// Print string
+	B 	drawTest2 					// Go to drawTest2
+
+draw22:
+	SUB 	r1, r1, #1 					// r1--
+	ADRP 	r0, star					// Get string high bits
+	ADD 	r0, r0, :lo12:star 				// Get string low bits
+	BL 	printf 						// Print string
+
+drawTest2:
+	CMP 	r0, #1 						// If r0 < 1...
+	B.LT 	next2 						// Go to next2
+	CMP 	r1, #1 						// If r1 > 1...
+	B.GT 	draw22 						// Go to draw22
+	B 	draw21 						// Else go to draw21
+
+next2:
+	// Store rectangle asterisks for summary computation
+	ADD 	r8, r8, #1 					// Increment # of rectangles
+	MADD 	r11, r5, r6, r11				// r11 += r5 * r6
+	B 	start 						// Return to menu
+
+triangle:	
+	// Print triangle height input instruction
+	ADRP 	r0, higInstrct 					// Get string high bits
+	ADD 	r0, r0, :lo12:higInstrct 			// Get string low bits
+	BL 	printf 						// Print string
+
+	// Get triangle height input (Check: Is this how we measure triangles???)
+	// TODO ???
+
+	// Validate triangle height input
+	CMP 	r6, #3 						// If height < 3...
+	B.LT 	error3 						// Go to error3
+	CMP 	r6, #9 						// Else if height > 9...
+	B.GT 	error3 						// Go to error3
+	// TODO Validate noninteger input
+
+	// Draw triangle asterisks
+	MOV 	r0, r6 						// r0 = r5 (height)
+	MOV 	r1, r6 						// r1 = r6 (height)
+	B 	drawTest3 					// Go to drawTest3
+
+draw31:
+	SUB 	r0, r0, #1 					// r0--
+	MOV 	r1, r0 						// r1 = r0
+	ADRP 	r0, starEnd					// Get string high bits
+	ADD 	r0, r0, :lo12:starEnd 				// Get string low bits
+	BL 	printf 						// Print string
+	B 	drawTest2 					// Go to drawTest3
+
+draw32:
+	SUB 	r1, r1, #1 					// r1--
+	ADRP 	r0, star					// Get string high bits
+	ADD 	r0, r0, :lo12:star 				// Get string low bits
+	BL 	printf 						// Print string
+
+drawTest3:
+	CMP 	r0, #1 						// If r0 < 1...
+	B.LT 	next3 						// Go to next3
+	CMP 	r1, #1 						// If r1 > 1...
+	B.GT 	draw32 						// Go to draw32
+	B 	draw31 						// Else go to draw31
+
+next3:
+	// Store triangle asterisks for summary computation
+	ADD 	r9, r9, #1 					// Increment # of rectangles
+
+loop:								// # of triangle asterisks = factorial(r6):
+	ADD 	r12, r12, r6 					// # of triangle asterisks += height
+	SUB 	r6, r6 #1 					// height--
+	CMP 	r6, #1						// If height >= 1...
+	B.GE 	loop 						// Go to loop
+	
+	ADD 	r12, r12, r0 					// Add new square asterisks to # of square asterisks
+	B 	start 						// Return to menu
+
+error3:
+	ADRP 	r0, dimError 					// Get string high bits
+	ADD 	r0, r0, :lo12:dimError 				// Get string low bits
+	BL 	printf 						// Print string
+	B 	start 						// Return to menu
+
+compute:
+	// Compute total number of asterisks into r1 (first arg)
+	MOV 	r1, r10 					// r1 = r10 (# square asterisks)
+	ADD 	r1, r1, r11 					// r1 += r11 (# rectangle asterisks)
+	ADD 	r1, r1, r12 					// r1 += r12 (# trianle asterisks)
+
+	// TODO Check if special instruct is needed to get floats out of these divisions
+	// Compute mean of square asterisks (second arg)
+	DIV 	r2, r10, r7 					// r2 = r10 / r7
+
+	// Compute mean of rectangle asterisks (third arg)
+	DIV 	r3, r11, r8 					// r3 = r11 / r8
+
+	// Compute mean of triangle asterisks (fourth arg)
+	DIV 	r4, r12, r9 					// r4 = r12 / r9
+
+summary:	
 	// Display summary
-	
+	ADRP 	r0, summ 					// Get string high bits
+	ADD 	r0, r0, :lo12:summ 				// Get string low bits
+	BL 	printf 						// Print string
+	B 	start 						// Return to menu
+
+exit:
 	// Exit program
-	
+	ADRP 	r0, fmtDone 					// Get string high bits
+	ADD 	r0, r0, :lo12:fmtDone 				// Get string low bits
+	BL 	printf 						// Print string
+halt$: 
+	B 	halt$ 						// Infinite loop at end ensures cmd prompt remains open after termination
+	// TODO doublecheck if this is correct
+
 .section 	.data
-authors: 	.asciz 	"Created by Marc-Andre Fichtel and Cardin Chen"
-instrct: 	.asciz 	"Please enter the number of objects you want to draw.\nPress -1 for Summary or q to exit\n1: Square --- 2: Rectangle --- 3: Triangle"
-instrctEr1: .asciz 	"Wrong format, only q is allowed to exit the program"
-instrctEr2: .asciz 	"Invalid choice, input must be between 1 and 3, or -1 for Summary"
-sqrInstrct: .asciz 	"Please enter square width (must be between 3 and 9)"
-sqrError: 	.asciz 	"Invalid choice, input must be between 3 and 9 for square width"
-summary: 	.asciz 	"Total number of stars: %d\nMean of stars used to draw squares: %f\nMean of stars used to draw rectangles: %f\nMean of stars used to draw triangles: %f\n"
-fmtDone: 	.asciz 	"Exiting program..."
+authors: 	.asciz 	"Created by Marc-Andre Fichtel and Cardin Chen\n"
+instrct: 	.asciz 	"Please enter the number of objects you want to draw.\nPress -1 for Summary or q to exit\n1: Square --- 2: Rectangle --- 3: Triangle\n"
+instrctEr1: 	.asciz 	"Invalid choice, input must be between 1 and 3, or -1 for Summary\n"
+instrctEr2: 	.asciz 	"Wrong format, only q is allowed to exit the program\n"
+widInstrct: 	.asciz 	"Please enter width (must be between 3 and 9)\n"
+higInstrct: 	.asciz 	"Please enter height (must be between 3 and 9)\n"
+dimError: 	.asciz 	"Invalid choice, input must be between 3 and 9\n"
+star: 		.asciz 	"* "
+starEnd: 	.asciz 	"*\n"
+summ: 		.asciz 	"Total number of stars: %d\nMean of stars used to draw squares: %f\nMean of stars used to draw rectangles: %f\nMean of stars used to draw triangles: %f\n"
+			// TODO doublecheck if %f is correct for floats
+fmtDone: 	.asciz 	"Exiting program...\n"
