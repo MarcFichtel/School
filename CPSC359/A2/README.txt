@@ -1,3 +1,3 @@
-CPSC 359
+<strong>CPSC 359</strong>
 
 Assignment 2 (work in progress)
