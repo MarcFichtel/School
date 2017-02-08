@@ -198,7 +198,7 @@ drawTest2:
 next2:
 	// Store rectangle asterisks for summary computation
 	ADD 	r8, r8, #1 					// Increment # of rectangles
-	MADD 	r11, r5, r6, r11				// r11 += r5 * r6
+	MLA 	r11, r5, r6, r11				// r11 += r5 * r6
 	B 	start 						// Return to menu
 
 triangle:	
