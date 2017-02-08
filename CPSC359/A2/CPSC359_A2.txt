@@ -23,7 +23,7 @@
 //////////////////////////////////////////////////////
 
 .section 	.init
-.globl 		_start
+.global 	_start
 
 _start: 
 	B 	main
