@@ -295,6 +295,7 @@ halt$:
 	// TODO doublecheck if this is correct
 
 .section 	.data
+.align 4 							// Align to doubleword boundary for strings
 authors: 	.asciz 	"Created by Marc-Andre Fichtel and Cardin Chen\n"
 instrct: 	.asciz 	"Please enter the number of objects you want to draw.\nPress -1 for Summary or q to exit\n1: Square --- 2: Rectangle --- 3: Triangle\n"
 instrctEr1: 	.asciz 	"Invalid choice, input must be between 1 and 3, or -1 for Summary\n"
