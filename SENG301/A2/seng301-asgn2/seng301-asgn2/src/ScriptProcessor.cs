@@ -59,7 +59,7 @@ public class ScriptProcessor {
             }
             totalTests++;
         }
-
+        Console.ReadLine();
         Console.WriteLine("{0}/{1} tests passed", passedTests, totalTests);
     }
 }

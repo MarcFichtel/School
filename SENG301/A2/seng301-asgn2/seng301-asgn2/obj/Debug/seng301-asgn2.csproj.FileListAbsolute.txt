@@ -1,1 +1,8 @@
 \\cs-fs01\Profiles\ug\marcandre.fichtel\Desktop\seng301-asgn2\seng301-asgn2\bin\Debug\seng301-asgn2.exe.config
+C:\Users\NewUsername\Documents\GitHub\School\SENG301\A2\seng301-asgn2\seng301-asgn2\bin\Debug\seng301-asgn2.exe.config
+C:\Users\NewUsername\Documents\GitHub\School\SENG301\A2\seng301-asgn2\seng301-asgn2\bin\Debug\seng301-asgn2.exe
+C:\Users\NewUsername\Documents\GitHub\School\SENG301\A2\seng301-asgn2\seng301-asgn2\bin\Debug\seng301-asgn2.pdb
+C:\Users\NewUsername\Documents\GitHub\School\SENG301\A2\seng301-asgn2\seng301-asgn2\bin\Debug\grammatica-1.6.dll
+C:\Users\NewUsername\Documents\GitHub\School\SENG301\A2\seng301-asgn2\seng301-asgn2\obj\Debug\seng301-asgn2.csprojResolveAssemblyReference.cache
+C:\Users\NewUsername\Documents\GitHub\School\SENG301\A2\seng301-asgn2\seng301-asgn2\obj\Debug\seng301-asgn2.exe
+C:\Users\NewUsername\Documents\GitHub\School\SENG301\A2\seng301-asgn2\seng301-asgn2\obj\Debug\seng301-asgn2.pdb
