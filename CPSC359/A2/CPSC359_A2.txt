@@ -8,6 +8,7 @@
 // TODOs
 // * Check how to pass more than 4 args to the print function (for printing summary)
 // * UAMT I/O
+// * @Cardin fill in UCID at the top
 //
 // Assembly program does the following:
 // ~ Draws objects using asterisks
