@@ -9,6 +9,8 @@
 // * Check how to pass more than 4 args to the print function (for printing summary)
 // * UAMT I/O
 // * @Cardin fill in UCID at the top
+// * Check if &f is the correct placeholder for floats in strings
+// * Check if align statements in data section are correct and work as intended
 //
 // Assembly program does the following:
 // ~ Draws objects using asterisks
@@ -295,7 +297,6 @@ exit:
 	// TODO
 haltLoop$: 
 	B 	haltLoop$ 					// Infinite loop at end ensures cmd prompt remains open after termination
-	// TODO doublecheck if this is correct
 
 .section 	.data
 .align 4 							// Align to doubleword boundary for strings (???)
@@ -309,7 +310,6 @@ dimError: 	.asciz 	"Invalid choice, input must be between 3 and 9\n"
 star: 		.asciz 	"* "
 starEnd: 	.asciz 	"*\n"
 summ: 		.asciz 	"Total number of stars: %d\nMean of stars used to draw squares: %f\nMean of stars used to draw rectangles: %f\nMean of stars used to draw triangles: %f\n"
-			// TODO doublecheck if %f is correct for floats
 fmtDone: 	.asciz 	"Exiting program...\n"
 
 .align 								// Align to integers (???)
