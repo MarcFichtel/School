@@ -62,7 +62,7 @@ Print_Message:
 loopCounter:
 	LDRB 	r3, [r2], #1 						// Load byte into memory
 	CMP 	r3, #0 							// Compare current byte to null
-	ADDne 	r1, #1  						// If not equal, loop++, and
+	ADDne 	r1, #1  						// If not equal, counter++, and
 	Bne 	loopCounter 						// Loop
 	BL 	WriteStringUART 					// Else, when done counting, print out r1 amount of buffer
 	POP 	{pc} 							// End function
