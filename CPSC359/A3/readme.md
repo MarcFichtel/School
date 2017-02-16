@@ -35,18 +35,18 @@ Build a simple device driver for a SNES controller. The driver will be used in t
   * Read_SNES: Main SNES subroutine that reads input (buttons pressed) from a SNES controller. Returns the code of a pressed button in a register.
   * Print_Message: Prints an appropriate message to the UART terminal (Press a button, You pressed X, etc ..) The message address is passed as a parameter.
 
-You may use our supplied UART I/O subroutines that were used in the previous assignment.
+2. You may use our supplied UART I/O subroutines that were used in the previous assignment.
 
-2. Submit a tar-ball of your entire project directory, including makefile, source code, objects and compiled kernel.img, as a file named c359-<student_id>-a3.tar.gz 
+3. Submit a tar-ball of your entire project directory, including makefile, source code, objects and compiled kernel.img, as a file named c359-<student_id>-a3.tar.gz 
 
 ### Grading: 
-1. Display creator names & messages   (1)
-2. Correctly reading/printing buttons (10)
-3. Following APCS                     (4)
-4. Using subroutines                  (6)
-5. Loop back (not “START”)            (2)
-6. Well documented code               (2)
-Total                                 25 points
+* Display creator names & messages   (1)
+* Correctly reading/printing buttons (10)
+* Following APCS                     (4)
+* Using subroutines                  (6)
+* Loop back (not “START”)            (2)
+* Well documented code               (2)
+--> Total                            25 points
 
 Programs that do not compile cannot receive more than 5 points. Programs that compile, but do not implement any of the functionality described above can receive a maximum of 7 points.
 
