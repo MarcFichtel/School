@@ -32,13 +32,13 @@ _start:
 
 main:
 	// Start program 
-	MOV 	sp, #0x8000 						  // Establish stack pointer
-	BL 	EnableJTAG 						      // Enable JTAG
-	BL 	InitUART 						        // Enable UART
+	MOV 	sp, #0x8000 						// Establish stack pointer
+	BL 	EnableJTAG 						// Enable JTAG
+	BL 	InitUART 						// Enable UART
 
 	// Print names
-	LDR 	r0, =authors 						  // Load 'author' string into register
-	BL 	stringBitCount 						  // Branch to count bits & print
+	LDR 	r0, =authors 						// Load 'author' string into register
+	BL 	stringBitCount 						// Branch to count bits & print
   
   
   
@@ -47,7 +47,7 @@ main:
   
   
 haltLoop$:
-	B 	haltLoop$ 						      // Terminate program with infinite loop
+	B 	haltLoop$ 						// Terminate program with infinite loop
 
 //////////////////////////////////////////////////////
 // Print Message
@@ -55,17 +55,17 @@ haltLoop$:
 
 // Count number of bits to buffer for any given particular string
 Print_Message: 
-	PUSH 	{lr}							        // Start function
-	MOV 	r1, #0 							      // Reset loop counter
-	MOV 	r2, r0 							      // Move print address into temporary register
+	PUSH 	{lr}							// Start function
+	MOV 	r1, #0 							// Reset loop counter
+	MOV 	r2, r0 							// Move print address into temporary register
 
 loopCounter:
-	LDRB 	r3, [r2], #1 						  // Load byte into memory
-	CMP 	r3, #0 							      // Compare current byte to null
-	ADDne 	r1, #1  						    // If not equal, loop++, and
-	Bne 	loopCounter 						  // Loop
-	BL 	WriteStringUART 					  // Else, when done counting, print out r1 amount of buffer
-	POP 	{pc} 							        // End function
+	LDRB 	r3, [r2], #1 						// Load byte into memory
+	CMP 	r3, #0 							// Compare current byte to null
+	ADDne 	r1, #1  						// If not equal, loop++, and
+	Bne 	loopCounter 						// Loop
+	BL 	WriteStringUART 					// Else, when done counting, print out r1 amount of buffer
+	POP 	{pc} 							// End function
 
 //////////////////////////////////////////////////////
 // Initialize GPIO
