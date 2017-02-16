@@ -1,6 +1,7 @@
 # CPSC 359
 
 ## Assignment 3
+Due March 6, 11:59pm
 
 ### Objective:
 Build a simple device driver for a SNES controller. The driver will be used in the next assignment as the primary input device for your interactive game. This assignment is a step towards building the interactive video game in Assignment 4. Write clean modular code that can be easily used in Assignment 4. Try to keep the same teams between Assignment 3 and Assignment 4. The team size for these two assignments is up to 3 members. 
