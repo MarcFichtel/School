@@ -1,6 +1,6 @@
 # SENG 301
 
-## A3: Building Automated Unit Tests
+## [A3: Building Automated Unit Tests](https://hcitang.github.io/seng301/#!a3.md)
 Due March 10, noon
 
 Fresh off submitting the vending machine software to the client, your boss storms into your office. "You won't believe what I just learned about," she cries, "Automated unit tests! We've GOT to do this! NOW!" You roll your eyes: the firestorm never ends at this job.
