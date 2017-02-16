@@ -13,17 +13,7 @@ Build a simple device driver for a SNES controller. The driver will be used in t
 5. Loop back to step 2 if any key other than START is pressed.
 6. Pressing the “START” button will end the program displaying an exit message.
 
-### Notes:
-1. Use at least the following subroutines:
-  * Init_GPIO: This subroutine initializes a GPIO line, the line number and function code must be passed as parameters. The subroutine does not have to be general: It just needs to work for the three SNES lines.
-  * Write_Latch: Writes a bit to the GPIO latch line 
-  * Write_Clock: Writes a value to the GPIO Clock line
-  * Read_Data: Reads a bit from the GPIO data line
-  * Wait: Waits for a time interval, passed as a parameter.
-  * Read_SNES: Main SNES subroutine that reads input (buttons pressed) from a SNES controller. Returns the code of a pressed button in a register.
-  * Print_Message: Prints an appropriate message to the UART terminal (Press a button, You pressed X, etc ..) The message address is passed as a parameter.
-
-Example:
+### Example Session:
 * Created by: John Smith and Sarah Smith
 * Please press a button...
 * (User Presses Joy-pad RIGHT button)
@@ -34,6 +24,16 @@ Example:
 * Please press a button...
 * (User Presses START button)
 * Program is terminating...
+
+### Notes:
+1. Use at least the following subroutines:
+  * Init_GPIO: This subroutine initializes a GPIO line, the line number and function code must be passed as parameters. The subroutine does not have to be general: It just needs to work for the three SNES lines.
+  * Write_Latch: Writes a bit to the GPIO latch line 
+  * Write_Clock: Writes a value to the GPIO Clock line
+  * Read_Data: Reads a bit from the GPIO data line
+  * Wait: Waits for a time interval, passed as a parameter.
+  * Read_SNES: Main SNES subroutine that reads input (buttons pressed) from a SNES controller. Returns the code of a pressed button in a register.
+  * Print_Message: Prints an appropriate message to the UART terminal (Press a button, You pressed X, etc ..) The message address is passed as a parameter.
 
 You may use our supplied UART I/O subroutines that were used in the previous assignment.
 
