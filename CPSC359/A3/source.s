@@ -141,3 +141,19 @@ Read_SNES:
 .align
 
 authors: 	.asciz 	"Created by Marc-Andre Fichtel and Cardin Chen\n\r"
+
+button_press: 		.asciz 	"Please press a button...\n\r"
+pressed_A: 			.asciz 	"You have pressed A \n\r"
+pressed_B: 			.asciz 	"You have pressed B \n\r"
+pressed_X: 			.asciz 	"You have pressed X \n\r"
+pressed_Y: 			.asciz 	"You have pressed Y \n\r"
+pressed_L: 			.asciz 	"You have pressed LEFT BUMPER \n\r"
+pressed_R: 			.asciz 	"You have pressed RIGHT BUMPER \n\r"
+pressed_joyRIGHT: 	.asciz 	"You have pressed Joy-pad RIGHT \n\r"
+pressed_joyLEFT: 	.asciz 	"You have pressed Joy-pad LEFT \n\r"
+pressed_joyUP: 		.asciz 	"You have pressed Joy-pad UP \n\r"
+pressed_joyDOWN: 	.asciz 	"You have pressed Joy-pad DOWN \n\r"
+pressed_START: 		.asciz 	"You have pressed START \n\r"
+pressed_SELECT: 	.asciz 	"You have pressed SELECT \n\r"
+
+end: 		.asciz "Program is terminating...\n\r"
