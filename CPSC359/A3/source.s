@@ -13,7 +13,7 @@
 // * Display the input button
 //
 // Register usage
-// *  
+// * r5 is used to track which buttons on the SNES controller are pressed
 // * 
 // * 
 //////////////////////////////////////////////////////
@@ -23,6 +23,8 @@
 
 _start:
 	B 	main
+
+buttons_r 	.req r5
 
 //////////////////////////////////////////////////////
 // Text Section
@@ -235,7 +237,37 @@ waitLoop:
 Read_SNES:
 	PUSH 	{lr}							// Start function
   
-  	// Code here
+  	MOV 	buttons_r, #0 						// Register for sampling buttons
+	
+	MOV 	r1, #1
+	BL 	Write_Clock						// writeGPIO(CLOCK,#1)
+  
+  	MOV 	r1, #1
+	BL 	Write_Latch						// writeGPIO(LATCH,#1)
+  
+  	MOV 	r0, #12
+	BL 	Wait 							// wait(12ms) - signal to SNES to sample buttons
+  
+    	MOV 	r1, #0
+	BL 	Write_Latch						// writeGPIO(LATCH,#0)
+  
+  pulseLoop:
+  	MOV 	r2, #0 							// i = 0
+	
+	MOV 	r0, #6
+	BL 	Wait  							// wait(6ms)
+	
+	MOV 	r1, #0
+	BL 	Write_Clock						// writeGPIO(CLOCK,#0) - falling edge
+  
+  	MOV 	r0, #6
+	BL 	Wait  							// wait(6ms)
+	
+	// readGPIO(DATA, b) - read bit i
+	// buttons[i] = b
+	// writeGPIO(CLOCK,#1) - rising edge; new cycle
+	// i++  - next button
+ 	// if (i< 16) branch pulseLoop
   
   	POP 	{pc} 							// End function
   
