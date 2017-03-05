@@ -35,13 +35,28 @@ main:
 	MOV 	sp, #0x8000 						// Establish stack pointer
 	BL 	EnableJTAG 						// Enable JTAG
 	BL 	InitUART 						// Enable UART
+	
+	// Set up GPIO lines 9, 10, 11
+	MOV 	r0, #9 							// 1st arg: 9 (GPIO line)
+	MOV 	r1, #1 							// 2nd arg: 1 (function code output)
+	BL 	Init_GPIO 						// Set up GPIO9
+	
+	MOV 	r0, #10 						// 1st arg: 10 (GPIO line)
+	MOV 	r1, #1							// 2nd arg: 1 (function code output)
+	BL 	Init_GPIO 						// Set up GPIO10
+	
+	MOV 	r0, #11 						// 1st arg: 11 (GPIO line)
+	MOV 	r1, #0 							// 2nd arg: 0 (function code input)
+	BL 	Init_GPIO 						// Set up GPIO11
 
 	// Print names
 	LDR 	r0, =authors 						// Load 'author' string into register
 	BL 	Print_Message 						// Branch to count bits & print
-  
-  	// Initialize GPIO
-	BL 	Init_GPIO 						// Set up GPIO
+	
+mainLoop:
+	// Print input instrcution
+	LDR 	r0, =button_press 					// Load input prompt string into register
+	BL 	Print_Message 						// Branch to count bits & print
   
   
   
@@ -74,8 +89,18 @@ loopCounter:
 
 Init_GPIO:
   	PUSH 	{lr}						        // Start function
+	
+	// Check which GPIO line is to be initialized
+  	CMP 	r0, #9 							// If GPIO9 is being initialized
+  	Beq 	latch 							// Go to latch
+  	CMP 	r0, #10 						// If GPIO10 is being initialized
+	Beq 	data 							// Go to data
+	CMP 	r0, #11 						// If GPIO11 is being initialized
+	Beq 	clock 							// Go to clock
   
-  	// Init CLOCK (Set GPIO11 to output)
+clock: 	// Init CLOCK (Set GPIO11 to output)
+	CMP 	r1, #1							// If function code != 1
+	Bne 	end 							// Do nothing (go to end), else...
 	LDR 	r0, =0x3F000004 					// Address for GPFSEL1
 	LDR 	r1, [r0]						// Copy GPFSEL1 into r1
 	MOV 	r2, #7 							// (r2 = 0b111)
@@ -85,8 +110,11 @@ Init_GPIO:
 	LSL 	r3, #3 							// Shift 1 (output) over for pin11
 	ORR 	r1, r3 							// Set pin11 function in r1 to 1 (output)
 	STR 	r1, [r0] 						// Write back to GPFSEL1
+  	B 	end 							// When init is complete, go to end
   
-  	// Init LATCH (Set GPIO9 to output)
+latch: 	// Init LATCH (Set GPIO9 to output)
+	CMP 	r1, #1							// If function code != 1
+	Bne 	end 							// Do nothing (go to end), else...
 	LDR 	r0, =0x3F000000 					// Address for GPFSEL0
 	LDR 	r1, [r0]						// Copy GPFSEL0 into r1
 	MOV 	r2, #7 							// (r2 = 0b111)
@@ -96,16 +124,20 @@ Init_GPIO:
 	LSL 	r3, #27 						// Shift 1 (output) over for pin9
 	ORR 	r1, r3 							// Set pin9 function in r1 to 1 (output)
 	STR 	r1, [r0] 						// Write back to GPFSEL0
+  	B 	end 							// When init is complete, go to end	
 	
-	// Init DATA (Set GPIO10 to input)
-  	LDR 	r0, =0x3F000004 					// Address for GPFSEL1
+data:	// Init DATA (Set GPIO10 to input)
+  	CMP 	r1, #0							// If function code != 0
+	Bne 	end 							// Do nothing (go to end), else...
+	LDR 	r0, =0x3F000004 					// Address for GPFSEL1
 	LDR 	r1, [r0]						// Copy GPFSEL1 into r1
 	MOV 	r2, #7 							// (r2 = 0b111)
 	BIC 	r1, r2 							// Clear pin10 bits
 	ORR 	r1, r3 							// Set pin10 function in r1 to 0 (input)
 	STR 	r1, [r0] 						// Write back to GPFSEL1
-  
-  
+  	B 	end 							// When init is complete, go to end
+
+end:
   	POP 	{pc} 						        // End function
   
 //////////////////////////////////////////////////////
