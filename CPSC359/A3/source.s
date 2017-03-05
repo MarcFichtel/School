@@ -85,6 +85,9 @@ loopCounter:
 
 //////////////////////////////////////////////////////
 // Initialize GPIO
+// Inputs: 
+// ~ r0: GPIO line to be initialized
+// ~ r1: Function code to initialize the line to
 //////////////////////////////////////////////////////
 
 Init_GPIO:
@@ -142,23 +145,41 @@ end:
   
 //////////////////////////////////////////////////////
 // Write to Latch
+// Inputs:
+// ~ r1: Bit to write to latch line
 //////////////////////////////////////////////////////
   
 Write_Latch:
   	PUSH 	{lr}						        // Start function
   
-  	// Code here
-  
+  	MOV 	r0, #9 							// r0 = 9 (for GPIO9)
+  	LDR 	r2, =0x3F000000 					// Address for GPFSEL0
+  	MOV 	r3, #1
+  	LSL 	r3, r0 							// Align bit for pin 9
+  	Teq	r1, #0 
+  	
+	STReq 	r3, [r2, #40] 						// GPCLR0
+	STRne 	r3, [r2, #28] 						// GPSET0
+	
   	POP 	{pc} 						        // End function
   
 //////////////////////////////////////////////////////
 // Write to Clock
+// Inputs:
+// ~ r1: Bit to write to clock line
 //////////////////////////////////////////////////////
   
 Write_Clock:
   	PUSH 	{lr}						        // Start function
   
-  	// Code here
+  	MOV 	r0, #11 						// r0 = 11 (for GPIO11)
+  	LDR 	r2, =0x3F000004 					// Address for GPFSEL1
+  	MOV 	r3, #1
+  	LSL 	r3, r0 							// Align bit for pin 11
+  	Teq	r1, #0 
+  	
+	STReq 	r3, [r2, #40] 						// GPCLR0
+	STRne 	r3, [r2, #28] 						// GPSET0
   
   	POP 	{pc} 						        // End function
   
@@ -167,11 +188,20 @@ Write_Clock:
 //////////////////////////////////////////////////////
   
 Read_Data:
-	  PUSH 	{lr}							// Start function
+	PUSH 	{lr}							// Start function
 
-	  // Code here
+	MOV 	r0, #10 						// r0 = 10 (for GPIO10)
+	LDR 	r2, =0x3F000004 					// Address for GPFSEL1
+	LDR 	r1, [r2, #52] 						// GPLEV0
+	MOV 	r3, #1
+	LSL 	r3, r0 							// Align pin10 bit
+	AND 	r1, r3 							// Mask everything else
+	Teq 	r1, #0
+	
+	MOVeq 	r4, #0 							// Return 0 if equal
+	MOVne 	r4, #1 							// Return 1 if not equal
 
-	  POP 	{pc} 							// End function
+	POP 	{pc} 							// End function
  
 //////////////////////////////////////////////////////
 // Wait
