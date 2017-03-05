@@ -6,7 +6,7 @@
 // * Cardin Chen, 10161477
 //
 // TODOs
-// * 
+// * Read_SNES
 //
 // Program does the following:
 // * Take input from a SNES controller
@@ -67,6 +67,8 @@ haltLoop$:
 
 //////////////////////////////////////////////////////
 // Print Message
+// Inputs:
+// ~ r0: Address of string to be printed
 //////////////////////////////////////////////////////
 
 // Count number of bits to buffer for any given particular string
@@ -101,20 +103,6 @@ Init_GPIO:
 	CMP 	r0, #11 						// If GPIO11 is being initialized
 	Beq 	clock 							// Go to clock
   
-clock: 	// Init CLOCK (Set GPIO11 to output)
-	CMP 	r1, #1							// If function code != 1
-	Bne 	end 							// Do nothing (go to end), else...
-	LDR 	r0, =0x3F000004 					// Address for GPFSEL1
-	LDR 	r1, [r0]						// Copy GPFSEL1 into r1
-	MOV 	r2, #7 							// (r2 = 0b111)
-	LSL 	r2, #3 							// Index of 1st bit for pin11, r2 = 0 111 000
-	BIC 	r1, r2 							// Clear pin11 bits
-	MOV 	r3 , #1 						// Output function code
-	LSL 	r3, #3 							// Shift 1 (output) over for pin11
-	ORR 	r1, r3 							// Set pin11 function in r1 to 1 (output)
-	STR 	r1, [r0] 						// Write back to GPFSEL1
-  	B 	end 							// When init is complete, go to end
-  
 latch: 	// Init LATCH (Set GPIO9 to output)
 	CMP 	r1, #1							// If function code != 1
 	Bne 	end 							// Do nothing (go to end), else...
@@ -140,6 +128,20 @@ data:	// Init DATA (Set GPIO10 to input)
 	STR 	r1, [r0] 						// Write back to GPFSEL1
   	B 	end 							// When init is complete, go to end
 
+clock: 	// Init CLOCK (Set GPIO11 to output)
+	CMP 	r1, #1							// If function code != 1
+	Bne 	end 							// Do nothing (go to end), else...
+	LDR 	r0, =0x3F000004 					// Address for GPFSEL1
+	LDR 	r1, [r0]						// Copy GPFSEL1 into r1
+	MOV 	r2, #7 							// (r2 = 0b111)
+	LSL 	r2, #3 							// Index of 1st bit for pin11, r2 = 0 111 000
+	BIC 	r1, r2 							// Clear pin11 bits
+	MOV 	r3 , #1 						// Output function code
+	LSL 	r3, #3 							// Shift 1 (output) over for pin11
+	ORR 	r1, r3 							// Set pin11 function in r1 to 1 (output)
+	STR 	r1, [r0] 						// Write back to GPFSEL1
+  	B 	end 							// When init is complete, go to end
+	
 end:
   	POP 	{pc} 						        // End function
   
@@ -185,6 +187,8 @@ Write_Clock:
   
 //////////////////////////////////////////////////////
 // Read Data
+// Returns:
+// ~ The read bit (0 or 1)
 //////////////////////////////////////////////////////
   
 Read_Data:
@@ -205,23 +209,27 @@ Read_Data:
  
 //////////////////////////////////////////////////////
 // Wait
+// Inputs:
+// ~ r0: Time to be waited in microseconds
 //////////////////////////////////////////////////////
  
 Wait:
   	PUSH 	{lr}							// Start function
   
-	LDR 	r0, =0x3F003004 					// Address of CLO
-	LDR 	r1, [r0] 						// Read CLO
-	ADD 	r1, #12 						// Add 12 micros
+	LDR 	r2, =0x3F003004 					// Address of CLO
+	LDR 	r1, [r2] 						// Read CLO
+	ADD 	r1, r0 							// Add time to be waited in micros
 waitLoop:
-	LDR 	r2, [r0] 						// Load CLO
-	CMP 	r1, r2 							// If CLO < r1
+	LDR 	r0, [r2] 						// Load CLO
+	CMP 	r1, r0 							// If CLO < r1
 	Bhi 	waitLoop 						// Go to waitLoop
   
   	POP 	{pc} 							// End function
   
 //////////////////////////////////////////////////////
 // Read SNES
+// Returns:
+// ~ Code of a pressed button in a register
 //////////////////////////////////////////////////////
   
 Read_SNES:
