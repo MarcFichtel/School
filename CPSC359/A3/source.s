@@ -61,7 +61,12 @@ mainLoop:
 	BL 	Print_Message 						// Branch to count bits & print
   	
 	B 	Read_SNES 						// Start SNES main routine
-  
+	CMP 	buttons_r, #3 						// If pressed button != START (button #3)
+	Bne 	mainLoop   						// Loop, else...
+
+	LDR 	r0, =endMsg  						// Load program termination message
+ 	BL 	Print_Message 						// Print message
+
 haltLoop:
 	B 	haltLoop 						// Terminate program with infinite loop
 
@@ -87,30 +92,17 @@ loopCounter:
 
 //////////////////////////////////////////////////////
 // *** Prints Pressed Button 
-// Inputs:
-// *** 
 //////////////////////////////////////////////////////
 Print_Button:
 	PUSH 	{lr} 							// Start function
   	
-	LDR 	r0, =button_message 					// load button message strings 
-	MOV 	r1, #34  						// buffer: 34 bits, each string in button_message is 34 bits 
-	MUL  	r2, r1, buttons_r					// r2 = index multiplied by returned button-press value
-	ADD 	r0, r2 							// update r0 with index of button to be printed 
-	BL 	WriteStringUART 					// print designated button message 
-	CMP 	buttons_r, #102 					// *** check if this is correct: if start button is pressed, exit 
-									// *** logic: (34 bits per string) * (3, the start button value) = 102 
-	
-	Beq 	StartButton_Pressed 					// if start button is pressed, exit 
-  	POP 	{pc} 							// End function
+	LDR 	r0, =button_message 					// Load button message strings address
+	MOV 	r1, #34  						// Buffer: 34 bits, each string in button_message is 34 bits 
+	MUL  	r2, r1, buttons_r					// r2 = button index * 34
+	ADD 	r0, r2 							// String array base address + offset = String to be printed
+	BL 	WriteStringUART 					// Print designated button message 
 
- StartButton_Pressed:
- 	LDR 	r0, =endMsg 
- 	BL 	Print_Message
- 	B 	haltLoop 
-  	
-	// *** added another pop{pc} in startbutton_pressed just in case of memory errors if not popped, most likly unneccesary
-  	POP 	{pc}
+  	POP 	{pc} 							// End function
 
 //////////////////////////////////////////////////////
 // Initialize GPIO
@@ -214,6 +206,8 @@ Write_Clock:
   
 //////////////////////////////////////////////////////
 // Read Data
+// Inputs:
+// ~ r0: The bit to be read
 // Returns:
 // ~ The read bit (0 or 1)
 //////////////////////////////////////////////////////
@@ -225,7 +219,7 @@ Read_Data:
 	LDR 	r2, =0x3F000004 					// Address for GPFSEL1
 	LDR 	r1, [r2, #52] 						// GPLEV0
 	MOV 	r3, #1
-	LSL 	r3, r0 							// Align pin10 bit
+	LSL 	r3, r0						// Align pin10 bit
 	AND 	r1, r3 							// Mask everything else
 	TEQ 	r1, #0
 	
@@ -288,10 +282,11 @@ Read_SNES:
   	MOV 	r0, #6
 	BL 	Wait  							// wait(6ms)
 	
+	MOV 	r0, r6 							// r0 = i (1st arg to Read_Data)
 	BL 	Read_Data 						// readGPIO(DATA, b) - read bit i into r4
-	CMP 	r4, #1 							// Check if read bit is 1
+	CMP 	r4, #0 							// Check if read bit is 0 (buttons[i] == pressed?)
 	
-	Beq 	skip							// If button is not pressed (!= 0) skip print step   
+	Bne 	skip							// If button is not pressed (!= 0) skip print step   
 	MOV 	buttons_r, r6  						// Else move index of pressed button into buttons_r
 	BL 	Print_Button 						// Print button pressed 
 skip:
@@ -314,4 +309,4 @@ skip:
 authors: 		.asciz 	"Created by Marc-Andre Fichtel and Cardin Chen\n\r"
 button_press: 		.asciz 	"Please press a button...\n\r"
 endMsg: 		.asciz 	"Program is terminating...\n\r"
-button_message: 	.asciz 	"You have pressed B \n\r           ", "You have pressed Y \n\r           ", "You have pressed SELECT \n\r      ", "You have pressed START \n\r       ", "You have pressed UP \n\r          ", "You have pressed DOWN \n\r        ", "You have pressed LEFT \n\r        ", "You have pressed RIGHT \n\r       ", "You have pressed A \n\r           ", "You have pressed X \n\r           ", "You have pressed LEFT BUMPER \n\r", "You have pressed RIGHT BUMPER \n\r" // each string is aligned to 34 bits 
+button_message: 	.asciz 	"You have pressed B             \n\r", "You have pressed Y            \n\r", "You have pressed SELECT       \n\r", "You have pressed START        \n\r", "You have pressed UP           \n\r", "You have pressed DOWN         \n\r", "You have pressed LEFT         \n\r", "You have pressed RIGHT        \n\r", "You have pressed A            \n\r", "You have pressed X            \n\r", "You have pressed LEFT BUMPER \n\r", "You have pressed RIGHT BUMPER \n\r" // each string is aligned to 34 bits 
