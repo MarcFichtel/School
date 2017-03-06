@@ -268,7 +268,7 @@ Read_SNES:
   	MOV 	r0, #12
 	BL 	Wait 							// wait(12ms) - signal to SNES to sample buttons
   
-    MOV 	r1, #0 						 
+    	MOV 	r1, #0 						 
 	BL 	Write_Latch						// writeGPIO(LATCH,#0)
   
   pulseLoop:
@@ -283,17 +283,17 @@ Read_SNES:
   	MOV 	r0, #6
 	BL 	Wait  							// wait(6ms)
 	
-	BL 	Read_Data 			// readGPIO(DATA, b) - read bit i
-	CMP 	r4, #1 			// buttons[i] = b   
-	MOVNE 	buttons_r, r2  	// if button is pressed (r2 == 0 right? ***) move index into buttons_r
-	BL 		Print_Button 	// print button pressed 
-	ADDEQ 	r2, #1 			// i ++ if button not pressed 
+	BL 	Read_Data 						// readGPIO(DATA, b) - read bit i
+	CMP 	r4, #1 							// buttons[i] = b   
+	MOVne 	buttons_r, r2  						// if button is pressed (r2 == 0 right? ***) move index into buttons_r
+	BL 	Print_Button 						// print button pressed 
+	ADDeq 	r2, #1 							// i ++ if button not pressed 
 	
 	MOV 	r1, #1
-	BL 	Write_Clock			// writeGPIO(CLOCK,#1) - rising edge; new cycle
+	BL 	Write_Clock						// writeGPIO(CLOCK,#1) - rising edge; new cycle
  	CMP 	r2, #16 
-  	BLT 	pulseLoop		// if (i< 16) branch pulseLoop 
-  	POP 	{pc} 			// End function
+  	Blt 	pulseLoop						// if (i< 16) branch pulseLoop 
+  	POP 	{pc} 							// End function
   
 //////////////////////////////////////////////////////
 // Data Section
@@ -303,31 +303,6 @@ Read_SNES:
 .align
 
 authors: 		.asciz 	"Created by Marc-Andre Fichtel and Cardin Chen\n\r"
-
 button_press: 		.asciz 	"Please press a button...\n\r"
-
-endMsg: 			.asciz "Program is terminating...\n\r"
-
-button_message: 	.asciz 	"You have pressed B \n\r           "
-
-							, "You have pressed Y \n\r           "
-
-							, "You have pressed SELECT \n\r      "
-
-							, "You have pressed START \n\r       "
-
-							, "You have pressed UP \n\r          "
-
-							, "You have pressed DOWN \n\r        "
-
-							, "You have pressed LEFT \n\r        "
-
-							, "You have pressed RIGHT \n\r       "
-
-							, "You have pressed A \n\r           "
-
-							, "You have pressed X \n\r           "
-
-							, "You have pressed LEFT BUMPER \n\r"
-
-							, "You have pressed RIGHT BUMPER \n\r" // each string is aligned to 34 bits 
+endMsg: 		.asciz 	"Program is terminating...\n\r"
+button_message: 	.asciz 	"You have pressed B \n\r           ", "You have pressed Y \n\r           ", "You have pressed SELECT \n\r      ", "You have pressed START \n\r       ", "You have pressed UP \n\r          ", "You have pressed DOWN \n\r        ", "You have pressed LEFT \n\r        ", "You have pressed RIGHT \n\r       ", "You have pressed A \n\r           ", "You have pressed X \n\r           ", "You have pressed LEFT BUMPER \n\r", "You have pressed RIGHT BUMPER \n\r" // each string is aligned to 34 bits 
