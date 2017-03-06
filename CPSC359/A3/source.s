@@ -6,7 +6,7 @@
 // * Cardin Chen, 10161477
 //
 // TODOs
-// * Read_SNES
+// * Get it to run
 //
 // Program does the following:
 // * Take input from a SNES controller
@@ -59,10 +59,11 @@ mainLoop:
 	// Print input instruction
 	LDR 	r0, =button_press 					// Load input prompt string into register
 	BL 	Print_Message 						// Branch to count bits & print
-  	B Read_SNES
+  	
+	B 	Read_SNES 						// Start SNES main routine
   
-haltLoop$:
-	B 	haltLoop$ 						// Terminate program with infinite loop
+haltLoop:
+	B 	haltLoop 						// Terminate program with infinite loop
 
 //////////////////////////////////////////////////////
 // Print Message
@@ -90,23 +91,27 @@ loopCounter:
 // *** 
 //////////////////////////////////////////////////////
 Print_Button:
-	PUSH 	{lr}
-  	LDR 	r0, =button_message 		// load button message strings 
-	MOV 	r1, #34  					// buffer: 34 bits, each string in button_message is 34 bits 
-	MUL  	r2, r1, buttons_r			// r2 = index multiplied by returned button-press value
-	ADD 	r0, r2 						// update r0 with index of button to be printed 
-	bl 		WriteStringUART 			// print designated button message 
-	CMP 	buttons_r, #102 			// *** check if this is correct: if start button is pressed, exit 
-	// *** logic: (34 bits per string) * (3, the start button value) = 102 
-	Beq 	StartButton_Pressed 		// if start button is pressed, exit 
-  	POP 	{pc}
+	PUSH 	{lr} 							// Start function
+  	
+	LDR 	r0, =button_message 					// load button message strings 
+	MOV 	r1, #34  						// buffer: 34 bits, each string in button_message is 34 bits 
+	MUL  	r2, r1, buttons_r					// r2 = index multiplied by returned button-press value
+	ADD 	r0, r2 							// update r0 with index of button to be printed 
+	BL 	WriteStringUART 					// print designated button message 
+	CMP 	buttons_r, #102 					// *** check if this is correct: if start button is pressed, exit 
+									// *** logic: (34 bits per string) * (3, the start button value) = 102 
+	
+	Beq 	StartButton_Pressed 					// if start button is pressed, exit 
+  	POP 	{pc} 							// End function
 
  StartButton_Pressed:
- 	ldr 	r0, =endMsg 
- 	BL 		Print_Message
- 	b 		haltLoop 
-  	// *** added another pop{pc} in startbutton_pressed just in case of memory errors if not popped, most likly unneccesary
+ 	LDR 	r0, =endMsg 
+ 	BL 	Print_Message
+ 	B 	haltLoop 
+  	
+	// *** added another pop{pc} in startbutton_pressed just in case of memory errors if not popped, most likly unneccesary
   	POP 	{pc}
+
 //////////////////////////////////////////////////////
 // Initialize GPIO
 // Inputs: 
@@ -153,7 +158,7 @@ data:	// Init DATA (Set GPIO10 to input)
 clock: 	// Init CLOCK (Set GPIO11 to output)
 	CMP 	r1, #1							// If function code != 1
 	Bne 	end 							// Do nothing (go to end), else...
-	LDR 	r0, =0x3F000004 				// Address for GPFSEL1
+	LDR 	r0, =0x3F000004 					// Address for GPFSEL1
 	LDR 	r1, [r0]						// Copy GPFSEL1 into r1
 	MOV 	r2, #7 							// (r2 = 0b111)
 	LSL 	r2, #3 							// Index of 1st bit for pin11, r2 = 0 111 000
@@ -162,7 +167,7 @@ clock: 	// Init CLOCK (Set GPIO11 to output)
 	LSL 	r3, #3 							// Shift 1 (output) over for pin11
 	ORR 	r1, r3 							// Set pin11 function in r1 to 1 (output)
 	STR 	r1, [r0] 						// Write back to GPFSEL1
-  	B 	end 								// When init is complete, go to end
+  	B 	end 							// When init is complete, go to end
 	
 end:
   	POP 	{pc} 						        // End function
@@ -222,7 +227,7 @@ Read_Data:
 	MOV 	r3, #1
 	LSL 	r3, r0 							// Align pin10 bit
 	AND 	r1, r3 							// Mask everything else
-	Teq 	r1, #0
+	TEQ 	r1, #0
 	
 	MOVeq 	r4, #0 							// Return 0 if equal
 	MOVne 	r4, #1 							// Return 1 if not equal
@@ -255,7 +260,7 @@ waitLoop:
 //////////////////////////////////////////////////////
   
 Read_SNES:
-	PUSH 	{lr}							// Start function
+	PUSH 	{r6, lr}						// Start function
   
   	MOV 	buttons_r, #0 						// Register for sampling buttons
 	
@@ -272,7 +277,7 @@ Read_SNES:
 	BL 	Write_Latch						// writeGPIO(LATCH,#0)
   
   pulseLoop:
-  	MOV 	r2, #0 							// i = 0
+  	MOV 	r6, #0 							// i = 0
 	
 	MOV 	r0, #6 							// r0 = 6ms 
 	BL 	Wait  							// wait(6ms)
@@ -283,17 +288,21 @@ Read_SNES:
   	MOV 	r0, #6
 	BL 	Wait  							// wait(6ms)
 	
-	BL 	Read_Data 						// readGPIO(DATA, b) - read bit i
-	CMP 	r4, #1 							// buttons[i] = b   
-	MOVne 	buttons_r, r2  						// if button is pressed (r2 == 0 right? ***) move index into buttons_r
-	BL 	Print_Button 						// print button pressed 
-	ADDeq 	r2, #1 							// i ++ if button not pressed 
+	BL 	Read_Data 						// readGPIO(DATA, b) - read bit i into r4
+	CMP 	r4, #1 							// Check if read bit is 1
 	
+	Beq 	skip							// If button is not pressed (!= 0) skip print step   
+	MOV 	buttons_r, r6  						// Else move index of pressed button into buttons_r
+	BL 	Print_Button 						// Print button pressed 
+skip:
 	MOV 	r1, #1
 	BL 	Write_Clock						// writeGPIO(CLOCK,#1) - rising edge; new cycle
- 	CMP 	r2, #16 
+ 
+	ADD 	r6, #1 							// i++ to look at next button
+	CMP 	r6, #16 
   	Blt 	pulseLoop						// if (i< 16) branch pulseLoop 
-  	POP 	{pc} 							// End function
+  
+	POP 	{r6, pc} 						// End function
   
 //////////////////////////////////////////////////////
 // Data Section
