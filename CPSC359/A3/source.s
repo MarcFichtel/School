@@ -15,7 +15,7 @@
 // Register usage
 // * r5 is used to track which buttons on the SNES controller are pressed
 // * 
-// * 
+// * VERSION MONDAY 3 26 AM 
 //////////////////////////////////////////////////////
 
 .section 	.init
@@ -56,13 +56,10 @@ main:
 	BL 	Print_Message 						// Branch to count bits & print
 	
 mainLoop:
-	// Print input instrcution
+	// Print input instruction
 	LDR 	r0, =button_press 					// Load input prompt string into register
 	BL 	Print_Message 						// Branch to count bits & print
-  
-  
-  
-  
+  	B Read_SNES
   
 haltLoop$:
 	B 	haltLoop$ 						// Terminate program with infinite loop
@@ -87,6 +84,29 @@ loopCounter:
 	BL 	WriteStringUART 					// Else, when done counting, print out r1 amount of buffer
 	POP 	{pc} 							// End function
 
+//////////////////////////////////////////////////////
+// *** Prints Pressed Button 
+// Inputs:
+// *** 
+//////////////////////////////////////////////////////
+Print_Button:
+	PUSH 	{lr}
+  	LDR 	r0, =button_message 		// load button message strings 
+	MOV 	r1, #34  					// buffer: 34 bits, each string in button_message is 34 bits 
+	MUL  	r2, r1, buttons_r			// r2 = index multiplied by returned button-press value
+	ADD 	r0, r2 						// update r0 with index of button to be printed 
+	bl 		WriteStringUART 			// print designated button message 
+	CMP 	buttons_r, #102 			// *** check if this is correct: if start button is pressed, exit 
+	// *** logic: (34 bits per string) * (3, the start button value) = 102 
+	Beq 	StartButton_Pressed 		// if start button is pressed, exit 
+  	POP 	{pc}
+
+ StartButton_Pressed:
+ 	ldr 	r0, =endMsg 
+ 	BL 		Print_Message
+ 	b 		haltLoop 
+  	// *** added another pop{pc} in startbutton_pressed just in case of memory errors if not popped, most likly unneccesary
+  	POP 	{pc}
 //////////////////////////////////////////////////////
 // Initialize GPIO
 // Inputs: 
@@ -133,7 +153,7 @@ data:	// Init DATA (Set GPIO10 to input)
 clock: 	// Init CLOCK (Set GPIO11 to output)
 	CMP 	r1, #1							// If function code != 1
 	Bne 	end 							// Do nothing (go to end), else...
-	LDR 	r0, =0x3F000004 					// Address for GPFSEL1
+	LDR 	r0, =0x3F000004 				// Address for GPFSEL1
 	LDR 	r1, [r0]						// Copy GPFSEL1 into r1
 	MOV 	r2, #7 							// (r2 = 0b111)
 	LSL 	r2, #3 							// Index of 1st bit for pin11, r2 = 0 111 000
@@ -142,7 +162,7 @@ clock: 	// Init CLOCK (Set GPIO11 to output)
 	LSL 	r3, #3 							// Shift 1 (output) over for pin11
 	ORR 	r1, r3 							// Set pin11 function in r1 to 1 (output)
 	STR 	r1, [r0] 						// Write back to GPFSEL1
-  	B 	end 							// When init is complete, go to end
+  	B 	end 								// When init is complete, go to end
 	
 end:
   	POP 	{pc} 						        // End function
@@ -180,7 +200,7 @@ Write_Clock:
   	LDR 	r2, =0x3F000004 					// Address for GPFSEL1
   	MOV 	r3, #1
   	LSL 	r3, r0 							// Align bit for pin 11
-  	Teq	r1, #0 
+  	Teq		r1, #0 
   	
 	STReq 	r3, [r2, #40] 						// GPCLR0
 	STRne 	r3, [r2, #28] 						// GPSET0
@@ -248,13 +268,13 @@ Read_SNES:
   	MOV 	r0, #12
 	BL 	Wait 							// wait(12ms) - signal to SNES to sample buttons
   
-    	MOV 	r1, #0
+    MOV 	r1, #0 						 
 	BL 	Write_Latch						// writeGPIO(LATCH,#0)
   
   pulseLoop:
   	MOV 	r2, #0 							// i = 0
 	
-	MOV 	r0, #6
+	MOV 	r0, #6 							// r0 = 6ms 
 	BL 	Wait  							// wait(6ms)
 	
 	MOV 	r1, #0
@@ -263,13 +283,17 @@ Read_SNES:
   	MOV 	r0, #6
 	BL 	Wait  							// wait(6ms)
 	
-	// readGPIO(DATA, b) - read bit i
-	// buttons[i] = b
-	// writeGPIO(CLOCK,#1) - rising edge; new cycle
-	// i++  - next button
- 	// if (i< 16) branch pulseLoop
-  
-  	POP 	{pc} 							// End function
+	BL 	Read_Data 			// readGPIO(DATA, b) - read bit i
+	CMP 	r4, #1 			// buttons[i] = b   
+	MOVNE 	buttons_r, r2  	// if button is pressed (r2 == 0 right? ***) move index into buttons_r
+	BL 		Print_Button 	// print button pressed 
+	ADDEQ 	r2, #1 			// i ++ if button not pressed 
+	
+	MOV 	r1, #1
+	BL 	Write_Clock			// writeGPIO(CLOCK,#1) - rising edge; new cycle
+ 	CMP 	r2, #16 
+  	BLT 	pulseLoop		// if (i< 16) branch pulseLoop 
+  	POP 	{pc} 			// End function
   
 //////////////////////////////////////////////////////
 // Data Section
@@ -281,17 +305,29 @@ Read_SNES:
 authors: 		.asciz 	"Created by Marc-Andre Fichtel and Cardin Chen\n\r"
 
 button_press: 		.asciz 	"Please press a button...\n\r"
-pressed_A: 		.asciz 	"You have pressed A \n\r"
-pressed_B: 		.asciz 	"You have pressed B \n\r"
-pressed_X: 		.asciz 	"You have pressed X \n\r"
-pressed_Y: 		.asciz 	"You have pressed Y \n\r"
-pressed_L: 		.asciz 	"You have pressed LEFT BUMPER \n\r"
-pressed_R: 		.asciz 	"You have pressed RIGHT BUMPER \n\r"
-pressed_joyRIGHT: 	.asciz 	"You have pressed Joy-pad RIGHT \n\r"
-pressed_joyLEFT: 	.asciz 	"You have pressed Joy-pad LEFT \n\r"
-pressed_joyUP: 		.asciz 	"You have pressed Joy-pad UP \n\r"
-pressed_joyDOWN: 	.asciz 	"You have pressed Joy-pad DOWN \n\r"
-pressed_START: 		.asciz 	"You have pressed START \n\r"
-pressed_SELECT: 	.asciz 	"You have pressed SELECT \n\r"
 
-end: 			.asciz "Program is terminating...\n\r"
+endMsg: 			.asciz "Program is terminating...\n\r"
+
+button_message: 	.asciz 	"You have pressed B \n\r           "
+
+							, "You have pressed Y \n\r           "
+
+							, "You have pressed SELECT \n\r      "
+
+							, "You have pressed START \n\r       "
+
+							, "You have pressed UP \n\r          "
+
+							, "You have pressed DOWN \n\r        "
+
+							, "You have pressed LEFT \n\r        "
+
+							, "You have pressed RIGHT \n\r       "
+
+							, "You have pressed A \n\r           "
+
+							, "You have pressed X \n\r           "
+
+							, "You have pressed LEFT BUMPER \n\r"
+
+							, "You have pressed RIGHT BUMPER \n\r" // each string is aligned to 34 bits 
