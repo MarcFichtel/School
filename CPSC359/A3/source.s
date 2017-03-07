@@ -70,6 +70,7 @@ mainLoop:
 
 Read_Buttons:                                    
 	BL      Read_SNES                        			// Returns the 16 bits in r0
+	MOV 	buttons_r, r0 						// Move result into buttons_r	
 	CMP     buttons_r,btnsOld_r                    			// Checks if the state is same as last
 	Beq     Same_State                       			// Wait before checking for the next input
 	MOV     btnsOld_r,buttons_r                          		// Keep track of the state
