@@ -2,342 +2,307 @@
 // CPSC 359
 // Assignment 3
 // Students:
-// * Marc-Andre Fichtel, 30014709
+// * Marc-ANDre FIChtel, 30014709
 // * Cardin Chen, 10161477
-//
-// TODOs
-// * Get it to run
 //
 // Program does the following:
 // * Take input from a SNES controller
-// * Display the input button
+// * Display the input Button
 //
-// Register usage
-// * r4 will be used as a counter
-// * r5 is used to track which buttons on the SNES controller are pressed
-// * r6 and r7 are used to temporarily hold and work with the button samplings
-// * r8 is used to track the previous button sampling
 //////////////////////////////////////////////////////
 
-.section 	.init
-.global 	_start
+.section    .init
+.global     _start
 
 _start:
-	B 	main
+    B       main
 
-counter_r 	.req r4
-buttons_r 	.req r5
-temp1_r 	.req r6
-temp2_r 	.req r7
-btnsOld_r 	.req r8
+.section .text
 
 //////////////////////////////////////////////////////
-// Text Section
+// Main
 //////////////////////////////////////////////////////
-
-.section 	.text
 
 main:
-	// Start program
-	MOV 	sp, #0x8000 						// Establish stack pointer
-	BL 	EnableJTAG 						// Enable JTAG
-	BL 	InitUART 						// Enable UART
+	MOV     sp, #0x8000 	                	// Initialize sp
+	BL	EnableJTAG 	                	// Enable JTAG
+	BL	InitUART 				// Set up UART
 
-	// Set up GPIO lines 9, 10, 11
-	MOV 	r0, #9 							// 1st arg: 9 (GPIO line)
-	MOV 	r1, #1 							// 2nd arg: 1 (function code output)
-	BL 	Init_GPIO 						// Set up GPIO9
+        MOV     r0, #9                          	// Initialize GPIO9 to output
+        BL      Init_GPIO
+        MOV     r0, #10                         	// Initialize GPIO10 to input
+        BL      Init_GPIO
+        MOV     r0, #11                         	// Initialize GPIO11 to output
+        BL      Init_GPIO
 
-	MOV 	r0, #10 						// 1st arg: 10 (GPIO line)
-	MOV 	r1, #1							// 2nd arg: 1 (function code output)
-	BL 	Init_GPIO 						// Set up GPIO10
+        LDR     r0, =author                    		// Print author names
+        MOV     r1, #59 				// Author String is this many Bits long
+        BL     WriteStringUART 				// Print authors' names
 
-	MOV 	r0, #11 						// 1st arg: 11 (GPIO line)
-	MOV 	r1, #0 							// 2nd arg: 0 (function code input)
-	BL 	Init_GPIO 						// Set up GPIO11
+User_Prompt:
+	LDR     r0, =Press_Button
+        MOV     r1, #26                         	// Length of press Button message
+        BL      WriteStringUART
 
-	// Print names
-	LDR 	r0, =authors 						// Load 'author' string into register
-	BL 	Print_Message 						// Branch to count bits & print
-
-	// Let button state = 0
-	MOV 	buttons_r, #0
-
-mainLoop:
-
-	LDR 	r0, =button_press 					// Load input prompt string into register
-	BL 	Print_Message 						// Branch to count bits & print
-
-Read_Buttons:                                    
-	BL      Read_SNES                        			// Returns the 16 bits in r0
-	MOV 	buttons_r, r0 						// Move result into buttons_r	
-	CMP     buttons_r,btnsOld_r                    			// Checks if the state is same as last
-	Beq     Same_State                       			// Wait before checking for the next input
-	MOV     btnsOld_r,buttons_r                          		// Keep track of the state
-	MOV     temp1_r, buttons_r                          		// Move button sampling to r6
-	MOV     counter_r, #0                          			// Initalize a counter
-	MOV     buttons_r, #1                          			// buttons_r = 1
-	MVN     buttons_r, buttons_r                          		// Reverse buttons_r to 0b1111111110
+Read_Buttons:
+	BL      Read_SNES                        	// Read input from SNES controller
+        CMP     r0,r10    	                      	// Check if previous AND current state are the same
+        Beq     Same_State                       	// Branch to Same_State
+        MOV     r10,r0           	               	// Previous state <= Current state
+  	MOV     r6, r0                          	// r6 <= Current state
+	MOV     r4, #0                          	// Initalize counter
+	MOV     r5, #1                          	// r5 = 000000001
+ 	MVN     r5, r5                          	// r5 = 1111111110
 
 Check_Pressed_Buttons:
-	BIC     temp2_r, temp1_r, buttons_r                      	// Bit-clear the register to check
-	CMP     temp2_r, #0                          			// Check if any button is pressed
-	Beq     Button_Pressed                   			// If a button is pressed, go to print it
-	LSR	temp1_r, #1                          			// Else check the next bit
-	ADD	counter_r, #1 						// counter++
-	CMP	counter_r, #11                         			// If (counter >= 12)
-	Ble	Check_Pressed_Buttons 					// Check pressed buttons
-	B       Read_Buttons 						// Else loop
+	BIC     r7, r6, r5                      	// BIC r6 with r5
+  	CMP     r7, #0                          	// Check if a Button is pressed
+	Beq     Button_Pressed                   	// If some Button is pressed Branch to Button_Pressed
+	LSR	r6, #1                          	// Check if next Bit is pressed
+	ADD	r4, #1 					// Counter++
+	CMP	r4, #11                         	// If (counter <= 11)
+	Ble	Check_Pressed_Buttons 			// Loop
+	B       Read_Buttons 				// Else go to Read_Buttons
 
 Button_Pressed:
-	MOV 	r0, counter_r 						// Print the i-th pressed button
-	BL 	Print_Button 						// Print out pressed button
-	B     	mainLoop 	    		            		// Prompt user for next input
+	MOV	r0, r4					// Move counter into r0
+	BL	Print_Button 				// Print Button with index r0
+	B       User_Prompt 	                	// Prompt user for next input
 
 Same_State:
-	ADD     r0, #30                         			// wait(30)
-	BL      Wait                            			// Wait 30ms
-	B       Read_Buttons                     			// Branches back to read the buttons
+        ADD     r3, #30                         	// Wait 30 micro seconds
+        BL      Wait                            	// wait(30)
+        B       Read_Buttons                     	// Branch to Read_Buttons
 
-haltLoop:
-	B 	haltLoop 						// Terminate program with infinite loop
+haltLoop$:
+	B	haltLoop$ 				// Exit program
 
-//////////////////////////////////////////////////////
-// Print Message
-// Inputs:
-// ~ r0: Address of string to be printed
-//////////////////////////////////////////////////////
-
-// Count number of bits to buffer for any given particular string
-Print_Message:
-	PUSH 	{lr}							// Start function
-	MOV 	r1, #0 							// Reset loop counter
-	MOV 	r2, r0 							// Move print address into temporary register
-
-loopCounter:
-	LDRB 	r3, [r2], #1 						// Load byte into memory
-	CMP 	r3, #0 							// Compare current byte to null
-	ADDne 	r1, #1  						// If not equal, counter++, and
-	Bne 	loopCounter 						// Loop
-	BL 	WriteStringUART 					// Else, when done counting, print out r1 amount of buffer
-	POP 	{pc} 							// End function
-
-//////////////////////////////////////////////////////
-// Prints Pressed Button
-// Inputs:
-// ~ r0: The button index to be printed
-//////////////////////////////////////////////////////
-Print_Button:
-	PUSH 	{lr} 							// Start function
-
-	LDR 	r3, =button_message 					// Load button message strings address
-	MOV 	r1, #34  						// Buffer: 34 bits, each string in button_message is 34 bits
-	MUL  	r2, r1, r0						// r2 = button index * 34
-	ADD 	r3, r2 							// String array base address + offset = String to be printed
-	MOV 	r0, r3 							// Move string address into r0 (arg to print function)
-	BL 	WriteStringUART 					// Print designated button message
-
-  	POP 	{pc} 							// End function
 
 //////////////////////////////////////////////////////
 // Initialize GPIO
 // Inputs:
-// ~ r0: GPIO line to be initialized
-// ~ r1: Function code to initialize the line to
+// r0: GPIO pin numBer
+// r1: Function code
 //////////////////////////////////////////////////////
 
 Init_GPIO:
-  	PUSH 	{lr}						        // Start function
+        PUSH    {lr} 					// Start function
+	CMP     r0, #9
+	Beq     Set_Latch                        	// Jump to init latch (GPIO9)
+	CMP     r0, #10
+	Beq     Set_Data                         	// Jump to init data (GPI10)
+	CMP     r0, #11
+	Beq     Set_Clock                        	// Jump to init clock (GPI11)
 
-	// Check which GPIO line is to be initialized
-  	CMP 	r0, #9 							// If GPIO9 is being initialized
-  	Beq 	latch 							// Go to latch
-  	CMP 	r0, #10 						// If GPIO10 is being initialized
-	Beq 	data 							// Go to data
-	CMP 	r0, #11 						// If GPIO11 is being initialized
-	Beq 	clock 							// Go to clock
+Set_Latch:
+        LDR     r0, =0x3F200000                 	// Address of GPFSEL0
+        LDR     r1, [r0]
+        MOV     r2, #7                          	// Bit clears (0111)
+        LSL     r2, #27
+        BIC     r1, r2                          	// Clearing pin 9 Bits
+        MOV     r3 , #1
+        LSL     r3, #27
+        ORR     r1, r3
+        STR     r1, [r0]                         	// Storing value Back to GPFSEL0
+        B       exit
 
-latch: 	// Init LATCH (Set GPIO9 to output)
-	CMP 	r1, #1							// If function code != 1
-	Bne 	end 							// Do nothing (go to end), else...
-	LDR 	r0, =0x3F200000 					// Address for GPFSEL0
-	LDR 	r1, [r0]						// Copy GPFSEL0 into r1
-	MOV 	r2, #7 							// (r2 = 0b111)
-	LSL 	r2, #27 						// Index of 1st bit for pin9
-	BIC 	r1, r2 							// Clear pin9 bits
-	MOV 	r3 , #1 						// Output function code
-	LSL 	r3, #27 						// Shift 1 (output) over for pin9
-	ORR 	r1, r3 							// Set pin9 function in r1 to 1 (output)
-	STR 	r1, [r0] 						// Write back to GPFSEL0
-  	B 	end 							// When init is complete, go to end
+Set_Data:
+        LDR     r0, =0x3F200004                  	// Address of GPFSEL1
+        LDR     r1, [r0]
+        MOV     r2, #7
+        BIC     r1, r2                           	// Bit clears (0111)
+        MOV     r3 , #0
+        ORR     r1, r3
+        STR     r1, [r0]                         	// Stores value Back to GPFSEL1
+        B       exit
 
-data:	// Init DATA (Set GPIO10 to input)
-  	CMP 	r1, #0							// If function code != 0
-	Bne 	end 							// Do nothing (go to end), else...
-	LDR 	r0, =0x3F200004 					// Address for GPFSEL1
-	LDR 	r1, [r0]						// Copy GPFSEL1 into r1
-	MOV 	r2, #7 							// (r2 = 0b111)
-	BIC 	r1, r2 							// Clear pin10 bits
-	ORR 	r1, r3 							// Set pin10 function in r1 to 0 (input)
-	STR 	r1, [r0] 						// Write back to GPFSEL1
-  	B 	end 							// When init is complete, go to end
+Set_Clock:
+        LDR     r0, =0x3F200004                  	// Address for GPFSEL1
+        LDR     r1, [r0]
+        MOV     r2, #7
+        LSL     r2, #3                           	// Shift left By 3
+        BIC     r1, r2                           	// Bit clears (0111)
+        MOV     r3 , #1
+        LSL     r3, #3
+        ORR     r1, r3
+        STR     r1, [r0]                         	// Stores value Back to GPFSEL1
+        B       exit
 
-clock: 	// Init CLOCK (Set GPIO11 to output)
-	CMP 	r1, #1							// If function code != 1
-	Bne 	end 							// Do nothing (go to end), else...
-	LDR 	r0, =0x3F200004 					// Address for GPFSEL1
-	LDR 	r1, [r0]						// Copy GPFSEL1 into r1
-	MOV 	r2, #7 							// (r2 = 0b111)
-	LSL 	r2, #3 							// Index of 1st bit for pin11, r2 = 0 111 000
-	BIC 	r1, r2 							// Clear pin11 bits
-	MOV 	r3 , #1 						// Output function code
-	LSL 	r3, #3 							// Shift 1 (output) over for pin11
-	ORR 	r1, r3 							// Set pin11 function in r1 to 1 (output)
-	STR 	r1, [r0] 						// Write back to GPFSEL1
-  	B 	end 							// When init is complete, go to end
-
-end:
-  	POP 	{pc} 						        // End function
+exit:
+        POP     {lr} 					// End function
+	MOV	pc, lr
 
 //////////////////////////////////////////////////////
-// Write to Latch
+// Print a Button message
 // Inputs:
-// ~ r1: Bit to write to latch line
+// r0: Message to Be printed
 //////////////////////////////////////////////////////
 
-Write_Latch:
-  	PUSH 	{lr}						        // Start function
+Print_Button:
+        PUSH	{r6, lr} 				// Start function
+        LDR     r6, =Button_Message 			// Get button string array base address
+        MOV     r1, #32                          	// Each button message has length 32 bits
+        MUL     r0, r1                           	// Multiply index by the String index
+        CMP     r0, #96                          	// start button = 128
+        Beq     Start_Button_Pressed 			// If start button was pressed, branch here
+        ADD     r6, r0 					// Else get button message offset
+        MOV     r0, r6
+        MOV     r1, #32
+        Bl      WriteStringUART 			// Print the correct button string
+        POP     {r6, lr} 				// End function
+        MOV     pc, lr
 
-  	MOV 	r0, #9 							// r0 = 9 (for GPIO9)
-  	LDR 	r2, =0x3F200000 					// Address for GPFSEL0
-  	MOV 	r3, #1
-  	LSL 	r3, r0 							// Align bit for pin 9
-  	Teq	r1, #0
-
-	STReq 	r3, [r2, #40] 						// GPCLR0
-	STRne 	r3, [r2, #28] 						// GPSET0
-
-  	POP 	{pc} 						        // End function
-
-//////////////////////////////////////////////////////
-// Write to Clock
-// Inputs:
-// ~ r1: Bit to write to clock line
-//////////////////////////////////////////////////////
-
-Write_Clock:
-  	PUSH 	{lr}						        // Start function
-
-  	MOV 	r0, #11 						// r0 = 11 (for GPIO11)
-  	LDR 	r2, =0x3F200004 					// Address for GPFSEL1
-  	MOV 	r3, #1
-  	LSL 	r3, r0 							// Align bit for pin 11
-  	Teq		r1, #0
-
-	STReq 	r3, [r2, #40] 						// GPCLR0
-	STRne 	r3, [r2, #28] 						// GPSET0
-
-  	POP 	{pc} 						        // End function
+Start_Button_Pressed:
+        LDR	r0, =Start_Button
+        MOV	r1, #24
+        Bl      WriteStringUART
+        B 	Loop_Program
+Loop_Program:
+	B 	Loop_Program
 
 //////////////////////////////////////////////////////
-// Read Data
+// Read Data (GPIO10)
 // Returns:
-// ~ r2: The read bit (0 or 1)
+// 0: Button was pressed or
+// 1: Button was not pressed
 //////////////////////////////////////////////////////
 
 Read_Data:
-	PUSH 	{lr}							// Start function
-
-	MOV 	r0, #10 						// r0 = 10 (for GPIO10)
-	LDR 	r2, =0x3F200000 					// Address for GPFSEL0
-	LDR 	r1, [r2, #52] 						// GPLEV0
-
+	PUSH 	{lr} 					// Start function
+	MOV 	r0, #10			         	// 10 for GPIO10
+	LDR 	r1, =0x3F200000			 	// Base GPIO Address
+	LDR 	r2, [r1, #52]			 	// GPLEV0
 	MOV 	r3, #1
-	LSL 	r3, r0							// Align pin10 bit
-	AND 	r1, r3 							// Mask everything else
-	TEQ 	r1, #0
+	LSL 	r3, r0
+	AND 	r2, r3
+	TEQ 	r2, #0
+	MOVeq   r0, #0				 	// Return 0 if button was pressed
+	MOVne   r0, #1				 	// Return 1 if button was not pressed
+	POP 	{lr} 					// End function
+	MOV     pc, lr
 
-	MOVeq 	r2, #0 							// Return 0 if equal
-	MOVne 	r2, #1 							// Return 1 if not equal
+//////////////////////////////////////////////////////
+// Read SNES controller
+// Returns:
+// 0: State of all Buttons (the sampling)
+//////////////////////////////////////////////////////
 
-	POP 	{pc} 							// End function
+Read_SNES:
+	PUSH 	{r4,r5,r6,lr} 				// Start function
+        MOV     r6, #0                           	// Buttons initially empty
+	MOV 	r0, #1				 	// write_clock(1)
+	Bl      Write_Clock
+	MOV 	r0, #1	 			 	// write_latch(1)
+	Bl	Write_Latch
+        MOV     r3, #12                          	// wait(12)
+	Bl 	Wait                             	// Wait 12ms
+	MOV 	r0, #0				 	// write_latch(0)
+	Bl	Write_Latch
+	MOV 	r5, #0 			         	// counter = 0
+
+Pulse_Loop:
+
+        ADD     r3, #6                          	// wait(6)
+        Bl      Wait                            	// Wait 6ms
+        MOV     r0, #0			        	// write_clock(0)
+        Bl      Write_Clock
+        MOV     r3, #6                          	// wait(6)
+        Bl      Wait                            	// Wait 6ms
+        Bl      Read_Data
+        CMP     r0, #1					// Check if Bit is 1 or 0
+        Bne     Check_Next_Bit 				// If 0, check next bit
+        MOV     r2, #1                          	// Else r2 = 1
+        LSL     r2, r5	                        	// LSL to the correct index
+        ORR     r6, r2                          	// Add 1 (button is not pressed)
+
+Check_Next_Bit:
+	MOV     r0 ,#1			        	// write_clock(1)
+	Bl      Write_Clock
+	ADD     r5, #1 					// counter++
+	CMP     r5, #16 				// if counter < 16
+	Blt     Pulse_Loop                       	// loop, else...
+
+Return_Bits:
+        MOV     r0, r6					// Return button sampling
+        POP     {r4, r5,r6, lr} 			// End function
+        MOV 	pc, lr
 
 //////////////////////////////////////////////////////
 // Wait
 // Inputs:
-// ~ r0: Time to be waited in microseconds
+// r3: Time to wait (in microseconds)
 //////////////////////////////////////////////////////
 
 Wait:
-  	PUSH 	{lr}							// Start function
+        PUSH    {lr} 					// Start function
+        LDR     r0, =0x3F003004                 	// Addess of clock
+        LDR     r1, [r0]
+        ADD     r1, r3
 
-	LDR 	r2, =0x3F003004 					// Address of CLO
-	LDR 	r1, [r2] 						// Read CLO
-	ADD 	r1, r0 							// Add time to be waited in micros
-waitLoop:
-	LDR 	r0, [r2] 						// Load CLO
-	CMP 	r1, r0 							// If CLO < r1
-	Bhi 	waitLoop 						// Go to waitLoop
-
-  	POP 	{pc} 							// End function
+Wait_Loop:
+        LDR     r2, [r0]
+        CMP     r1, r2					// Stop when clock = r1
+        Bhi     Wait_Loop
+        POP     {lr} 					// End function
+        MOV     pc, lr
 
 //////////////////////////////////////////////////////
-// Read SNES
-// Returns:
-// ~ Code of a pressed button in a register
+// Write to Clock (GPIO11)
+// Inputs:
+// r0: Bit to write
 //////////////////////////////////////////////////////
 
-Read_SNES:
-	PUSH 	{r4-r10, lr}						// Start function
+Write_Clock:
+        PUSH    {lr} 					// Start function
+        MOV     r1,r0
+        MOV     r0, #11
+        LDR     r2, =0x3F200000                 	// Address to Base GPIO register
+        MOV     r3, #1
+        LSL     r3, r0
+        TEQ     r1, #0
+        STReq   r3, [r2, #40]                   	// If 0 then clear GPCLR0
+        STRne   r3, [r2, #28]                   	// If 1 then set GPSET0
+        POP     {lr} 					// End function
+        MOV	pc, lr
 
-  	MOV 	buttons_r, #0 						// Register for sampling buttons
-	MOV 	r1, #1
-	BL 	Write_Clock						// writeGPIO(CLOCK,#1)
-  	MOV 	r1, #1
-	BL 	Write_Latch						// writeGPIO(LATCH,#1)
-  	MOV 	r0, #12
-	BL 	Wait 							// wait(12ms) - signal to SNES to sample buttons
-    	MOV 	r1, #0
-	BL 	Write_Latch						// writeGPIO(LATCH,#0)
+//////////////////////////////////////////////////////
+// Write to Latch (GPIO9)
+// Inputs:
+// r0: Bit to write
+//////////////////////////////////////////////////////
 
-	MOV 	counter_r, #0 						// i = 0
-
-pulseLoop:
-	MOV 	r0, #6 							// r0 = 6ms
-	BL 	Wait  							// wait(6ms)
-	MOV 	r1, #0
-	BL 	Write_Clock						// writeGPIO(CLOCK,#0) - falling edge
-  	MOV 	r0, #6
-	BL 	Wait  							// wait(6ms)
-
-	BL 	Read_Data 						// readGPIO(DATA, b) - read bit i into r2
-	CMP 	r2, #0 							// Check if the i-th button is pressed
-	Bne 	skip							// If button is not pressed (!= 0) check next bit
-
-	MOV     r2, #1                          			// Else r2 = 1
-	LSL     r2, buttons_r	                  			// Adjust to the correct index
-	ORR     btnsOld_r, r2                   			// Add 1 to that index to indicate it is not pressed
-
-skip:
-	MOV 	r1, #1
-	BL 	Write_Clock						// writeGPIO(CLOCK,#1) - rising edge; new cycle
-
-	ADD 	counter_r, #1 						// i++ to look at next button
-	CMP 	counter_r, #16						// If counter < 16
-	Blt 	pulseLoop 						// Loop, else...
-
-done:
-	mov     r0, btnsOld_r						// Return 16 bit button sampling in r0
-	POP 	{r4-r10, pc} 						// End function
+Write_Latch:
+        PUSH    {lr} 					// Start function
+        MOV     r1,r0
+        MOV     r0, #9
+        LDR     r2, =0x3F200000                 	// Address to Base GPIO register
+        MOV     r3, #1
+        LSL     r3, r0
+        TEQ     r1, #0
+        STReq   r3, [r2, #40]                   	// If 0 then clear GPCLR0
+        STRne   r3, [r2, #28]                   	// If 1 then set GPSET0
+        POP     {lr}
+        MOV	pc, lr 					// End function
 
 //////////////////////////////////////////////////////
 // Data Section
 //////////////////////////////////////////////////////
 
-.section 	.data
-.align
+.section .data
 
-authors: 		.asciz 	"Created by Marc-Andre Fichtel and Cardin Chen\n\r"
-button_press: 		.asciz 	"Please press a button...\n\r"
-endMsg: 		.asciz 	"Program is terminating...\n\r"
-button_message: 	.asciz 	"You have pressed B              \n\r", "You have pressed Y              \n\r", "You have pressed SELECT         \n\r", "You have pressed START          \n\r", "You have pressed UP             \n\r", "You have pressed DOWN           \n\r", "You have pressed LEFT           \n\r", "You have pressed RIGHT          \n\r", "You have pressed A              \n\r", "You have pressed X              \n\r", "You have pressed LEFT BUMPER    \n\r", "You have pressed RIGHT BUMPER   \n\r" // each string is aligned to 34 bits
+author:
+        .ascii  "\r\nCreated By: Created By Cardin Chen and Marc-Andre Fichtel"         // Size: 59
+
+Press_Button:
+        .ascii  "\r\nPlease press a Button..."                  // Size: 26
+
+Terminate_Program:
+        .ascii  "\r\nProgram is terminating..."                 // Size: 27
+
+
+Button_Message:
+        .ascii "\n\rYou Pressed B                 ", "\n\rYou Pressed Y                 ", "\n\rYou Pressed SELECT            ", "\n\rYou Pressed START             ", "\n\rYou Pressed UP                ", "\n\rYou Pressed DOWN              ", "\n\rYou Pressed LEFT              ", "\n\rYou Pressed RIGHT             ", "\n\rYou Pressed A                 ", "\n\rYou Pressed X                 ", "\n\rYou Pressed LEFT BUMPER       ", "\n\rYou Pressed RIGHT BUMPER      "                           // Size: 32
+
+
+Start_Button:
+	.ascii	"\r\nTerminating program..."					// Size: 24
