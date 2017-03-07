@@ -30,7 +30,7 @@ namespace UTP {
     public class T06 {
 
         [TestMethod]
-        public void TestMethod1() {
+        public void Test06() {
         }
     }
 }

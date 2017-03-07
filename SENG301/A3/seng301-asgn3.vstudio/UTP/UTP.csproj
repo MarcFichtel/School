@@ -75,6 +75,12 @@
     <Compile Include="U07.cs" />
     <Compile Include="U08.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\seng301-asgn3\seng301-asgn3.csproj">
+      <Project>{5DD187FC-A770-4824-BB6C-5D24F12AB74F}</Project>
+      <Name>seng301-asgn3</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
       <ItemGroup>

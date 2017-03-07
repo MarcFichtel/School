@@ -39,7 +39,7 @@ namespace UTP {
     public class T12 {
 
         [TestMethod]
-        public void TestMethod1() {
+        public void Test12() {
         }
     }
 }

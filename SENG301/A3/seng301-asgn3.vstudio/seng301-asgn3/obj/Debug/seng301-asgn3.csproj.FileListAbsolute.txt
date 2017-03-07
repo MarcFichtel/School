@@ -1,0 +1,6 @@
+C:\Users\NewUsername\Documents\GitHub\School\SENG301\A3\seng301-asgn3.vstudio\seng301-asgn3\bin\Debug\seng301-asgn2.dll.config
+C:\Users\NewUsername\Documents\GitHub\School\SENG301\A3\seng301-asgn3.vstudio\seng301-asgn3\bin\Debug\seng301-asgn2.dll
+C:\Users\NewUsername\Documents\GitHub\School\SENG301\A3\seng301-asgn3.vstudio\seng301-asgn3\bin\Debug\seng301-asgn2.pdb
+C:\Users\NewUsername\Documents\GitHub\School\SENG301\A3\seng301-asgn3.vstudio\seng301-asgn3\obj\Debug\seng301-asgn3.csprojResolveAssemblyReference.cache
+C:\Users\NewUsername\Documents\GitHub\School\SENG301\A3\seng301-asgn3.vstudio\seng301-asgn3\obj\Debug\seng301-asgn2.dll
+C:\Users\NewUsername\Documents\GitHub\School\SENG301\A3\seng301-asgn3.vstudio\seng301-asgn3\obj\Debug\seng301-asgn2.pdb

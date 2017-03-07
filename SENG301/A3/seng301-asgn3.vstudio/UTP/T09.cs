@@ -26,7 +26,7 @@ namespace UTP {
     public class T09 {
 
         [TestMethod]
-        public void TestMethod1() {
+        public void Test09() {
         }
     }
 }

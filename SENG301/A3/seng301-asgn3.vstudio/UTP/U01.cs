@@ -22,7 +22,7 @@ namespace UTP {
     public class U01 {
 
         [TestMethod]
-        public void TestMethod1() {
+        public void Test14() {
         }
     }
 }

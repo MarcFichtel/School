@@ -1,0 +1,7 @@
+C:\Users\NewUsername\Documents\GitHub\School\SENG301\A3\seng301-asgn3.vstudio\UTP\bin\Debug\UTP.dll
+C:\Users\NewUsername\Documents\GitHub\School\SENG301\A3\seng301-asgn3.vstudio\UTP\bin\Debug\UTP.pdb
+C:\Users\NewUsername\Documents\GitHub\School\SENG301\A3\seng301-asgn3.vstudio\UTP\bin\Debug\seng301-asgn2.dll
+C:\Users\NewUsername\Documents\GitHub\School\SENG301\A3\seng301-asgn3.vstudio\UTP\bin\Debug\seng301-asgn2.pdb
+C:\Users\NewUsername\Documents\GitHub\School\SENG301\A3\seng301-asgn3.vstudio\UTP\obj\Debug\UTP.csprojResolveAssemblyReference.cache
+C:\Users\NewUsername\Documents\GitHub\School\SENG301\A3\seng301-asgn3.vstudio\UTP\obj\Debug\UTP.dll
+C:\Users\NewUsername\Documents\GitHub\School\SENG301\A3\seng301-asgn3.vstudio\UTP\obj\Debug\UTP.pdb

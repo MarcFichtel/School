@@ -13,7 +13,7 @@ namespace UTP {
     public class U06 {
 
         [TestMethod]
-        public void TestMethod1() {
+        public void Test19() {
         }
     }
 }
