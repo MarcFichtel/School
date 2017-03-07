@@ -277,7 +277,7 @@ public class VendingMachineFactory : IVendingMachineFactory {
     }
 
     public void printItemDelivered(object sender, DeliverableEventArgs e) {
-        Console.WriteLine("Item delievered to delivery chute: " + e.Item);
+        Console.WriteLine("Item delievered to delivery chute: " + e.Item.ToString());
     }
 
     public void printButtonPressed(object sender, EventArgs e) {
