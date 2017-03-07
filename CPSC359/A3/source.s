@@ -2,7 +2,7 @@
 // CPSC 359
 // Assignment 3
 // Students:
-// * Marc-ANDre FIChtel, 30014709
+// * Marc-Andre Fichtel, 30014709
 // * Cardin Chen, 10161477
 //
 // Program does the following:
@@ -24,31 +24,31 @@ _start:
 //////////////////////////////////////////////////////
 
 main:
-	MOV     sp, #0x8000 	                	// Initialize sp
-	BL	EnableJTAG 	                	// Enable JTAG
-	BL	InitUART 				// Set up UART
+	MOV     sp, #0x8000 	                	       //Initialize sp
+	BL	    EnableJTAG 	                	           // Enable JTAG
+	BL	    InitUART 				                   // Set up UART
 
-        MOV     r0, #9                          	// Initialize GPIO9 to output
-        BL      Init_GPIO
-        MOV     r0, #10                         	// Initialize GPIO10 to input
-        BL      Init_GPIO
-        MOV     r0, #11                         	// Initialize GPIO11 to output
-        BL      Init_GPIO
+    MOV     r0, #9                          	// Initialize GPIO9 to output
+    BL      Init_GPIO
+    MOV     r0, #10                         	// Initialize GPIO10 to input
+    BL      Init_GPIO
+    MOV     r0, #11                         	// Initialize GPIO11 to output
+    BL      Init_GPIO
 
-        LDR     r0, =author                    		// Print author names
-        MOV     r1, #59 				// Author String is this many Bits long
-        BL     WriteStringUART 				// Print authors' names
+    LDR     r0, =author                    		// Print author names
+    MOV     r1, #59 				            // Buffer: Author String is this many Bits long
+    BL     WriteStringUART 				        // Print authors' names
 
 User_Prompt:
 	LDR     r0, =Press_Button
-        MOV     r1, #26                         	// Length of press Button message
-        BL      WriteStringUART
+    MOV     r1, #26                         	// Length of press Button message
+    BL      WriteStringUART
 
 Read_Buttons:
 	BL      Read_SNES                        	// Read input from SNES controller
-        CMP     r0,r10    	                      	// Check if previous AND current state are the same
-        Beq     Same_State                       	// Branch to Same_State
-        MOV     r10,r0           	               	// Previous state <= Current state
+    CMP     r0,r10    	                      	// Check if previous AND current state are the same
+    Beq     Same_State                       	// Branch to Same_State
+    MOV     r10,r0           	               	// Previous state <= Current state
   	MOV     r6, r0                          	// r6 <= Current state
 	MOV     r4, #0                          	// Initalize counter
 	MOV     r5, #1                          	// r5 = 000000001
@@ -70,9 +70,9 @@ Button_Pressed:
 	B       User_Prompt 	                	// Prompt user for next input
 
 Same_State:
-        ADD     r3, #30                         	// Wait 30 micro seconds
-        BL      Wait                            	// wait(30)
-        B       Read_Buttons                     	// Branch to Read_Buttons
+    ADD     r3, #30                         	// Wait 30 micro seconds
+    BL      Wait                            	// wait(30)
+    B       Read_Buttons                     	// Branch to Read_Buttons
 
 haltLoop$:
 	B	haltLoop$ 				// Exit program
@@ -86,50 +86,50 @@ haltLoop$:
 //////////////////////////////////////////////////////
 
 Init_GPIO:
-        PUSH    {lr} 					// Start function
-	CMP     r0, #9
-	Beq     Set_Latch                        	// Jump to init latch (GPIO9)
-	CMP     r0, #10
-	Beq     Set_Data                         	// Jump to init data (GPI10)
-	CMP     r0, #11
-	Beq     Set_Clock                        	// Jump to init clock (GPI11)
+    PUSH    {lr} 					// Start function
+    CMP     r0, #9
+    Beq     Set_Latch                        	// Jump to init latch (GPIO9)
+    CMP     r0, #10
+    Beq     Set_Data                         	// Jump to init data (GPI10)
+    CMP     r0, #11
+    Beq     Set_Clock                        	// Jump to init clock (GPI11)
 
 Set_Latch:
-        LDR     r0, =0x3F200000                 	// Address of GPFSEL0
-        LDR     r1, [r0]
-        MOV     r2, #7                          	// Bit clears (0111)
-        LSL     r2, #27
-        BIC     r1, r2                          	// Clearing pin 9 Bits
-        MOV     r3 , #1
-        LSL     r3, #27
-        ORR     r1, r3
-        STR     r1, [r0]                         	// Storing value Back to GPFSEL0
-        B       exit
+    LDR     r0, =0x3F200000                 	// Address of GPFSEL0
+    LDR     r1, [r0]
+    MOV     r2, #7                          	// Bit clears (0111)
+    LSL     r2, #27
+    BIC     r1, r2                          	// Clearing pin 9 Bits
+    MOV     r3 , #1
+    LSL     r3, #27
+    ORR     r1, r3
+    STR     r1, [r0]                         	// Storing value Back to GPFSEL0
+    B       exit
 
 Set_Data:
-        LDR     r0, =0x3F200004                  	// Address of GPFSEL1
-        LDR     r1, [r0]
-        MOV     r2, #7
-        BIC     r1, r2                           	// Bit clears (0111)
-        MOV     r3 , #0
-        ORR     r1, r3
-        STR     r1, [r0]                         	// Stores value Back to GPFSEL1
-        B       exit
+    LDR     r0, =0x3F200004                  	// Address of GPFSEL1
+    LDR     r1, [r0]
+    MOV     r2, #7
+    BIC     r1, r2                           	// Bit clears (0111)
+    MOV     r3 , #0
+    ORR     r1, r3
+    STR     r1, [r0]                         	// Stores value Back to GPFSEL1
+    B       exit
 
 Set_Clock:
-        LDR     r0, =0x3F200004                  	// Address for GPFSEL1
-        LDR     r1, [r0]
-        MOV     r2, #7
-        LSL     r2, #3                           	// Shift left By 3
-        BIC     r1, r2                           	// Bit clears (0111)
-        MOV     r3 , #1
-        LSL     r3, #3
-        ORR     r1, r3
-        STR     r1, [r0]                         	// Stores value Back to GPFSEL1
-        B       exit
+    LDR     r0, =0x3F200004                  	// Address for GPFSEL1
+    LDR     r1, [r0]
+    MOV     r2, #7
+    LSL     r2, #3                           	// Shift left By 3
+    BIC     r1, r2                           	// Bit clears (0111)
+    MOV     r3 , #1
+    LSL     r3, #3
+    ORR     r1, r3
+    STR     r1, [r0]                         	// Stores value Back to GPFSEL1
+    B       exit
 
 exit:
-        POP     {lr} 					// End function
+    POP     {lr} 					// End function
 	MOV	pc, lr
 
 //////////////////////////////////////////////////////
@@ -139,24 +139,24 @@ exit:
 //////////////////////////////////////////////////////
 
 Print_Button:
-        PUSH	{r6, lr} 				// Start function
-        LDR     r6, =Button_Message 			// Get button string array base address
-        MOV     r1, #32                          	// Each button message has length 32 bits
-        MUL     r0, r1                           	// Multiply index by the String index
-        CMP     r0, #96                          	// start button = 128
-        Beq     Start_Button_Pressed 			// If start button was pressed, branch here
-        ADD     r6, r0 					// Else get button message offset
-        MOV     r0, r6
-        MOV     r1, #32
-        Bl      WriteStringUART 			// Print the correct button string
-        POP     {r6, lr} 				// End function
-        MOV     pc, lr
+    PUSH	{r6, lr} 				// Start function
+    LDR     r6, =Button_Message 			// Get button string array base address
+    MOV     r1, #32                          	// Each button message has length 32 bits
+    MUL     r0, r1                           	// Multiply index by the String index
+    CMP     r0, #96                          	// start button = 128
+    Beq     Start_Button_Pressed 			// If start button was pressed, branch here
+    ADD     r6, r0 					// Else get button message offset
+    MOV     r0, r6
+    MOV     r1, #32
+    Bl      WriteStringUART 			// Print the correct button string
+    POP     {r6, lr} 				// End function
+    MOV     pc, lr
 
 Start_Button_Pressed:
-        LDR	r0, =Start_Button
-        MOV	r1, #24
-        Bl      WriteStringUART
-        B 	Loop_Program
+    LDR	r0, =Done_Program
+    MOV	r1, #24
+    Bl      WriteStringUART
+    B 	Loop_Program
 Loop_Program:
 	B 	Loop_Program
 
@@ -189,15 +189,15 @@ Read_Data:
 
 Read_SNES:
 	PUSH 	{r4,r5,r6,lr} 				// Start function
-        MOV     r6, #0                           	// Buttons initially empty
+    MOV     r6, #0                           	// Buttons initially empty
 	MOV 	r0, #1				 	// write_clock(1)
 	Bl      Write_Clock
 	MOV 	r0, #1	 			 	// write_latch(1)
-	Bl	Write_Latch
-        MOV     r3, #12                          	// wait(12)
-	Bl 	Wait                             	// Wait 12ms
+	Bl	    Write_Latch
+    MOV     r3, #12                          	// wait(12)
+	Bl 	   Wait                             	// Wait 12ms
 	MOV 	r0, #0				 	// write_latch(0)
-	Bl	Write_Latch
+	Bl	    Write_Latch
 	MOV 	r5, #0 			         	// counter = 0
 
 Pulse_Loop:
@@ -263,7 +263,7 @@ Write_Clock:
         STReq   r3, [r2, #40]                   	// If 0 then clear GPCLR0
         STRne   r3, [r2, #28]                   	// If 1 then set GPSET0
         POP     {lr} 					// End function
-        MOV	pc, lr
+        MOV	    pc, lr
 
 //////////////////////////////////////////////////////
 // Write to Latch (GPIO9)
@@ -282,7 +282,7 @@ Write_Latch:
         STReq   r3, [r2, #40]                   	// If 0 then clear GPCLR0
         STRne   r3, [r2, #28]                   	// If 1 then set GPSET0
         POP     {lr}
-        MOV	pc, lr 					// End function
+        MOV	    pc, lr 					// End function
 
 //////////////////////////////////////////////////////
 // Data Section
@@ -296,13 +296,9 @@ author:
 Press_Button:
         .ascii  "\r\nPlease press a Button..."                  // Size: 26
 
-Terminate_Program:
-        .ascii  "\r\nProgram is terminating..."                 // Size: 27
-
-
 Button_Message:
         .ascii "\n\rYou Pressed B                 ", "\n\rYou Pressed Y                 ", "\n\rYou Pressed SELECT            ", "\n\rYou Pressed START             ", "\n\rYou Pressed UP                ", "\n\rYou Pressed DOWN              ", "\n\rYou Pressed LEFT              ", "\n\rYou Pressed RIGHT             ", "\n\rYou Pressed A                 ", "\n\rYou Pressed X                 ", "\n\rYou Pressed LEFT BUMPER       ", "\n\rYou Pressed RIGHT BUMPER      "                           // Size: 32
 
 
-Start_Button:
+Done_Program:
 	.ascii	"\r\nTerminating program..."					// Size: 24
