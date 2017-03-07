@@ -1,0 +1,28 @@
+﻿using System;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+
+namespace UTP {
+
+    /*
+    U02:
+        CREATE(5, 10, 25, 100; 3; 10; 10; 10)
+        CONFIGURE([0] "Coke", 250; "water", 250; "stuff", 0) --> The cost of "stuff" is zero, This SHOULD cause an error, but DOES NOT in the dummy!
+        COIN_LOAD([0] 0; 5, 1)
+        COIN_LOAD([0] 1; 10, 1)
+        COIN_LOAD([0] 2; 25, 2)
+        COIN_LOAD([0] 3; 100, 0)
+        POP_LOAD([0] 0; "Coke", 1)
+        POP_LOAD([0] 1; "water", 1)
+        POP_LOAD([0] 2; "stuff", 1)
+        UNLOAD([0])
+        CHECK_TEARDOWN(0; 0) --> This passes, but we should not get this far
+    */
+
+    [TestClass]
+    public class U02 {
+
+        [TestMethod]
+        public void TestMethod1() {
+        }
+    }
+}
