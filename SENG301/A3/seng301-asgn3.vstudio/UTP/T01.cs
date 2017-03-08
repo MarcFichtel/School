@@ -80,14 +80,23 @@ namespace UTP {
 
             // EXTRACT([0])
             IDeliverable[] contentsList = vm.DeliveryChute.RemoveItems();   // Remove items from delivery chute
-            string[] contents = new string[contentsList.Length];            // List tracks items' names
-            for (int i = 0; i < contentsList.Length; i++) {                 // Iterate over removed items
-                contents[i] = contentsList[i].ToString();                   // Add each item's name to contents
+            string[] contents = new string[2];                              // List tracks dispensed pop and change
+            int coinsValue = 0;                                             // Variable to hold value of change
+            for (int i = 0; i < contentsList.Length; i++) {                 // Iterate over dispensed items
+                if (contentsList[i].GetType() == typeof(Coin)) {            // if dispensed item is a coin...
+                    Coin c = (Coin)contentsList[i];                         // Cast it as a coin, then...
+                    coinsValue += c.Value;                                  // Add its value to coinsValue
+                } else {                                                    // Else the dispensed item is a pop, so... 
+                    contents[i] = contentsList[i].ToString();               // Add each pop's name to contents
+                }
+                if (coinsValue > 0) {                                       // If change was dispensed,...
+                    contents[1] = coinsValue.ToString();                    // Add its value to contents
+                } 
             }
 
             // CHECK_DELIVERY(0, "Coke")
             // TODO Check if its possible to assert two lists or arrays are the same
-            string[] expected = { "Coke" };                 // Set up expected result
+            string[] expected = { "Coke", null };                 // Set up expected result
             for (int i = 0; i < contents.Length; i++) {     // Iterate over contents
                 Assert.AreEqual(contents[i], expected[i]);  // Assert each content element is as expected
             }
