@@ -98,6 +98,7 @@ namespace UTP {
 
             // UNLOAD([0])
             int storedCoinsValue = 0;                   // Variable for value of all stored coins
+            int storageBinValue = 0;                    // Variable for value of coins in storage bin
             List<Coin> storedCoins = new List<Coin>();  // variable for tracking a set of coins
 
             foreach (CoinRack cr in vm.CoinRacks) {     // Iterate over coin racks
@@ -109,7 +110,7 @@ namespace UTP {
 
             storedCoins = vm.StorageBin.Unload();       // Unload storage bin
             foreach (Coin c in storedCoins) {           // Iterate over coins in storage bin
-                storedCoinsValue += c.Value;            // Add each coin's value to value of all stored coins
+                storageBinValue += c.Value;             // Add each coin's value to value of all stored coins
             }
 
             List<string> pops = new List<string>();     // Variable for tracking stored pop names
@@ -122,13 +123,13 @@ namespace UTP {
             }
 
             // CHECK_TEARDOWN(315; 0; "water", "stuff")
-            // TODO Doublecheck what the second number represents
             int expected1 = 315;                                            // Variable holds expected result 1
-            List<string> expected2 = new List<string> { "water", "stuff" }; // Variable holds expected result 2
+            int expected2 = 0;                                              // Variable holds expected result 2
+            List<string> expected3 = new List<string> { "water", "stuff" };  // Variable holds expected result 3
             Assert.AreEqual(storedCoinsValue, expected1);                   // Assert that stored coins value is as expected
-
+            Assert.AreEqual(storageBinValue, expected2);                    // Assert that storage bin value is as expected
             for (int i = 0; i < pops.Count; i++) {                          // Iterate over pops
-                Assert.AreEqual(pops[i], expected2[i]);                     // Assert each unloaded pop is as expected
+                Assert.AreEqual(pops[i], expected3[i]);                     // Assert each unloaded pop is as expected
             }
         }
     }
