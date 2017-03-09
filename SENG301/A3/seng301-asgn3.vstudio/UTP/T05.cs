@@ -52,10 +52,10 @@ namespace UTP {
             List<int> popCosts = new List<int> { 250, 250, 205 };
             vm.Configure(popNames, popCosts);
 
-            // COIN_LOAD([0] 3; 100, 0)
-            // COIN_LOAD([0] 0; 5, 1)
+            // COIN_LOAD([0] 0; 100, 0)
+            // COIN_LOAD([0] 1; 5, 1)
             // COIN_LOAD([0] 2; 25, 2)
-            // COIN_LOAD([0] 1; 10, 1)
+            // COIN_LOAD([0] 3; 10, 1)
             int[] coinCounts = { 0, 1, 2, 1 };
             vm.LoadCoins(coinCounts);
 
