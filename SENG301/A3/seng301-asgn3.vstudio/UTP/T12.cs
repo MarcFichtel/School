@@ -206,8 +206,8 @@ namespace UTP {
                 storageBinValue += c.Value;             // Add each coin's value to value of all stored coins
             }
 
-            List<string> pops = new List<string>();     // Variable for tracking stored pop names
-            List<PopCan> temp = new List<PopCan>();     // Temporary variable for stored pops
+            pops = new List<string>();                  // Variable for tracking stored pop names
+            temp = new List<PopCan>();                  // Temporary variable for stored pops
             foreach (PopCanRack pcr in vm.PopCanRacks) {// Iterate over pop can racks
                 temp.AddRange(pcr.Unload());            // Add each rack's contents to temp
             }
@@ -216,9 +216,9 @@ namespace UTP {
             }
 
             // CHECK_TEARDOWN(1400; 135)
-            int expected1 = 1400;                               // Variable holds expected result 1
-            int expected2 = 135;                                // Variable holds expected result 2
-            List<string> expected3 = new List<string>{ null };  // Variable holds expected result 3
+            expected1 = 1400;                                   // Variable holds expected result 1
+            expected2 = 135;                                    // Variable holds expected result 2
+            expected3 = new List<string>{ null };               // Variable holds expected result 3
             Assert.AreEqual(storedCoinsValue, expected1);       // Assert that stored coins value is as expected
             Assert.AreEqual(storageBinValue, expected2);        // Assert that storage bin value is as expected
             for (int i = 0; i < pops.Count; i++) {              // Iterate over pops
