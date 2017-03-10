@@ -33,8 +33,7 @@ namespace UTP {
 
         [TestMethod]
         [ExpectedException(typeof(Exception))]
-        public void Bonus2()
-        {
+        public void Bonus2() {
 
             // CREATE(-1; 1; 10; 10; 10)
             int[] coinKinds = { 0 };
