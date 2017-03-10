@@ -28,6 +28,7 @@ namespace UTP {
         [ExpectedException(typeof(NullReferenceException))]
         public void Test14() {
 
+            // Create an empty vending machine object
             VendingMachine vm = null;
             
             // Initialize vending machine logic object
