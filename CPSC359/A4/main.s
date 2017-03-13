@@ -120,8 +120,7 @@ Wait:
   	PUSH    {lr} 			// Start function
   	LDR     r0, =0x3F003004         // Addess of clock
   	LDR     r1, [r0]
-  	ADD     r1, r3
-	
+  	ADD     r1, r3	
 Wait_Loop:
   	LDR     r2, [r0]
   	CMP     r1, r2			// Stop when clock = r1
@@ -146,7 +145,7 @@ Write_Clock:
   	STReq   r3, [r2, #40]           // If 0 then clear GPCLR0
   	STRne   r3, [r2, #28]           // If 1 then set GPSET0
   	POP     {lr} 			// End function
-  	MOV	    pc, lr
+  	MOV	pc, lr
 
 //////////////////////////////////////////////////////
 // Write to Latch (GPIO9)
