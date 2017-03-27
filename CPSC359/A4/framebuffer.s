@@ -2,71 +2,73 @@
 
 //////////////////////////////////////////////////////////////////////////////////////
 // Initialize the FrameBuffer using the FrameBufferInit structure
-// Code taken from tut08 example
-// Returns:
+// Outputs:
 // ~ r0: 0 on failure, framebuffer pointer on success
 //////////////////////////////////////////////////////////////////////////////////////
 
-.globl InitFrameBuffer 			  // Make function global
+.globl InitFrameBuffer 			// Make function global
 
 InitFrameBuffer:
-	LDR	r2, =0x3F00B880           // Get address of mailbox0
-	LDR	r3, =FrameBufferInit      // Get address of framebuffer init structure
-
-mBoxFullLoop$:
-	LDR	r0, [r2, #0x18]           // Load value of mailbox status register
-	TST	r0, #0x80000000           // Loop while bit 31 (Full) is set
-	Bne	mBoxFullLoop$
-  
-	ADD	r0, r3,	#0x40000000       // Add 0x40000000 to address of fbinit struct, store in r0
-	ORR	r0, #0b1000               // OR with framebuffer channel (1)
-	STR	r0, [r2, #0x20]           // Write value to mailbox write register
-
-mBoxEmptyLoop$:
-	LDR	r0, [r2, #0x18]           // Load value of mailbox status register
-	TST	r0, #0x40000000           // Loop while bit 30 (Empty) is set
-	Bne	mBoxEmptyLoop$
-  
-	LDR	r0, [r2, #0x00]           // Read response from mailbox read register
-	AND	r1, r0, #0xF              // AND-mask out channel information (lowest 4 bits)
-	TEQ	r1, #0b1000               // Test if message is for framebuffer channel (1)
-	Bne	mBoxEmptyLoop$            // If not, read another message from the mailbox
+    	PUSH    {r4, lr} 		// Start function
 	
-	LDR	r0, =FrameBufferInit
-	LDR	r1, [r0, #0x04]	          // Load request/ response word from buffer
-	TEQ	r1, #0x80000000	          // Test if request was successful
-	Beq	pointerWaitLoop$	
-	MOVne	r0, #0		          // Return 0 if request failed
-	BXne	lr	
+    	LDR     r4, =FrameBufferInfo    // Load framebuffer info address
+    	MOV     r0, r4                  // Store fbi addr as mail message
+	ADD	r0, #0x40000000		// Set bit 30 --> tell GPU to not cache any changes
+    	MOV     r1, #1                	// MB channel 1
+    	BL      MBWrite                 // Write message
+    	MOV     r0, #1                  // MB channel 1
+    	BL      MBRead                  // Read message
+    	TEQ     r0, #0
+    	MOVne   r0, #0
+    	POPne   {r4, pc}                // Return 0 if message from mailbox is 0
+    
+pointerWait$:
+    	LDR     r0, [r4, #32]
+    	TEQ     r0, #0
+    	Beq     pointerWait$            // Loop until the pointer is set
+	LDR	r1, =FrameBufferPointer
+	STR	r0, [r1]		// Store the fb pointer
+    	MOV     r0, r4                 	// Return fb pointer
+	
+    	POP     {r4, pc}                // End function
 
-pointerWaitLoop$:
-	LDR	r0, =FrameBuffer 
-	LDR	r0, [r0]
-	TEQ	r0, #0	                  // Test if framebuffer pointer has been set
-	Beq	pointerWaitLoop$
+//////////////////////////////////////////////////////////////////////
+// Draw Pixel
+// ~ r0: X-coordinate
+// ~ r1: Y-coordinate
+// ~ r2: Color
+/////////////////////////////////////////////////////////////////////
+
+.globl DrawPixel 		  		// Make function global
+
+DrawPixel:
+	PUSH	{r4, lr} 			// Start function
 	
-	LDR 	r3, =FrameBufferPointer
-	STR	r0, [r3]
-	BX	lr
+	ADD	r4, r0, r1, lsl #10 		// r4 = (y * 1024) + x = x + (y << 10)
+	LSL	r4, #1 				// r4 *= 2 (for 16 bits per pixel = 2 bytes per pixel)
+	LDR	r0, =FrameBufferPointer		// Get frame buffer pointer address
+	LDR	r0, [r0] 			// Load frame buffer pointer into r0
+	STRH	r2, [r0, r4] 			// Store color (hword) at framebuffer pointer + offset
 	
+	POP	{r4, pc}			// End function
+
 //////////////////////////////////////////////////////////////////////
 // Clear Screen (paints display black)
 /////////////////////////////////////////////////////////////////////
 
-.globl ClearScreen		  // Make function global
+.globl ClearScreen		// Make function global
 
 ClearScreen:
-
-	PUSH 	{r4-r6, lr}
+	PUSH 	{r4-r6, lr} 	// Start function
 
 	MOV 	r4, #0 		// X = 0
 	MOV 	r5, #0 		// Y = 0
 	MOV 	r6, #0 		// Color = Black
 
 loop:
-	MOV 	r0, r4
-	MOV 	r1, r5
-	MOV 	r2, r6
+	MOV 	r0, r4 		// Reset X
+	MOV 	r1, r5 		// Reset Y
+	MOV 	r2, r6 		// Reset color
 	BL 	DrawPixel 	// DrawPixel (X, Y, #white)
 
 	ADD 	r4, #1 		// X++
@@ -89,12 +91,12 @@ loop:
 // ~ r3: Color
 /////////////////////////////////////////////////////////////////////
 
-.globl DrawSquare		  // Make function global
+.globl DrawSquare		  	// Make function global
 
 DrawSquare:
+	PUSH 	{r4-r9, lr} 		// Start function
 
-	PUSH 	{r4-r9, lr}
-
+	// Name a few registers
 	pointX 	.req r4
 	pointY 	.req r5
 	color 	.req r6
@@ -102,31 +104,32 @@ DrawSquare:
 	borderX .req r8
 	borderY .req r9
 
+	// Setup
 	MOV 	pointX, r0 		// X = r0
 	MOV 	pointY, r1 		// Y = r1
-	MOV 	color, r3 		// Color = r3
 	MOV 	size, r2 		// Size = r2
-	
+	MOV 	color, r3 		// Color = r3
 	MOV 	borderX, size
-	ADD 	borderX, pointX
+	ADD 	borderX, pointX 	// borderX += size 
 	MOV 	borderY, size
-	ADD 	borderY, pointY
+	ADD 	borderY, pointY 	// borderY += size 
 
 loop0:
-	MOV 	r0, pointX
-	MOV 	r1, pointY
+	MOV 	r0, pointX 		// Reset X
+	MOV 	r1, pointY 		// Reset Y
 	MOV 	r2, color
-	BL 		DrawPixel 		// DrawPixel(X, Y, color)
+	BL 	DrawPixel 		// DrawPixel(X, Y, color)
 
 	ADD 	pointX, #1 		// X++
-	CMP 	pointX, borderX // If X < size, loop, else...
+	CMP 	pointX, borderX 	// If X < size, loop, else...
 	Blt 	loop0
 
-	SUB 	pointX, size 	// X -= 40
+	SUB 	pointX, size 		// X -= 40
 	ADD 	pointY, #1 		// Y++
-	CMP 	pointY, borderY // If Y < border, loop, else...
+	CMP 	pointY, borderY 	// If Y < border, loop, else...
 	Blt 	loop0
 
+	// Unname a few registers
 	.unreq pointX
 	.unreq pointY
 	.unreq color
@@ -134,25 +137,7 @@ loop0:
 	.unreq borderX
 	.unreq borderY
 
-	POP 	{r4-r9, pc} 	// End function
-
-//////////////////////////////////////////////////////////////////////
-// Draw Pixel
-// ~ r0: X-coordinate
-// ~ r1: Y-coordinate
-// ~ r2: Color
-/////////////////////////////////////////////////////////////////////
-
-.globl DrawPixel 		  		// Make function global
-
-DrawPixel:
-	PUSH	{r4, lr} 			// Start function
-	ADD	r4, r0, r1, lsl #10 	// r4 = (y * 1024) + x = x + (y << 10)
-	LSL	r4, #1 					// r4 *= 2 (for 16 bits per pixel = 2 bytes per pixel)
-	LDR	r0, =FrameBufferPointer	// Get frame buffer pointer address
-	LDR	r0, [r0] 				// Load frame buffer pointer into r0
-	STRH	r2, [r0, r4] 		// Store color (hword) at framebuffer pointer + offset
-	POP	{r4, pc}				// End function
+	POP 	{r4-r9, pc} 		// End function
 
 //////////////////////////////////////////////////////////////////////
 // Draw a Character (in white)
@@ -161,10 +146,10 @@ DrawPixel:
 // ~ r2: Character
 /////////////////////////////////////////////////////////////////////
 
-.globl DrawChar		  // Make function global
+.globl DrawChar		  		// Make function global
 
 DrawChar:
-	PUSH	{r4-r10, lr}
+	PUSH	{r4-r10, lr} 		// Start function
 
 	charAddr .req	r4
 	pixel_x	 .req	r5
@@ -223,32 +208,33 @@ noPixel$:
 // ~ r2: String Address
 /////////////////////////////////////////////////////////////////////
 
-.globl DrawString		  // Make function global
+.globl DrawString		  	// Make function global
 
 DrawString:
 	PUSH	{r5-r7, lr} 		// Start function
 
-	pointX	.req r5 		// Name registers
+	// name a few registers
+	pointX	.req r5 
 	pointY	.req r6
 	strAddr .req r7
 
-	MOV 	pointX, r0 		// Move input to safe registers
+	// Setup
+	MOV 	pointX, r0 	
 	MOV 	pointY, r1
 	MOV 	strAddr, r2
 
 loop1:
 	LDRB 	r2, [strAddr], #1 	// Load byte into r3
 	CMP 	r2, #0 			// Compare current byte to null
-	
 	Beq 	done1 			// If equal, string is done
 	BL 	DrawChar		// Else, DrawChar(X, Y, current_character)
 	ADD 	pointX, #20		// Offset next character
-	MOV 	r0, pointX
-	MOV 	r1, pointY 		
+	MOV 	r0, pointX 		// Reset X
+	MOV 	r1, pointY 		// Reset Y
 	B 	loop1 			// Then loop to next character
-	
 done1:
-	.unreq 	pointX 			// Unname registers
+	// Unname a few registers
+	.unreq 	pointX 	
 	.unreq 	pointY
 	.unreq 	strAddr
 
@@ -261,11 +247,12 @@ done1:
 // ~ r2: Image Address
 /////////////////////////////////////////////////////////////////////
 
-.globl DrawImage		  // Make function global
+.globl DrawImage		  	// Make function global
 
 DrawImage:
-	PUSH 	{r4-r9, lr}
+	PUSH 	{r4-r9, lr} 		// Start function
 
+	// Name a few registers
 	pointX 	.req r4
 	pointY 	.req r5
 	img 	.req r6
@@ -273,31 +260,32 @@ DrawImage:
 	borderX .req r8
 	borderY .req r9
 
+	// Setup
 	MOV 	pointX, r0 		// X = r0
 	MOV 	pointY, r1 		// Y = r1
 	MOV 	img, r2 		// img = r3
 	MOV 	size, #40 		// All images are 40x40
-	
 	MOV 	borderX, size
-	ADD 	borderX, pointX
+	ADD 	borderX, pointX 	// borderX = X + size
 	MOV 	borderY, size
-	ADD 	borderY, pointY
+	ADD 	borderY, pointY 	// borderY = Y + size
 
 loop2:
-	MOV 	r0, pointX
-	MOV 	r1, pointY
-	LDRH 	r2, [img], #2
-	BL 		DrawPixel 		// DrawPixel(X, Y, color)
+	MOV 	r0, pointX 		// Reset X
+	MOV 	r1, pointY 		// Reset Y
+	LDRH 	r2, [img], #2 		// Load next pixel's color
+	BL 	DrawPixel 		// DrawPixel(X, Y, color)
 
 	ADD 	pointX, #1 		// X++
-	CMP 	pointX, borderX // If X < size, loop, else...
+	CMP 	pointX, borderX 	// If X < size, loop, else...
 	Blt 	loop2
 
-	SUB 	pointX, size 	// X -= 40
+	SUB 	pointX, size 		// X -= 40 (because all images are 40x40)
 	ADD 	pointY, #1 		// Y++
-	CMP 	pointY, borderY // If Y < border, loop, else...
+	CMP 	pointY, borderY 	// If Y < border, loop, else...
 	Blt 	loop2
 
+	// Unname a few registers
 	.unreq pointX
 	.unreq pointY
 	.unreq img
@@ -305,52 +293,112 @@ loop2:
 	.unreq borderX
 	.unreq borderY
 
-	POP 	{r4-r9, pc} 	// End function
+	POP 	{r4-r9, pc} 		// End function
 
 //////////////////////////////////////////////////////////////////////
-// Draw the BG
+// Draw the BG (1024x768)
 /////////////////////////////////////////////////////////////////////
 
-.globl DrawBG
+.globl DrawBG				// Make function global
 
 DrawBG:
-	PUSH 	{r4-r8, lr}
+	PUSH 	{r4-r8, lr} 		// Start function
 
+	// Name a few registers
 	pointX 	.req r4
 	pointY 	.req r5
 	img 	.req r6
 	borderX .req r7
 	borderY .req r8
 
-	MOV 	pointX, #0 		// X = r0
-	MOV 	pointY, #0 		// Y = r1
-	LDR 	img, =startmenu // img = r3
-	MOV 	borderX, #640
-	MOV 	borderY, #480
+	// Setup
+	MOV 	pointX, #0 		// X = 0
+	MOV 	pointY, #0 		// Y = 0
+	LDR 	img, =startmenu 	// img = menu background image address
+	MOV 	borderX, #1024 		// borderX = 1024
+	MOV 	borderY, #768 		// borderY = 768
 
 loop3:
-	MOV 	r0, pointX
-	MOV 	r1, pointY
-	LDRH 	r2, [img], #2
-	BL 		DrawPixel 		// DrawPixel(X, Y, color)
+	MOV 	r0, pointX 		// Reset X
+	MOV 	r1, pointY 		// Reset Y
+	LDRH 	r2, [img], #2 		// Load next pixel color
+	BL 	DrawPixel 		// DrawPixel(X, Y, color)
 
 	ADD 	pointX, #1 		// X++
-	CMP 	pointX, borderX // If X < size, loop, else...
+	CMP 	pointX, borderX 	// If X < size, loop, else...
 	Blt 	loop3
 
-	SUB 	pointX, #640 	// X -= 40
+	SUB 	pointX, #1024 		// X -= 1024
 	ADD 	pointY, #1 		// Y++
-	CMP 	pointY, borderY // If Y < border, loop, else...
+	CMP 	pointY, borderY 	// If Y < border, loop, else...
 	Blt 	loop3
 
+	// Unname a few registers
 	.unreq pointX
 	.unreq pointY
 	.unreq img
 	.unreq borderX
 	.unreq borderY
 
-	POP 	{r4-r8, pc} 	// End function
+	POP 	{r4-r8, pc} 		// End function
 
+//////////////////////////////////////////////////////////////////////////////////////
+// Write to Mailbox
+// Inputs:
+// ~ r0: Value (4 LSB should be 0)
+// ~ r1: Channel to write to
+//////////////////////////////////////////////////////////////////////////////////////
+
+.globl MBWrite 				// Make function global
+
+MBWrite:
+	PUSH 	{lr} 			// Start function
+	
+    	TST     r0, #0b1111            	// If lower 4 bits of r0 != 0 (invalid message),...
+    	MOVne   pc, lr                  // Return
+    	CMP     r1, #15                 // If r1 > 15 (must be a valid channel)...
+    	MOVhi   pc, lr                  // Return
+    	MOV     r2, r0
+    	LDR     r0, =0x2000B880 	// Else load mailbox
+    
+MBWriteWait:
+    	LDR     r3, [r0, #0x18]    	// Load mailbox status
+    	TST     r3, #0x80000000         // Test bit-32
+    	Bne     MBWriteWait             // Loop while status bit 32 != 0
+    	ADD     r2, r1                  // value += channel
+    	STR     r2, [r0, #0x20]         // Store message to the mailbox write offset
+    
+    	POP 	{pc}			// End function
+
+//////////////////////////////////////////////////////////////////////////////////////
+// Read from Mailbox
+// Inputs:
+// ~ r0: Channel
+// Outputs:
+// ~ r0: Message
+//////////////////////////////////////////////////////////////////////////////////////
+
+.globl MBRead 					// Make function global
+
+MBRead:
+	PUSH 	{lr}				// Start function
+    	CMP     r0, #15                         // If channel is invalid
+    	MOVhi   pc, lr 				// Return
+    	MOV     r1, r0
+	LDR     r0, =0x2000B880 		// Else load mailbox
+    
+MBReadwait:
+    	LDR     r2, [r0, #0x18]        		// Load mailbox status
+    	TST     r2, #0x4000000              	// Test bit 30
+    	Bne     MBReadwait                      // Loop while status bit 30 != 0
+    	LDR     r2, [r0, #0]             	// Load message
+    	AND     r3, r2, #0b1111           	// Mask out channel bits in message
+    	TEQ     r3, r1
+    	Bne     MBReadwait                      // If wrong channel, loop, else...
+    	AND     r0, r2, #0xfffffff0           	// Mask out channel bits from message, store result in r0
+    
+	POP 	{pc}				// End function
+	
 //////////////////////////////////////////////////////////////////////////////////////
 // Data Section
 //////////////////////////////////////////////////////////////////////////////////////
