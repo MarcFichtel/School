@@ -30,6 +30,9 @@
 * PlayerControl()
 * Delay()
 * LongDelay()
+### main_menu.s
+* Drawenu()
+* DrawSelector()
 ### block_images.s
 * luigi1
 * luigi2
