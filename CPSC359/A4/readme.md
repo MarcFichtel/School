@@ -1,30 +1,48 @@
-## Global Functions
-* basicShapes.s:      DrawSquare(X, Y, Color) --> Draws 64x64 squares
-* basicShapes.s:      DrawVertLine(X, Y, Ybound, Color)
-* basicShapes.s:      DrawHorizLine(X, Y, Xbound, Color)
-* contoller.s:        InitSES()
-* contoller.s:        ReadData()
-* contoller.s:        WriteClock(Value)
-* contoller.s:        WriteLatch(Value)
-* contoller.s:        ReadSNES()
-* contoller.s:        Wait(Value)
-* framebuffer.s:      InitFrameBuffer()
-* framebuffer.s:      ClearScreen() --> Paints screen black
-* framebuffer.s:      DrawSquare(X, Y, Size, Color)
-* framebuffer.s:      DrawPixel(X, Y, Color)
-* framebuffer.s:      DrawChar(X, Y, Character) --> Draws characters in white
-* framebuffer.s:      DrawString(X, Y, String Address) --> Draws strings in white
-* framebuffer.s:      DrawImage(X, Y, Image Address) --> Draws 64x64 images
-* framebuffer.s:      DrawBG() 
-* IntegerToString.s:  IntegerToString(Integer, String Address)
-* IntegerToString.s:  DivideTwoNum(Dividend, Divisor)
-* IntegerToString.s:  ModularDivision(Dividend, Divisor)
-* IntegerToString.s:  FlipString(String Address)
-* playerInput.s:      InGameMenuControl()
-* playerInput.s:      MainMenuControl()
-* playerInput.s:      PlayerControl()
-* playerInput.s:      Delay()
-* playerInput.s:      LongDelay()
+## Global Stuff
+### basicShapes.s
+* DrawSquare(X, Y, Color) --> Draws 64x64 squares
+* DrawVertLine(X, Y, Ybound, Color)
+* DrawHorizLine(X, Y, Xbound, Color)
+### controller.s
+* InitSES()
+* ReadData()
+* WriteClock(Value)
+* WriteLatch(Value)
+* ReadSNES()
+* Wait(Value)
+### framebuffer.s
+* InitFrameBuffer()
+* ClearScreen() --> Paints screen black
+* DrawSquare(X, Y, Size, Color)
+* DrawPixel(X, Y, Color)
+* DrawChar(X, Y, Character) --> Draws characters in white
+* DrawString(X, Y, String Address) --> Draws strings in white
+* DrawImage(X, Y, Image Address) --> Draws 64x64 images
+* DrawBG() 
+### IntegerToSting.s
+* IntegerToString(Integer, String Address)
+* DivideTwoNum(Dividend, Divisor)
+* ModularDivision(Dividend, Divisor)
+* FlipString(String Address)
+### playerInput.s
+* InGameMenuControl()
+* MainMenuControl()
+* PlayerControl()
+* Delay()
+* LongDelay()
+### block_images.s
+* luigi1
+* luigi2
+* luigijump
+* goomba1
+* goomba2
+* ghost1
+* ghost2
+* stair
+* brick
+* coinblock
+* floor
+* startmenu (1024x768)
 
 # CPSC 359
 
