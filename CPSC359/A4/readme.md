@@ -31,7 +31,7 @@
 * Delay()
 * LongDelay()
 ### main_menu.s
-* Drawenu()
+* DrawMenu()
 * DrawSelector()
 ### block_images.s
 * luigi1
