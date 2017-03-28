@@ -1,3 +1,22 @@
+## Global Functions
+* basicShapes.s: DrawSquare(X, Y, Color) --> Draws 64x64 squares
+* basicShapes.s: DrawVertLine(X, Y, Ybound, Color)
+* basicShapes.s: DrawHorizLine(X, Y, Xbound, Color)
+* contoller.s: InitSES()
+* contoller.s: ReadData()
+* contoller.s: WriteClock(Value)
+* contoller.s: WriteLatch(Value)
+* contoller.s: ReadSNES()
+* contoller.s: Wait(Value)
+* framebuffer.s: InitFrameBuffer()
+* framebuffer.s: ClearScreen() --> Paints screen black
+* framebuffer.s: DrawSquare(X, Y, Size, Color)
+* framebuffer.s: DrawPixel(X, Y, Color)
+* framebuffer.s: DrawChar(X, Y, Character) --> Draws characters in white
+* framebuffer.s: DrawString(X, Y, String Address) --> Draws strings in white
+* framebuffer.s: DrawImage(X, Y, Image Address) --> Draws 64x64 images
+* framebuffer.s: DrawBG() 
+
 # CPSC 359
 
 ## Assignment 4
