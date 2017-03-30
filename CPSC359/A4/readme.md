@@ -19,20 +19,33 @@
 * DrawString(X, Y, String Address) --> Draws strings in white
 * DrawImage(X, Y, Image Address) --> Draws 64x64 images
 * DrawBG() 
+* DrawStartMenu(X, Y, menu image) --> draws ANY menu
+* DrawMenu() --> Setup for main menu
+* DrawScene()
+* DrawGround()
+* DrawPC() --> Draws player character depending on game state (walking, jumping, idle)
+* DrawPauseMenuOptions()
 ### IntegerToSting.s
 * IntegerToString(Integer, String Address)
 * DivideTwoNum(Dividend, Divisor)
 * ModularDivision(Dividend, Divisor)
 * FlipString(String Address)
-### playerInput.s
-* InGameMenuControl()
-* MainMenuControl()
-* PlayerControl()
-* Delay()
-* LongDelay()
+### inputcontroller.s
+* StartMenuController()
+* gameController()
+* pauseController()
 ### main_menu.s
 * DrawMenu()
 * DrawSelector()
+### playerAction.s
+* Jump()
+* MoveLeft()
+* MoveRight()
+* UpdatePlayer()
+* UpdateEnemies()
+* CheckCollisions()
+### gamestate.s
+* ResetGameState()
 ### block_images.s
 * luigi1
 * luigi2
@@ -46,6 +59,8 @@
 * coinblock
 * floor
 * startmenu (1024x768)
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 # CPSC 359
 
