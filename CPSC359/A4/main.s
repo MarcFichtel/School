@@ -3,7 +3,7 @@
 // CPSC 359
 // Assignment 4
 // Cardin Chen: 10161477
-// Olga Bogdanova: 
+// Olga Bogdanova: 00503047
 // Marc-Andre Fichtel: 3001409
 //
 //////////////////////////////////////////////////////////////////////
