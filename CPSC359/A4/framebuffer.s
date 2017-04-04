@@ -315,7 +315,7 @@ imgLoop:
 // Draw the BG Image
 /////////////////////////////////////////////////////////////////////
 
-.globl DrawBGImg 				// Make function global
+.globl DrawBGImg 			// Make function global
 DrawBGImg:
 	PUSH 	{r4-r8, lr} 		// Start function
 
@@ -383,7 +383,7 @@ DrawBG:
 	// Setup
 	MOV 	startX, r0 		
 	MOV 	startY, r1 		
-	MOV 	color, #0xFFFFFFFF	 	// TODO insert blue color code here
+	MOV 	color, #0x0000FF	 // TODO insert blue color code here
 	MOV 	endX, r2 		
 	MOV 	endY, r3 
 	SUB 	width, endX, startX 	// Width = EndX - StartX		
@@ -647,9 +647,6 @@ DrawMenu:
 //
 // This function redraws the background after the player or an enemy move
 //
-// TODO fix BG redraw when player jumps & moves sideways at the same time\
-// TODO convert score, coins, lives to string, then display them
-//
 ////////////////////////////////////////////////////////////////////////////////////
 
 .globl DrawScene
@@ -676,8 +673,8 @@ DrawScene:
 	LDR 	r3, =state
 	LDR 	r0, [r3, #56]
 	LDR 	r1, =scoreActual
-	BL 		IntegerToString 		// IntToString (score, score_string)
-	MOV 	r0, #30
+	BL 	IntegerToString 	// IntToString (score, score_string)
+	MOV 	r0, #200
 	MOV 	r1, #10
 	LDR 	r2, =scoreActual
 	BL DrawString	
@@ -685,8 +682,8 @@ DrawScene:
 	LDR 	r3, =state
 	LDR 	r0, [r3, #60]
 	LDR 	r1, =coinsActual
-	BL 		IntegerToString 		// IntToString (coins, coins_string)
-	MOV 	r0, #30
+	BL 	IntegerToString 	// IntToString (coins, coins_string)
+	MOV 	r0, #200
 	MOV 	r1, #50
 	LDR 	r2, =coinsActual
 	BL DrawString	
@@ -694,8 +691,8 @@ DrawScene:
 	LDR 	r3, =state
 	LDR 	r0, [r3, #64]
 	LDR 	r1, =livesActual
-	BL 		IntegerToString 		// IntToString (lives, lives_string)
-	MOV 	r0, #30
+	BL 	IntegerToString 	// IntToString (lives, lives_string)
+	MOV 	r0, #200
 	MOV 	r1, #90
 	LDR 	r2, =livesActual
 	BL DrawString	
@@ -768,39 +765,39 @@ DrawScene:
 
 	// Moving Up & Right
 	ADD 	r0, mJump, mRight	// Sum jump and right flags
-	CMP 	r0, #2 				// If jump and right flag are set 
-	SUBeq 	r0, pX, r3 			// DrawBG_StartX = PlayerX - move speed
+	CMP 	r0, #2 			// If jump and right flag are set 
+	SUBeq 	r0, pX, r3 		// DrawBG_StartX = PlayerX - move speed
 	ADDeq 	r1, pY, #64 		// DrawBG_StartY = PlayerY + 64	
-	MOVeq 	r2, pX 				// DrawBG_EndX = PlayerX
+	MOVeq 	r2, pX 			// DrawBG_EndX = PlayerX
 	ADDeq 	r3, r1, jSpeed 		// DrawBG_EndY = StartY + jump speed
-	BLeq 	DrawBG 				// Draw the background	
+	BLeq 	DrawBG 			// Draw the background	
 
 	// Moving Up & Left
 	ADD 	r0, mJump, mLeft	// Sum jump and left flags
-	CMP 	r0, #2 				// If jump and right flag are set 
+	CMP 	r0, #2 			// If jump and right flag are set 
 	ADDeq 	r0, pX, #64 		// DrawBG_StartX = PlayerX + 64
 	ADDeq 	r1, pY, #64 		// DrawBG_StartY = PlayerY + 64	
-	ADDeq 	r2, r0, r3			// DrawBG_EndX = StartX + move speed
+	ADDeq 	r2, r0, r3		// DrawBG_EndX = StartX + move speed
 	ADDeq 	r3, r1, jSpeed 		// DrawBG_EndY = StartY + jump speed
-	BLeq 	DrawBG 				// Draw the background	
+	BLeq 	DrawBG 			// Draw the background	
 
 	// Moving Down & Right
 	ADD 	r0, mFall, mRight	// Sum fall and right flags
-	CMP 	r0, #2 				// If jump and right flag are set 
-	SUBeq 	r0, pX, r3 			// DrawBG_StartX = PlayerX - move speed
+	CMP 	r0, #2 			// If jump and right flag are set 
+	SUBeq 	r0, pX, r3 		// DrawBG_StartX = PlayerX - move speed
 	SUBeq 	r1, pY, jSpeed 		// DrawBG_StartY = PlayerY - jump speed
-	MOVeq 	r2, pX				// DrawBG_EndX = PlayerX
-	MOVeq 	r3, pY 				// DrawBG_EndY = PlayerY
-	BLeq 	DrawBG 				// Draw the background	
+	MOVeq 	r2, pX			// DrawBG_EndX = PlayerX
+	MOVeq 	r3, pY 			// DrawBG_EndY = PlayerY
+	BLeq 	DrawBG 			// Draw the background	
 
 	// Moving Down & Left
 	ADD 	r0, mFall, mLeft	// Sum fall and left flags
-	CMP 	r0, #2 				// If jump and right flag are set 
+	CMP 	r0, #2 			// If jump and right flag are set 
 	ADDeq 	r0, pX, #64 		// DrawBG_StartX = PlayerX + 64
 	SUBeq 	r1, pY, jSpeed 		// DrawBG_StartY = PlayerY - jump speed
-	ADDeq 	r2, r0, r3			// DrawBG_EndX = StartX + move speed
-	MOVeq 	r3, pY 				// DrawBG_EndY = PlayerY
-	BLeq 	DrawBG 				// Draw the background	
+	ADDeq 	r2, r0, r3		// DrawBG_EndX = StartX + move speed
+	MOVeq 	r3, pY 			// DrawBG_EndY = PlayerY
+	BLeq 	DrawBG 			// Draw the background	
 
 doneDrawScene:
 	.unreq 	pX
