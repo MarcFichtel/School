@@ -418,15 +418,85 @@ bg:
 //
 // Draw the first scene of first map
 //
+// Takes object positions from game state
+//
 /////////////////////////////////////////////////////////////////////
 
 .globl DrawMap1_1 				// Make function global
 DrawMap1_1:
-	PUSH 	{r4-r8, lr} 		// Start function
+	PUSH 	{r4-r6, lr} 		// Start function
 
-	// TODO
+	LDR 	r4, =map11blocks 	// Load address of map 1-1 blocks
 
-	POP 	{r4-r8, pc} 		// End function
+// Draw bricks
+	// Draw Brick 1
+	LDR 	r0, [r4] 			// Load brick 1 X
+	LDR 	r1, [r4, #4] 		// Load brick 1 Y
+	LDR 	r2, =brick 			// Load brick image address
+	BL 		DrawImage 			// Draw brick 1
+
+	// Draw Brick 2
+	LDR 	r0, [r4, #8] 		// Load brick 2 X
+	LDR 	r1, [r4, #12] 		// Load brick 2 Y
+	LDR 	r2, =brick 			// Load brick image address
+	BL 		DrawImage 			// Draw brick 2
+
+	// Draw Brick 3
+	LDR 	r0, [r4, #16] 		// Load brick 3 X
+	LDR 	r1, [r4, #20] 		// Load brick 3 Y
+	LDR 	r2, =brick 			// Load brick image address
+	BL 		DrawImage 			// Draw brick 3
+
+	// Draw Brick 4
+	LDR 	r0, [r4, #24] 		// Load brick 4 X
+	LDR 	r1, [r4, #28] 		// Load brick 4 Y
+	LDR 	r2, =brick 			// Load brick image address
+	BL 		DrawImage 			// Draw brick 4
+
+// Draw coin blocks
+	// Draw coin block 1
+	LDR 	r0, [r4, #32] 		// Load coin block 1 X
+	LDR 	r1, [r4, #36] 		// Load coin block 1 Y
+	LDR 	r2, =coinblock 		// Load brick image address
+	BL 		DrawImage 			// Draw coin block 1
+
+	// Draw coin block 2
+	LDR 	r0, [r4, #40] 		// Load coin block 2 X
+	LDR 	r1, [r4, #44] 		// Load coin block 2 Y
+	LDR 	r2, =coinblock 		// Load brick image address
+	BL 		DrawImage 			// Draw coin block 2
+
+	// Draw coin block 3
+	LDR 	r0, [r4, #48] 		// Load coin block 3 X
+	LDR 	r1, [r4, #52] 		// Load coin block 3 Y
+	LDR 	r2, =coinblock 		// Load brick image address
+	BL 		DrawImage 			// Draw coin block 3
+
+	// Draw floor
+	LDR 	r5, [r4, #56] 		// Load floor X
+	LDR 	r6, [r4, #60]		// Load floor Y
+drawFloor:
+	MOV 	r0, r5 		
+	MOV 	r1, r6 		
+	LDR 	r2, =floor 			// Load floor image address
+	BL 		DrawImage 			// Draw floor
+
+	ADD 	r5, #64 			// X++
+	CMP 	r5, #1024 			// If X < 1024
+	Blt 	drawFloor 			// Loop
+
+	MOV 	r5, #0 				// Reset X
+	ADD 	r6, #64 			// Y++
+	CMP 	r6, #768 			// If Y < 768
+	Blt 	drawFloor 			// Loop
+
+	// Draw Goomba 1
+	LDR 	r0, [r4, #68] 		// Load goomba 1 X
+	LDR 	r1, [r4, #72] 		// Load goomba 1 Y
+	LDR 	r2, =goomba1 		// Load goomba image address
+	BL 		DrawImage 			// Draw goomba 1
+
+	POP 	{r4-r6, pc} 		// End function
 
 
 //////////////////////////////////////////////////////////////////////
@@ -435,19 +505,19 @@ DrawMap1_1:
 //
 /////////////////////////////////////////////////////////////////////
 
-.globl SetupScene
+.globl SetupScene 		// Make function global
 SetupScene:
-	PUSH 	{lr}
+	PUSH 	{lr} 		// Start function
 
 	MOV 	r0, #0
 	MOV 	r1, #0
 	MOV 	r2, #1024
 	MOV 	r3, #768
-	BL 	DrawBG
+	BL 	DrawBG 		// Draw in-game BG (TODO find blue color code for this function)
+	BL 	DrawMap1_1 	// Draw in-game objects
+	BL 	DrawPC 		// Draw player
 
-	BL 	DrawPC
-
-	POP 	{pc}
+	POP 	{pc} 		// End function
 
 //////////////////////////////////////////////////////////////////////
 //
