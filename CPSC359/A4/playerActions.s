@@ -295,10 +295,24 @@ updateDone:
 
 .globl UpdateEnemies 				// Make function global
 UpdateEnemies:
-	PUSH 	{lr} 			// Start function
+	PUSH 	{r4-r7, lr} 			// Start function
 
-	POP 	{pc} 			// End function
+	set 	.req r8
+	clr 	.req r9
 
+	LDR 	r0, =map11blocks 			// Load game state address
+
+	LDR 	r4, [r0, #68] 			// goomba x 
+	LDR 	r5, [r0, #72] 			// goomba y 
+
+	MOV 	set, #1
+	MOV 	clr, #0
+
+	SUB 	r4, #4
+	
+	STR 	r4, [r0, #68]			// Store new horiz. position back into game state
+
+	B 	updateDoneGoomba 			// Finish function
 ///////////////////////////////////////////////////////////////////////////////////
 //
 // Check Collisions
