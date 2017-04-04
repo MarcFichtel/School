@@ -672,7 +672,33 @@ DrawScene:
 	LDR 	r2, =livesText
 	BL DrawString	
 
-	// TODO draw actual score and coins behind text
+	// Draw actual score, coins, lives behind text
+	LDR 	r3, =state
+	LDR 	r0, [r3, #56]
+	LDR 	r1, =scoreActual
+	BL 		IntegerToString 		// IntToString (score, score_string)
+	MOV 	r0, #30
+	MOV 	r1, #10
+	LDR 	r2, =scoreActual
+	BL DrawString	
+
+	LDR 	r3, =state
+	LDR 	r0, [r3, #60]
+	LDR 	r1, =coinsActual
+	BL 		IntegerToString 		// IntToString (coins, coins_string)
+	MOV 	r0, #30
+	MOV 	r1, #50
+	LDR 	r2, =coinsActual
+	BL DrawString	
+
+	LDR 	r3, =state
+	LDR 	r0, [r3, #64]
+	LDR 	r1, =livesActual
+	BL 		IntegerToString 		// IntToString (lives, lives_string)
+	MOV 	r0, #30
+	MOV 	r1, #90
+	LDR 	r2, =livesActual
+	BL DrawString	
 
 	// Name a few registers
 	pX 	.req r4
@@ -933,6 +959,9 @@ FrameBufferPointer:
 
 font:	.incbin	"font.bin"
 
-scoreText: 	.asciz "Score: 00000000"
-coinsText: 	.asciz "Coins: 000"
-livesText: 	.asciz "Lives: 003"
+scoreText: 	.asciz "Score: "
+coinsText: 	.asciz "Coins: "
+livesText: 	.asciz "Lives: "
+scoreActual: 	.asciz ""
+coinsActual: 	.asciz ""
+livesActual: 	.asciz ""
