@@ -45,7 +45,15 @@ winGame:
 	MOV 	r0, #400
 	MOV 	r1, #300
 	LDR 	r2, =winString
-	BL 	DrawString 		// DrawString(X, Y, exit string addr)
+	BL 	DrawString 		// DrawString(X, Y, string addr)
+	B 	halt
+
+gameOver:
+	BL 	ClearScreen 		// ClearScreen
+	MOV 	r0, #400
+	MOV 	r1, #300
+	LDR 	r2, =loseString
+	BL 	DrawString 		// DrawString(X, Y, string addr)
 	B 	halt
 
 exitGame:
@@ -63,3 +71,4 @@ halt:
 .align 4
 exitString: 	.asciz "Game Closed"
 winString: 		.asciz "Game Won!"
+loseString: 	.asciz "Game Over!"

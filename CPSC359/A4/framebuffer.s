@@ -647,7 +647,8 @@ DrawMenu:
 //
 // This function redraws the background after the player or an enemy move
 //
-// TODO fix BG redraw when player jumps & moves sideways at the same time
+// TODO fix BG redraw when player jumps & moves sideways at the same time\
+// TODO convert score, coins, lives to string, then display them
 //
 ////////////////////////////////////////////////////////////////////////////////////
 
@@ -656,6 +657,22 @@ DrawScene:
 	PUSH 	{r4-r10, lr}		// Start function
 	
 	BL 	DrawPC 			// Draw the player character
+
+	// Draw Score, Coins, Lives text
+	MOV 	r0, #10
+	MOV 	r1, #10
+	LDR 	r2, =scoreText
+	BL DrawString
+	MOV 	r0, #10
+	MOV 	r1, #50
+	LDR 	r2, =coinsText
+	BL DrawString	
+	MOV 	r0, #10
+	MOV 	r1, #90
+	LDR 	r2, =livesText
+	BL DrawString	
+
+	// TODO draw actual score and coins behind text
 
 	// Name a few registers
 	pX 	.req r4
@@ -915,3 +932,7 @@ FrameBufferPointer:
 	.int	0
 
 font:	.incbin	"font.bin"
+
+scoreText: 	.asciz "Score: 00000000"
+coinsText: 	.asciz "Coins: 000"
+livesText: 	.asciz "Lives: 003"
