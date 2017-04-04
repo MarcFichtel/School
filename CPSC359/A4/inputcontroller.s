@@ -94,9 +94,6 @@ gameController:
 
 luigiController:
 	BL	ReadSNES			// Read user input
-	LDR	r1, =0xFFFF			// Prepare mask
-	TEQ	r0, r1				// Check if any buttons are pressed
-	Beq	luigiController			// If not, loop to top
 
 	LDR	r1, =0xFFF7			// Mask for START
 	TEQ	r0, r1				// Check if START was pressed
@@ -114,7 +111,17 @@ luigiController:
 	TEQ	r0, r1				// Check if RIGHT was pressed
 	Beq	rightPress 			// If so, go to rightPress
 
-	B	luigiController			// If none of these were pressed, loop to top
+	// Update player each frame, even if no buttons were pressed
+update:
+	BL 	UpdatePlayer 			// Update player
+	CMP 	r0, #0 				// If player won the game
+	Beq 	doneControl 			// Return 0 to main (game won, go to main)
+	CMP 	r0, #1 				// If player lost the game
+	Beq 	doneControl 			// Return 1 to main (game over, go to main)
+
+// TODO BL 	UpdateEnemies 			// Update enemies
+
+	B	luigiController			// Loop to top
 
 gamePaused:
 	BL	DrawPauseMenuOptions		// Draw in-game menu // draw in
@@ -136,21 +143,9 @@ leftPress:
 	BL	MoveLeft			// Move left if possible
 	B 	update 				// Then go to update
 
-rightPress:
+rightPress:	
 	BL	MoveRight			// Move right if possible (then go to update)
-
-update:
-	BL 	UpdatePlayer 			// Update player
-	LDR 	r0, =state
-	LDR 	r1, [r0, #68]
-	CMP 	r1, #0 						// If player won the game
-	Beq 	doneControl 			// Return 0 to main (game won, go to main)
-	LDR 	r1, [r0, #72]
-	CMP 	r1, #0 						// If player lost the game
-	Beq 	doneControl 			// Return 1 to main (game over, go to main)
-
-// TODO BL 	UpdateEnemies 			// Update enemies
-	B	luigiController							// Check for next input
+	B 	update 				// Then go to update
 
 doneControl:
 	POP 	{pc} 				// End function

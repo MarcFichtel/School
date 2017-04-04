@@ -312,11 +312,11 @@ imgLoop:
 	POP 	{r4-r9, pc} 		// End function
 
 //////////////////////////////////////////////////////////////////////
-// Draw the BG
+// Draw the BG Image
 /////////////////////////////////////////////////////////////////////
 
-.globl DrawBG 				// Make function global
-DrawBG:
+.globl DrawBGImg 				// Make function global
+DrawBGImg:
 	PUSH 	{r4-r8, lr} 		// Start function
 
 	// Name a few registers
@@ -356,58 +356,103 @@ bg:
 
 	POP 	{r4-r8, pc} 		// End function
 
+//////////////////////////////////////////////////////////////////////
+// Draw the BG
+// Inputs:
+// ~ r0: StartX
+// ~ r1: StartY
+// ~ r2: EndX
+// ~ r3: EndY
+/////////////////////////////////////////////////////////////////////
+
+.globl DrawBG 				// Make function global
+DrawBG:
+	PUSH 	{r4-r9, lr} 		// Start function
+
+	// Name a few registers
+	startX 	.req r4
+	startY 	.req r5
+	color 	.req r6
+	endX 	.req r7
+	endY 	.req r8
+	width 	.req r9
+
+	// Setup
+	MOV 	startX, r0 		
+	MOV 	startY, r1 		
+	MOV 	color, #0xFFFFFFFF	
+	MOV 	endX, r2 		
+	MOV 	endY, r3 
+	SUB 	width, endX, startX 	// Width = EndX - StartX		
+
+bg:
+	MOV 	r0, startX
+	MOV 	r1, startY
+	MOV 	r2, color
+	BL 	DrawPixel 		// DrawPixel(X, Y, color)
+
+	ADD 	startX, #1 		// X++
+	CMP 	startX, endX 		// If startX < endX, loop, else...
+	Blt 	bg
+
+	SUB 	startX, width 		// X -= width
+	ADD 	startY, #1 		// Y++
+	CMP 	startY, endY 		// If startY < endY, loop, else done
+	Blt 	bg
+
+	// Unname a few registers
+	.unreq startX
+	.unreq startY
+	.unreq color
+	.unreq endX
+	.unreq endY
+	.unreq width
+
+	POP 	{r4-r9, pc} 		// End function
+
 
 //////////////////////////////////////////////////////////////////////
+//
 // Draw the first scene of first map
+//
 /////////////////////////////////////////////////////////////////////
-// !!! draw map
+
 .globl DrawMap1_1 				// Make function global
 DrawMap1_1:
 	PUSH 	{r4-r8, lr} 		// Start function
 
-	// Name a few registers
-	pointX 	.req r4
-	pointY 	.req r5
-	img 		.req r6
-	borderX .req r7
-	borderY .req r8
-
-	MOV 	pointX, #0 		// X = r0
-	MOV 	pointY, #0 		// Y = r1
-	LDR 	img, = 	map1_1 		// img = r3
-	MOV 	borderX, #1024 		// borderX = 1024
-	MOV 	borderY, #768 		// borderY = 768
-
-bg1:
-	MOV 	r0, pointX
-	MOV 	r1, pointY
-	LDRH 	r2, [img], #2
-	BL 	DrawPixel 		// DrawPixel(X, Y, color)
-
-	ADD 	pointX, #1 		// X++
-	CMP 	pointX, borderX 	// If X < size, loop, else...
-	Blt 	bg1
-
-	SUB 	pointX, #1024 		// X -= 40
-	ADD 	pointY, #1 		// Y++
-	CMP 	pointY, borderY 	// If Y < border, loop, else...
-	Blt 	bg1
-
-	// Unname a few registers
-	.unreq pointX
-	.unreq pointY
-	.unreq img
-	.unreq borderX
-	.unreq borderY
+	// TODO
 
 	POP 	{r4-r8, pc} 		// End function
 
 
 //////////////////////////////////////////////////////////////////////
+//
+// Setup Scene
+//
+/////////////////////////////////////////////////////////////////////
+
+.globl SetupScene
+SetupScene:
+	PUSH 	{lr}
+
+	MOV 	r0, #0
+	MOV 	r1, #0
+	MOV 	r2, #1024
+	MOV 	r3, #768
+	BL 	DrawBG
+
+	BL 	DrawPC
+
+	POP 	{pc}
+
+//////////////////////////////////////////////////////////////////////
+//
 // Draw start menu
 // ~ r0: X-coordinate
 // ~ r1: Y-coordinate
 // ~ r2: Image Address
+//
 /////////////////////////////////////////////////////////////////////
 
 .globl DrawStartMenu		  	// Make function global
@@ -509,7 +554,7 @@ imgLoopStart1:
 DrawMenu:
 	PUSH 	{lr}			// Start function
 
-	BL 	DrawBG 			// Draw Background
+	BL 	DrawBGImg 			// Draw Background
 
 	MOV 	r0, #352
 	MOV 	r1, #500
@@ -524,41 +569,141 @@ DrawMenu:
 	POP 	{pc} 			// End function
 
 ////////////////////////////////////////////////////////////////////////////////////
+//
 // Draw game scene
+//
+// This function redraws the background after the player or an enemy move
+//
+// TODO fix BG redraw when player jumps & moves sideways at the same time
+//
 ////////////////////////////////////////////////////////////////////////////////////
 
 .globl DrawScene
 DrawScene:
-	PUSH 	{lr}			// Start function
-
- 	BL 	DrawMap1_1 			// Draw the background
+	PUSH 	{r4-r10, lr}		// Start function
+	
 	BL 	DrawPC 			// Draw the player character
 
-	POP 	{pc} 			// End function
+	// Name a few registers
+	pX 	.req r4
+	mSpeed	.req r5
+	mJump 	.req r6
+	mFall 	.req r7
+	mLeft 	.req r8
+	mRight 	.req r9
+	pY 	.req r10
+
+	LDR 	r0, =state
+	LDR 	pX, [r0, #4] 		// Load player position X
+	LDR 	pY, [r0, #8] 		// Load player position Y
+	LDR 	mSpeed, [r0, #12] 	// Load player move speed
+	LDR 	mJump, [r0, #20] 	// Load player jumping flag
+	LDR 	mFall, [r0, #24] 	// Load player falling flag
+	LDR 	mLeft, [r0, #32] 	// Load player moving left flag
+	LDR 	mRight, [r0, #36] 	// Load player moving right flag
+
+	ADD 	r1, mJump, mFall
+	ADD 	r1, mLeft
+	ADD 	r1, mRight
+	CMP 	r1, #0
+	Beq 	doneDrawScene 		// If all flags are false, finish function
+
+// Redraw space player moved away from
+	// Moving Right
+	CMP 	mRight, #1 		// If moving right
+	SUBeq 	r0, pX, mSpeed	 	// DrawBG_StartX = PlayerX - MoveSpeed
+	MOVeq 	r1, pY 			// DrawBG_StartY = PlayerY
+	MOVeq 	r2, pX 			// DrawBG_EndX = PlayerX
+	ADDeq 	r3, pY, #64 		// DrawBG_EndY = PlayerY + 64
+	BLeq 	DrawBG 			// Draw the background	
+	
+	// Moving Left
+	CMP 	mLeft, #1 		// If moving left
+	ADDeq 	r0, pX, #64	 	// DrawBG_StartX = PlayerX + 64
+	MOVeq 	r1, pY 			// DrawBG_StartY = PlayerY
+	ADDeq 	r2, r0, mSpeed 		// DrawBG_EndX = StartX + MoveSpeed
+	ADDeq 	r3, pY, #64 		// DrawBG_EndY = PlayerY + 64
+	BLeq 	DrawBG 			// Draw the background	
+
+	// Rename & reload r5
+	.unreq 	mSpeed 			// Unname r5
+	jSpeed 	.req r5 		// Rename r5
+	LDR 	r0, =state 		// Load game state address
+	LDR 	jSpeed, [r0, #16] 	// Load jump speed
+
+	// Moving Up
+	CMP 	mJump, #1 		// If moving up
+	MOVeq 	r0, pX	 		// DrawBG_StartX = PlayerX
+	ADDeq 	r1, pY, #64 		// DrawBG_StartY = PlayerY + 64
+	ADDeq 	r2, pX, #64 		// DrawBG_EndX = PlayerX + 64
+	ADDeq 	r3, r1, jSpeed 		// DrawBG_EndY = StartY + JumpSpeed
+	BLeq 	DrawBG 			// Draw the background
+
+	// Moving Down
+	CMP 	mFall, #1 		// If moving up
+	MOVeq 	r0, pX	 		// DrawBG_StartX = PlayerX
+	SUBeq 	r1, pY, jSpeed, LSL #1 	// DrawBG_StartY = PlayerY - JumpSpeed
+	ADDeq 	r2, pX, #64 		// DrawBG_EndX = PlayerX + 64
+	MOVeq 	r3, pY	 		// DrawBG_EndY = PlayerY
+	BLeq 	DrawBG 			// Draw the background
+
+	LDR 	r0, =state
+	LDR 	r3, [r0, #12] 	// Load mSpeed
+
+	// Moving Up & Right
+	ADD 	r0, mJump, mRight	// Sum jump and right flags
+	CMP 	r0, #2 				// If jump and right flag are set 
+	SUBeq 	r0, pX, r3 			// DrawBG_StartX = PlayerX - move speed
+	ADDeq 	r1, pY, #64 		// DrawBG_StartY = PlayerY + 64	
+	MOVeq 	r2, pX 				// DrawBG_EndX = PlayerX
+	ADDeq 	r3, r1, jSpeed 		// DrawBG_EndY = StartY + jump speed
+	BLeq 	DrawBG 				// Draw the background	
+
+	// Moving Up & Left
+	ADD 	r0, mJump, mLeft	// Sum jump and left flags
+	CMP 	r0, #2 				// If jump and right flag are set 
+	ADDeq 	r0, pX, #64 		// DrawBG_StartX = PlayerX + 64
+	ADDeq 	r1, pY, #64 		// DrawBG_StartY = PlayerY + 64	
+	ADDeq 	r2, r0, r3			// DrawBG_EndX = StartX + move speed
+	ADDeq 	r3, r1, jSpeed 		// DrawBG_EndY = StartY + jump speed
+	BLeq 	DrawBG 				// Draw the background	
+
+	// Moving Down & Right
+	ADD 	r0, mFall, mRight	// Sum fall and right flags
+	CMP 	r0, #2 				// If jump and right flag are set 
+	SUBeq 	r0, pX, r3 			// DrawBG_StartX = PlayerX - move speed
+	SUBeq 	r1, pY, jSpeed 		// DrawBG_StartY = PlayerY - jump speed
+	MOVeq 	r2, pX				// DrawBG_EndX = PlayerX
+	MOVeq 	r3, pY 				// DrawBG_EndY = PlayerY
+	BLeq 	DrawBG 				// Draw the background	
+
+	// Moving Down & Left
+	ADD 	r0, mFall, mLeft	// Sum fall and left flags
+	CMP 	r0, #2 				// If jump and right flag are set 
+	ADDeq 	r0, pX, #64 		// DrawBG_StartX = PlayerX + 64
+	SUBeq 	r1, pY, jSpeed 		// DrawBG_StartY = PlayerY - jump speed
+	ADDeq 	r2, r0, r3			// DrawBG_EndX = StartX + move speed
+	MOVeq 	r3, pY 				// DrawBG_EndY = PlayerY
+	BLeq 	DrawBG 				// Draw the background	
+
+doneDrawScene:
+	.unreq 	pX
+	.unreq 	pY
+	.unreq 	jSpeed
+	.unreq 	mFall
+	.unreq 	mJump
+	.unreq 	mRight
+	.unreq 	mLeft
+
+	POP 	{r4-r10, pc} 		// End function
 
 ////////////////////////////////////////////////////////////////////////////////////
-// Draw ground
-////////////////////////////////////////////////////////////////////////////////////
-
-//.globl DrawGround
-//DrawGround:
-//	PUSH 	{r4, lr}		// Start function
-
-//	MOV 	r4, #0 			// X = 0
-//floorLoop:
-//	MOV 	r0, r4
-//	MOV 	r1, #960
-// 	LDR 	r2, =floor
-// 	BL 	DrawImage 		// DrawImage(X, 960, floor image addr)
-
-//	ADD 	r4, #64 		// X += 64 for next floor tile
-//	CMP	r4, #768 		// If we is space for another floor tile
-//	Blt 	floorLoop 		// Draw it, else done
-
-//	POP 	{r4, pc} 		// End function
-
-////////////////////////////////////////////////////////////////////////////////////
+//
 // Draw player character
+//
+// Draw the correct player sprite to the current player position in game state 
+// depending on movement flags
+//
 ////////////////////////////////////////////////////////////////////////////////////
 
 .globl DrawPC
@@ -580,53 +725,51 @@ DrawPC:
 	LDR 	mRight, [stateR, #36] 	// Load move right flag
 	LDR 	wAnim, [stateR, #76] 	// Load walk animation state
 
-	CMP 	jumpF, #1 		// If jumping
-	LDReq 	r2, =luigijump 		// Load jump img address
-	Beq donePC 			// Branch to donePC
+	ADD 	r2, jumpF, fallF 	// Sum jump and fall flags
+	CMP 	r2, #0 			// If jumping or falling
+	LDRgt 	r2, =luigijump 		// Load jump img address
+	Bgt 	donePC 			// Branch to donePC
 
-	CMP 	fallF, #1 		// If falling
-	LDReq 	r2, =luigijump 		// Load jump img address
-	Beq donePC 			// Branch to donePC
+	ADD 	r2, mLeft, mRight 	// Sum up left and right move flags
+	CMP 	r2, #0 			// If not moving sideways
+	LDReq 	r2, =luigi1 		// Load idle image	
+	Beq 	donePC 			// Branch to doneP
 
-	CMP	mRight, #1	 	// If moving right
-	Beq 	walkRight 		// Branch to walkRight
 	CMP 	mLeft, #1 		// If moving left
 	Beq 	walkLeft 		// Branch to walkLeft
 
-	LDR 	r2, =luigi1 		// Else load idle image address (luigi1)
-	B 	donePC 			// Finish function
-
 walkRight:
 	CMP 	wAnim, #0 		// Check walk animation state
-	MOVeq	r2, #1 			// If wAnim = 0, r2 = 1
-	STReq  	r2, [stateR, #76] 	// Load walk anim = 1 back into game state
+	MOVeq	r2, #1 			
+	LDReq 	stateR, =state 		// Load state address	
+	STReq  	r2, [stateR, #76] 	// Toggle walk anim flag
 	LDReq 	r2, =luigi1 		// Load 1st img address into r2
-	B 	donePC 			// Finish function
+	Beq 	donePC 			// Finish function	
 
-	MOVne 	r2, #0	 		// If wAnim = 1, r2 = 0
-	STRne 	r2, [stateR, #76]	// Load walk anim = 0 back into game state
+	MOVne 	r2, #0	 
+	LDRne 	stateR, =state 		// Load state address	
+	STRne 	r2, [stateR, #76]	// Toggle walk anim flag
 	LDRne 	r2, =luigi2 		// Load 2nd image address into r2
-	B 	donePC 			// Finish function
+	Bne 	donePC 			// Finish function
 
 walkLeft:
 	CMP 	wAnim, #0 		// Check walk animation state
-
-	MOVeq	r2, #1 			// If wAnim = 0, r2 = 1
-	STReq  	r2, [stateR, #76] 	// Load walk anim = 1 back into game state
+	MOVeq	r2, #1 			
+	LDReq 	stateR, =state 		// Load state address	
+	STReq  	r2, [stateR, #76] 	// Toggle walk anim flag
 	LDReq 	r2, =luigi1rev 		// Load 1st reversed img address into r2
-	B 	donePC 			// Finish function
+	Beq 	donePC 			// Finish function
 
-	MOVne 	r2, #0	 		// If wAnim = 1, r2 = 0
-	STRne 	r2, [stateR, #76]	// Load walk anim = 0 back into game state
+	MOVne 	r2, #0	 		
+	LDRne 	stateR, =state 		// Load state address	
+	STRne 	r2, [stateR, #76]	// Toggle walk anim flag
 	LDRne 	r2, =luigi2rev		// Load 2nd reversed image address into r2
-	B 	donePC 			// Finish function
+	Bne 	donePC 			// Finish function
 
 donePC:
-	//LDR 	r0, [stateR, #4] 	// Load PC position X
-	//LDR 	r1, [stateR, #8]	// Load PC position Y
-	LDR 	r2, =luigi1 		// Else load idle image address (luigi1)
-	mov 	r0, #64
-	mov 	r1, #576
+	LDR 	stateR, =state 		// Load state address
+	LDR 	r1, [stateR, #8]	// Load PC position Y
+	LDR 	r0, [stateR, #4] 	// Load PC position X
 	BL 	DrawImage 		// DrawImage(X, Y, player image address)
 
 	// Unname a few registers

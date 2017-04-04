@@ -32,13 +32,21 @@ mainMenu:
 .globl startGame			// Make label global
 startGame:
 	BL 	ResetGameState		// Reset game state
-	BL 	DrawScene 		// Display new Scene
+	BL 	SetupScene 		// Display new Scene
 	BL 	gameController 		// Enable SNES controller in game
 	CMP 	r0, #0 			// If gameController returns 0, player lost
 	Beq 	mainMenu 		// Go to main menu
 	CMP 	r0, #1 			// If gameController returns 1, player won
-	// TODO player won the game
+	Beq 	winGame
 	Bne 	startGame 		// Else restart game
+
+winGame:
+	BL 	ClearScreen 		// ClearScreen
+	MOV 	r0, #400
+	MOV 	r1, #300
+	LDR 	r2, =winString
+	BL 	DrawString 		// DrawString(X, Y, exit string addr)
+	B 	halt
 
 exitGame:
 	BL 	ClearScreen 		// ClearScreen
@@ -54,3 +62,4 @@ halt:
 
 .align 4
 exitString: 	.asciz "Game Closed"
+winString: 		.asciz "Game Won!"

@@ -43,18 +43,16 @@ Jump:
 	LDR 	r0, =state			// Load game state address
 	LDR 	r1, [r0, #8] 			// Load player position Y
 	MOV 	r2, #1 				// r2 = 1
-	MOV 	r3, #0				// r3 = 0
 
 	LDR 	r4, [r0, #20] 			// Load jump flag
-	LDR 	r5, [r0, #24] 			// Load fall flag
-
-	CMP 	r4, r2 				// If player is already jumping
-	Beq 	jumpDone	 		// Do nothing (finish function)
- 	CMP 	r5, r2 				// If player is falling
-	Beq 	jumpDone	 		// Do nothing (finish function)
+	LDR 	r5, [r0, #24] 			// Load fall flag	
+ 	
+	ADD 	r3, r4, r5 			// Sum jump and fall flags
+	CMP 	r3, #0 				// If player is already jumping or falling
+	Bgt 	jumpDone	 		// Do nothing (finish function)
 
 	STR 	r2, [r0, #20] 			// Else set Jump to true
-	SUB 	r1, #256 			// Max jump height = Y - 256 (4 blocks)
+	SUB 	r1, #200 			// Max jump height = Y - 200
 	STR 	r1, [r0, #28] 			// Set max jump height in game state
 
 jumpDone:
@@ -77,9 +75,6 @@ MoveLeft:
 	LDR 	r5, [r0, #36] 			// Load moving right flag
 	MOV 	r1, #1 				// r1 = 1
 	MOV 	r2, #0				// r2 = 0
-
- 	CMP 	r5, r1 				// If player is already moving right
-	Beq 	moveLeftDone	 		// Do nothing (finish function)
 
 	CMP 	r4, r1 				// Else if player is already moving left
 	Beq 	moveLeftDone	 		// Do nothing (finish function)
@@ -171,6 +166,7 @@ UpdatePlayer:
 	LDR 	r0, =state 			// Load game state address
 
 	// Check if player won the game
+	LDR 	r0, =state 			// Load game state address
 	LDR 	r1, [r0, #68] 			// Load win flag
 	CMP 	r1, #1 				// If player won the game
 	MOVeq 	r0, #1	 			// Return 1 in r0 (game won)
@@ -181,9 +177,6 @@ UpdatePlayer:
 	CMP 	r1, #1 				// If player lost the game
 	MOVeq 	r0, #0	 			// Return 0 in r0 (gameover)
 	Beq 	updateDone 			// Then finish update
-
-	BL 	DrawPC				// Draw player
-	BL 	CheckCollisions 		// Check collisions
 
 	// Name a few registers
 	pX 	.req r1
@@ -207,33 +200,23 @@ UpdatePlayer:
 	LDR 	mSpeed, [r0, #12]	 	// Load move speed
 
 	CMP 	rightF, set 			// If player is moving right
-	Beq 	updateRight 			// Go to updateRight
+	CMPeq 	rCol, clr 			// And if there's no collision on the right
+	ADDeq 	pX, mSpeed			// New position = X + speed
 
-	CMP 	leftF, set 			// Else if player is moving left
-	Beq	updateLeft 			// Go to update left
-
-	B 	doneHoriz 			// Else update vertical movement
-
-updateRight:
-	CMP 	rCol, clr 			// If there's no collision on the right
-	ADDeq 	pX, mSpeed 			// New position = X + speed
-	B 	doneHoriz  			// Then process vertical movement
-
-updateLeft:
-	CMP 	lCol, clr 			// If there's no collision on the left
-	SUB 	pX, mSpeed 			// New position = X - speed
-
-doneHoriz:
-	STReq 	pX, [r0, #4]			// Store new horiz. position back into game state
-	// Unname a few registers
+	CMP 	leftF, set 			// If player is moving left
+	CMPeq 	lCol, clr 			// And if there's no collision on the left
+	SUBeq 	pX, mSpeed 			// New position = X - speed
+	
+	LDR 	r0, =state 			// Load game state address
+	STR 	pX, [r0, #4]			// Store new horiz. position back into game state
+	
+	// Rename a few registers
 	.unreq pX
 	.unreq leftF
 	.unreq rightF
 	.unreq lCol
 	.unreq rCol
 	.unreq mSpeed
-
-	// Handle vertical movement
 	pY 	.req r1
 	jumpF	.req r2
 	fallF	.req r3
@@ -250,41 +233,42 @@ doneHoriz:
 	LDR 	jSpeed, [r0, #16]	 	// Load jump speed
 	LDR 	maxJH, [r0, #28]		// Load max jump height
 
-	CMP 	dCol, set 			// If player is touching ground
-	Beq 	grounded 			// Player is grounded
-	Bne 	notGrounded 			// Else player is not grounded
+	CMP 	dCol, clr 			// If player is not touching ground
+	Beq 	notGrounded 			// Go to not grounded, else player is grounded
 
-	// Player is grounded
-	// TODO Might be able to optimize this a bit more
-grounded:
-	// Jump = Fall = false: Nothing happens
-	CMP 	jumpF, clr 			// If player is not jumping
-	CMPeq 	fallF, clr 			// And not falling
-	Beq 	updateDone 			// Finish function
+// Player is grounded
+	STR 	clr, [r0, #24] 			// Clear falling flag (because player is grounded)
+	CMP 	jumpF, set 			// If jumping up	
+	SUBeq 	pY, jSpeed 			// New Y position = Y - jump speed
+	STReq 	pY, [r0, #8] 			// Store new pos back into game state
+	STReq 	clr, [r0, #52] 			// Clear collision down flag
+	B 	updateDone 			// Finish function
 
-	// Jump = 0, fall = 1: Clear fall
-	CMP 	jumpF, clr 			// If player is not jumping
-	CMPeq 	fallF, set 			// And falling
-	STReq 	clr, [r0, #24] 			// Clear falling flag
-	Beq 	updateDone 			// Finish function
-
-	// Jump = 1, fall = 0: Switch (Max height reached, jump = 0, fall = 1)
-	CMP 	pY, maxJH 			// If the maximum height has been reached
+// Player is not grounded
+notGrounded:
+	// Max height reached, toggle flags	
+	CMP 	pY, maxJH 			// And if the maximum height has been reached
 	STReq 	clr, [r0, #20] 			// Jump = false
 	STReq 	set, [r0, #24] 			// Fall = true
-	Beq 	updateDone 			// Finish function
+	ADDeq 	pY, jSpeed 			// Move down: New Y position = Y + jump speed
+	STReq 	pY, [r0, #8] 			// Store new pos back into game state	
 
-	// Jump = 1, fall = 0: Move up (Max height not reached)
-	SUB 	pY, jSpeed 			// New Y position = Y - jump speed
+	// Max height not reached, move up
+	CMP 	jumpF, #1 			// If jumping up	
+	SUBeq 	pY, jSpeed 			// New Y position = Y - jump speed
+	STReq 	pY, [r0, #8] 			// Store new pos back into game state
+	Beq 	updateDone 			// Finish function	
+
+	// Falling, move down
+	ADD 	pY, jSpeed 			// Move down: New Y position = Y + jump speed
 	STR 	pY, [r0, #8] 			// Store new pos back into game state
-	Beq 	updateDone 			// Finish function
 
-	// Player is not grounded
-notGrounded:
-	// Jump = 0, fall = 1: Move down (falling)
-	CMP 	jumpF, set 			// Is player jumping or falling?
-	SUBeq 	pY, jSpeed 			// Move up: New Y position = Y - jump speed
-	ADDne 	pY, jSpeed 			// Move down: New Y position = Y + jump speed
+updateDone:
+
+	BL 	DrawScene			// Draw player
+	BL 	CheckCollisions 		// Check collisions
+	STR 	clr, [r0, #32] 			// Reset move left flag
+	STR 	clr, [r0, #36] 			// Reset move right flag
 
 	// Unname a few registers
 	.unreq pY
@@ -297,7 +281,6 @@ notGrounded:
 	.unreq set
 	.unreq clr
 
-updateDone:
 	POP 	{r1-r9, pc} 			// End function
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -317,10 +300,25 @@ UpdateEnemies:
 
 ///////////////////////////////////////////////////////////////////////////////////
 //
-// TODO Check Collisions
+// Check Collisions
 //
 // Check Collisions with objects and update appropriate collision flags
 // Check collisions with enemies and call appropriate die function (for player or enemy)
 // Should also check if player is below the screen, in which case he dies --> call die function
 //
+// TODO remove when real collision detection works
+//
 ///////////////////////////////////////////////////////////////////////////////////
+
+.globl CheckCollisions 			// Make function global
+CheckCollisions:
+	PUSH 	{lr} 			// Start function
+
+	// TODO Temporary: Reset collision down at ground level for testing
+	LDR 	r0, =state 		// Load state address
+	LDR 	r1, [r0, #8] 		// Load player Y position
+	MOV 	r2, #1 			// r2 = 1
+	CMP 	r1, #576 		// If player Y position >= default y
+	STRge 	r2, [r0, #52] 		// Set collisionDown to true
+
+	POP 	{pc} 			// End function
