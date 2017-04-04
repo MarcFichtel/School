@@ -332,7 +332,7 @@ DrawBGImg:
 	MOV 	borderX, #1024 		// borderX = 1024
 	MOV 	borderY, #768 		// borderY = 768
 
-bg:
+bgimg:
 	MOV 	r0, pointX
 	MOV 	r1, pointY
 	LDRH 	r2, [img], #2
@@ -340,12 +340,12 @@ bg:
 
 	ADD 	pointX, #1 		// X++
 	CMP 	pointX, borderX 	// If X < size, loop, else...
-	Blt 	bg
+	Blt 	bgimg
 
 	SUB 	pointX, #1024 		// X -= 40
 	ADD 	pointY, #1 		// Y++
 	CMP 	pointY, borderY 	// If Y < border, loop, else...
-	Blt 	bg
+	Blt 	bgimg
 
 	// Unname a few registers
 	.unreq pointX
@@ -363,6 +363,9 @@ bg:
 // ~ r1: StartY
 // ~ r2: EndX
 // ~ r3: EndY
+//
+// TODO find a blue color code for the sky BG
+//
 /////////////////////////////////////////////////////////////////////
 
 .globl DrawBG 				// Make function global
@@ -380,7 +383,7 @@ DrawBG:
 	// Setup
 	MOV 	startX, r0 		
 	MOV 	startY, r1 		
-	MOV 	color, #0xFFFFFFFF	
+	MOV 	color, #0xFFFFFFFF	 	// TODO insert blue color code here
 	MOV 	endX, r2 		
 	MOV 	endY, r3 
 	SUB 	width, endX, startX 	// Width = EndX - StartX		
