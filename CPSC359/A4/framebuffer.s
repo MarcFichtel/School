@@ -654,7 +654,7 @@ DrawScene:
 	PUSH 	{r4-r10, lr}		// Start function
 	
 	BL 	DrawPC 			// Draw the player character
-
+	BL 	DrawEnemy
 	// Draw Score, Coins, Lives text
 	MOV 	r0, #10
 	MOV 	r1, #10
@@ -809,6 +809,26 @@ doneDrawScene:
 	.unreq 	mLeft
 
 	POP 	{r4-r10, pc} 		// End function
+
+////////////////////////////////////////////////////////////////////////////////////
+//
+// Draw Enemy
+//
+////////////////////////////////////////////////////////////////////////////////////
+
+.globl DrawEnemy		// Make function global
+DrawEnemy:
+	PUSH 	{lr}			// Start function
+	LDR 	r3, =map11blocks
+	LDR 	r0, [r0, #68] 			// goomba x 
+	LDR 	r1, [r0, #72] 			// goomba y 
+	MOV 	r0, 
+	MOV 	r1, #500
+
+	LDR 	r2, =pausePointerRESTART
+	BL 	DrawPauseMenu
+
+	POP 	{pc} 			// End function
 
 ////////////////////////////////////////////////////////////////////////////////////
 //
