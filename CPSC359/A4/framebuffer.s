@@ -473,8 +473,8 @@ DrawMap1_1:
 	BL 		DrawImage 			// Draw coin block 3
 
 	// Draw floor
-	LDR 	r5, [r4, #56] 		// Load floor X
-	LDR 	r6, [r4, #60]		// Load floor Y
+	LDR 	r5, [r4, #56] 		// Load floor X (0)
+	LDR 	r6, [r4, #60]		// Load floor Y (640)
 drawFloor:
 	MOV 	r0, r5 		
 	MOV 	r1, r6 		
