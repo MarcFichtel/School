@@ -127,8 +127,7 @@ gamePaused:
 	BL	DrawPauseMenuOptions		// Draw in-game menu // draw in
 	BL	pauseController			// Enable controller in in-game menu
 	CMP	r0, #0				// If return = 0, START was pressed again
-	// *** TODO: remove the pause menu by updating the map
-
+	BLeq 	SetupScene 			// redraw map (remove pause move)
 	Beq 	update 				// Resume game
 	CMP	r0, #1				// Else if return = 1 RESTART was pressed
 	Beq	doneControl			// Redraw game, enable controller for it
@@ -164,22 +163,24 @@ pauseController:
 	PUSH	{lr}
 
 readPauseInput:
-	BL 	ReadSNES 				// Read user input
-	LDR 	r1, =0xFFFF 			// Prepare mask
-	TEQ 	r0, r1 				// If no buttons were pressed
-	Beq 	readPauseInput 			// Re-read controller input
+	BL 	ReadSNES 			// Read user input
+
 	LDR 	r1, =0xFEFF  			// Mask for A
 	TEQ 	r0, r1 				// If A was pressed
 	Beq 	PauseMenuAPressed 		// Branch here
+
 	LDR 	r1, =0xFFEF 			// Mask for UP
 	TEQ 	r0, r1  			// If UP was pressed
 	Beq 	PauseMenuToggle 		// Toggle menu selector
+
 	LDR 	r1, =0xFFDF 			// Mask for DOWN
 	TEQ 	r0, r1 				// If DOWN was pressed
 	Beq 	PauseMenuToggle 		// Toggle menu selector
+
 	LDR	r1, =0xFFF7			// Mask for START
 	TEQ	r0, r1				// If START was pressed
 	Beq	gameUnpaused 			// Resume game play
+
 	B 	readPauseInput 			// Else, loop
 
 gameUnpaused:
@@ -189,7 +190,7 @@ gameUnpaused:
 PauseMenuAPressed:
 	LDR 	r0, =pauseSelState  		// Load pause selection state address
 	LDR 	r1, [r0]			// Load pause selection state value
-	CMP		r1, #1 				// If EXIT is selected and A is pressed...
+	CMP	r1, #1 				// If EXIT is selected and A is pressed...
 	Beq 	PauseExit 			// Exit game (go to main menu)
 	MOV 	r0, #1 				// Else restart game
 	B 	pauseMenuDone 			// Return 1 in r0 (game was restarted)
@@ -198,32 +199,33 @@ PauseMenuAPressed:
 PauseMenuToggle:
 	LDR 	r0, =pauseSelState 		// Load pauseSelState address
 	LDRB 	r1, [r0] 			// Load pauseSelState value
-	CMP 	r1, #0 				// If pauseSelState = 0...
-	Beq 	exitP 				// Switch to 1, else...
-	B 	startP 				// Switch to 0
+	CMP 	r1, #0 				// If pauseSelState != 0...
+	Bne 	startP 				// Switch to 0, else switch to 1
 
 	// Move selector to exit
 exitP:
 	MOV 	r1, #1
-	STR 	r1, [r0] 			// Store 1 back into pauseSelState
+	STRB 	r1, [r0] 			// Store 1 back into pauseSelState
 	MOV 	r0, #352
 	MOV 	r1, #500
 	LDR 	r2, =pausePointerEXIT 		// Draw pause menu options with exit selected
+	BL 	DrawStartMenu 			// Draw start menu options with start selecte
 	B 	doneP 				// Finish function
 
 	// Move selector to restart
 startP:
 	MOV 	r1, #0
-	STR 	r1, [r0]			// Store 0 back into pauseSelState
+	STRB 	r1, [r0]			// Store 0 back into pauseSelState
 	MOV 	r0, #352
 	MOV 	r1, #500
-	LDR 	r2, =pausePointerRESTART		// Draw pause menu options with restart selected
+	LDR 	r2, =pausePointerRESTART	// Draw pause menu options with restart selected
+	BL 	DrawStartMenu 			// Draw start menu options with start selecte
 
 doneP:
 	B 	readPauseInput 			// Loop back to top (read input)
 
 PauseExit:
-	MOV 	r0, #1 				// Return 1 in r0 (game was exited, go to main menu)
+	MOV 	r0, #2 				// Return 2 in r0 (game was exited, go to main menu)
 
 pauseMenuDone: 					// Return to main
 	POP 	{pc} 				// End function
