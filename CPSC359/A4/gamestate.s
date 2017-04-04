@@ -73,41 +73,63 @@ state:
 	.int 	0 	// 48 - Move up blocked (used for collision detection)
 	.int 	1 	// 52 - Move down blocked (used for collision detection)
 
-        .int    0       // 56 - Score
-        .int    0       // 60 - Coins collected
-        .int    3       // 64 - Lives left
-        .int    0       // 68 - Win flag
-        .int    0       // 72 - Lose flag
+  .int    0       // 56 - Score
+  .int    0       // 60 - Coins collected
+  .int    3       // 64 - Lives left
+  .int    0       // 68 - Win flag
+  .int    0       // 72 - Lose flag
 
 	.int 	0 	// 76 - Walk animation flag (0 = luigi1, 1 = luigi2)
 
-	.int 	0	// TODO Goomba move speed
-	.int 	0 	// TODO Goomba position X
-	.int 	0 	// TODO Goomba position Y
-	.int 	0 	// TODO Goomba walk animation flag
-	.int 	0 	// TODO Goomba dead flag
+	.int 	0		// 80 TODO Goomba move speed
+	.int 	0 	// 84 TODO Goomba position X
+	.int 	0 	// 88 TODO Goomba position Y
+	.int 	0 	// 92 TODO Goomba walk animation flag
+	.int 	0 	// 96 TODO Goomba dead flag
 
-	.int 	0	// TODO Boo move speed
-	.int 	0 	// TODO Boo position X
-	.int 	0 	// TODO Boo position Y
+	.int 	0	// 100 TODO Boo move speed
+	.int 	0 	// 104 TODO Boo position X
+	.int 	0 	// 108 TODO Boo position Y
 
-	.int 	0 	// TODO Coin 1 position X
-	.int 	0 	// TODO Coin 1 position Y
-	.int 	0 	// TODO Coin 1 collected flag
-	.int 	0 	// TODO Coin 2 position X
-	.int 	0 	// TODO Coin 2 position Y
-	.int 	0 	// TODO Coin 2 collected flag
-	.int 	0 	// TODO Coin 3 position X
-	.int 	0 	// TODO Coin 3 position Y
-	.int 	0 	// TODO Coin 3 collected flag
-	.int 	0 	// TODO Coin 4 position X
-	.int 	0 	// TODO Coin 4 position Y
-	.int 	0 	// TODO Coin 4 collected flag
-	.int 	0 	// TODO Coin 5 position X
-	.int 	0 	// TODO Coin 5 position Y
-	.int 	0 	// TODO Coin 5 collected flag
+	.int 	0 	// 112 TODO Coin 1 position X
+	.int 	0 	// 116 TODO Coin 1 position Y
+	.int 	0 	// 120 TODO Coin 1 collected flag
+	.int 	0 	// 124 TODO Coin 2 position X
+	.int 	0 	// 128 TODO Coin 2 position Y
+	.int 	0 	// 132 TODO Coin 2 collected flag
+	.int 	0 	// 136 TODO Coin 3 position X
+	.int 	0 	// 140 TODO Coin 3 position Y
+	.int 	0 	// 144 TODO Coin 3 collected flag
+	.int 	0 	// 148 TODO Coin 4 position X
+	.int 	0 	// 152 TODO Coin 4 position Y
+	.int 	0 	// 156 TODO Coin 4 collected flag
+	.int 	0 	// 160 TODO Coin 5 position X
+	.int 	0 	// 164 TODO Coin 5 position Y
+	.int 	0 	// 168 TODO Coin 5 collected flag
 
 	// TODO Add stats for various blocks, winning goal flag, castle, etc
+
+.globl 	map11blocks
+map11blocks:
+	.int  256 	// 0 brick 1 x
+	.int  384 	// 4 brick 1 y
+	.int  512 	// 8 brick 2 x
+	.int  384 	// 12 brick 2 y
+	.int  640 	// 16 brick 3 x
+	.int  384 	// 20 brick 3 y
+	.int  768 	// 24 brick 4 x
+	.int  384 	// 28 brick 4 y
+	.int  576 	// 32 coinblock 1 x
+	.int  384 	// 36 coinblock 1 y
+	.int 	704 	// 40 coinblock 2 x
+	.int  384		// 44 coinblock 2 y
+	.int  640 	// 48 coinblock 3 x
+	.int 	128 	// 52 coinblock 3 y
+	.int 	0 		// 56 floor x
+	.int 	640 	// 60 floor y
+	.int 	1024 	// 64 floor length
+	.int 	960 	// 68 initial goomba x
+	.int 	640 	// 72 initial goomba y 
 
 .globl authorsString
 authorsString: 	.asciz 	"Olga Bogdanova | Cardin Chen | Marc-Andre Fichtel"

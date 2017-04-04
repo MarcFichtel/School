@@ -183,7 +183,7 @@ UpdatePlayer:
 	Beq 	updateDone 			// Then finish update
 
 	BL 	DrawPC				// Draw player
-	//BL 	CheckCollisions 		// Check collisions
+	BL 	CheckCollisions 		// Check collisions
 
 	// Name a few registers
 	pX 	.req r1
@@ -324,11 +324,3 @@ UpdateEnemies:
 // Should also check if player is below the screen, in which case he dies --> call die function
 //
 ///////////////////////////////////////////////////////////////////////////////////
-
-.globl CheckCollisions 				// Make function global
-CheckCollisions:
-	PUSH 	{lr} 				// Start function
-
-
-
-	POP 	{pc} 				// End function
