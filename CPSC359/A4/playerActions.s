@@ -313,6 +313,10 @@ UpdateEnemies:
 	STR 	r4, [r0, #68]			// Store new horiz. position back into game state
 
 	B 	updateDoneGoomba 			// Finish function
+	
+	updateDoneGoomba:
+		BL 	DrawScene			// Draw player
+	POP 	{r4-r7, pc}
 ///////////////////////////////////////////////////////////////////////////////////
 //
 // Check Collisions
