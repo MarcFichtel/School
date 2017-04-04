@@ -2,9 +2,9 @@
 // 
 // CPSC 359
 // Assignment 4
-// Cardin Chen: TODO 
-// Olga Bogdanova: TODO 
-// Marc-Andre Fichtel: 30014709
+// Cardin Chen: 10161477
+// Olga Bogdanova: 
+// Marc-Andre Fichtel: 3001409
 //
 //////////////////////////////////////////////////////////////////////
 
@@ -39,11 +39,13 @@ startGame:
 	BL 	ResetGameState		// Reset game state
 	BL 	SetupScene 		// Display new Scene
 	BL 	gameController 		// Enable SNES controller in game
-	CMP 	r0, #0 			// If gameController returns 0, player lost
+	CMP 	r0, #2 			// If gameController returns 0, player quit
 	Beq 	mainMenu 		// Go to main menu
-	CMP 	r0, #1 			// If gameController returns 1, player won
-	Beq 	winGame
-	Bne 	startGame 		// Else restart game
+	CMP 	r0, #1 			// If gameController returns 1, player restarted
+	Beq 	startGame		// Restart game
+	CMP 	r0, #0 			// if gameController returns 0, player won
+	Beq 	winGame 		// Game won
+	B 	gameOver 		// Else player lost
 
 winGame:
 	BL 	ClearScreen 		// ClearScreen
@@ -75,5 +77,5 @@ halt:
 
 .align 4
 exitString: 	.asciz "Game Closed"
-winString: 		.asciz "Game Won!"
+winString: 	.asciz "Game Won!"
 loseString: 	.asciz "Game Over!"
