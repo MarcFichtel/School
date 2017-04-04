@@ -266,7 +266,8 @@ notGrounded:
 updateDone:
 
 	BL 	DrawScene			// Draw player
-	BL 	CheckCollisions 		// Check collisions
+	BL 	CheckCollisionsTemp 		// Check collisions
+	// TODO BL CheckCollisions
 	STR 	clr, [r0, #32] 			// Reset move left flag
 	STR 	clr, [r0, #36] 			// Reset move right flag
 
@@ -310,8 +311,8 @@ UpdateEnemies:
 //
 ///////////////////////////////////////////////////////////////////////////////////
 
-.globl CheckCollisions 			// Make function global
-CheckCollisions:
+.globl CheckCollisionsTemp 			// Make function global
+CheckCollisionsTemp:
 	PUSH 	{lr} 			// Start function
 
 	// TODO Temporary: Reset collision down at ground level for testing
