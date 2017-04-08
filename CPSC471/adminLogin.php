@@ -1,91 +1,87 @@
+<?php include "base.php"; ?>
+
 <!DOCTYPE html>
 <!--CPSC 471 Project-->
 <html>
     <head>
-        <meta charset="UTF-8">
+        <meta content="text/html; charset=UTF-8">
         <title>CPSC 471 Project</title>
-        <link rel="stylesheet" href="style.css">
+        <link rel="stylesheet" href="style.css" type="text/css">
     </head>
     <body>
+    <div id="main">
         
         <!--Header-->
         <div id="header">
-            <h3>CPSC 471 - Group 9 - Final Project</h1>
-            <h4>Authors: Mohamed, Nikolai, and Marc-Andre</h2>
+            <h3>CPSC 471 --- Group 9 --- Final Project</h3><br />
+            <h3>Authors:</h3>
+            <h4>Mohamed-Hani Abdillah<br />Nikolai Aguierre<br />Marc-Andre Fichtel</h4>
         </div>
         
         <!--Navgation-->
-        <form id="navi">
+        <div id="navi">
+                
             <!--Home-->
-            <input formaction="demoPage.php"
-                   style="width: 150px; float: left" 
-                   type="submit" 
-                   value="Home"/>
-                
+            <a href="index.php">Home</a>
+
             <!--Admin Login-->
-            <input formaction="adminLogin.php"
-                   style="width: 150px; float: right" 
-                   type="submit" 
-                   value="Admin Login"/><br/><br/>
-                
-            <!--Departments Dropdown-->
-            <select style="width: 150px; float: left">
-                <option href="demoPage.php">Department 1</option>
-                <option href="demoPage.php">Department 2</option>
-                <option href="demoPage.php">Department 3</option>
-                <input type="submit" value="Go"/>
-            </select>
-            
-            <!--User Login-->
-            <input formaction="userLogin.php"
-                   style="width: 150px; float: right" 
-                   type="submit" 
-                   value="User Login"/>
-        </form>
-        
-        <!--User Login-->
-        <br><a>Admin Login</a><br>
-        <input placeholder="Username" name="username"></input><br>
-        <input placeholder="Password" name="password" type="password"></input><br>
-        <button>Log in</button>
+            <a href="demoPage.php">User Login</a>
+        </div>
             
         <?php
-        //    $servername = "localhost";        // Server: Localhost
-        //    $username = "root";               // User: Root
-        //    $password = "secret";             // Insert localhost root PW
-        //    $db = "temp";                     // Insert DB name
-            
-            // Connect to specified DB
-        //    $conn = new mysqli($servername, $username, $password, $db);
-            
-            // Check if connection was established successfully
-        //    if($conn->connect_error){
-        //        die("Connection failed".$conn->connect_error);
-        //    }
-            
-            //sql query
-        //    $sql = "INSERT INTO names (names) VALUES ('John')";
-        //    echo "<br><br>Inserting  into db: ";
-        //    if($conn->query($sql)==TRUE){       //try executing the query 
-        //        echo "Query executed<br>";
-        //    } else {
-        //        echo "Query did not execute<br>";
-        //    }
-            
-            //sql query
-        //    $sql = "SELECT Id, names FROM names";
-        //    echo "<br>Printing IDs and names:<br>";
-        //    $result = $conn->query($sql);       //execute the query
-            
-        //    if($result->num_rows >0){           //check if query results in more than 0 rows
-        //        while($row = $result->fetch_assoc()){   //loop until all rows in result are fetched
-        //            echo "Entry " .$row["Id"].": ".$row["names"]."<br>";     // print ID
-        //        }
-        //   }
-            
-            // Close DB connection
-        //    $conn-> close();
+            // Someone is logged in
+            if (!empty($_SESSION['LoggedIn']) && !empty($_SESSION['email'])) {
         ?>
-        
+                <!--Welcome User-->
+                <h1>Admin Area</h1>
+                <p>Logged in as: 
+                    <?=$_SESSION['email']?>.
+                </p><br /> 
+                <a href="logout.php">Logout</a><br /> <br /> 
+        <?php    
+            // Someone is logging in 
+            } else if (!empty($_POST['email']) && !empty($_POST['password'])) {
+                
+                // Get email & password, check DB
+                $email = $_POST['email'];
+                $password = $_POST['password'];
+                $checkLogin = mysqli_query($conn, ""
+                        . "SELECT email, password FROM Admin "
+                        . "WHERE email = '".$email."' "
+                        . "  AND password = '".$password."' ");
+                
+                // If a match was found, log user in
+                if (mysqli_num_rows($checkLogin) == 1) {
+                    $_SESSION['email'] = $email;
+                    $_SESSION['LoggedIn'] = 1;
+                    echo "<h1>Success</h1>";
+                    echo "<p>Redirecting to Admin Area...</p>";
+                    echo "<meta http-equiv='refresh' content='2; adminLogin.php'/>";
+                
+                // If no match was found, let user know    
+                } else {
+                    echo "<h1>Error</h1>";
+                    echo "<p>Admin Account was not found.</p><br /> ";
+                    echo "<br /><p><a href=\"adminLogin.php\">Click here to try again.</a></p><br /> ";
+                }
+                 
+            // Nobody is logged in 
+            } else {
+        ?>     
+                <h1>Admin Login</h1>
+                <form method="POST" action="adminLogin.php" name="adminloginform" id="adminloginform">
+                    <fieldset>
+                        <label for="email">Email:</label>
+                        <input type="text" name="email" id="email" /><br />
+                        <label for="password">Password:</label>
+                        <input type="text" name="password" id="password" /><br />
+                        <input type="submit" name="adminlogin" id="adminlogin" value="Login"/>
+                    </fieldset>
+                </form>
+        <?php 
+            }
+        ?>
+    
+        </div>            
     </body>
 </html>

@@ -1,93 +1,111 @@
+<?php include "base.php"; ?>
+
 <!DOCTYPE html>
 <!--CPSC 471 Project-->
 <html>
     <head>
-        <meta charset="UTF-8">
+        <meta content="text/html; charset=UTF-8">
         <title>CPSC 471 Project</title>
-        <link rel="stylesheet" href="style.css">
+        <link rel="stylesheet" href="style.css" type="text/css">
     </head>
     <body>
+    <div id="main">
         
         <!--Header-->
         <div id="header">
-            <h3>CPSC 471 - Group 9 - Final Project</h1>
-            <h4>Authors: Mohamed, Nikolai, and Marc-Andre</h2>
+            <h3>CPSC 471 --- Group 9 --- Final Project</h3><br />
+            <h3>Authors:</h3>
+            <h4>Mohamed-Hani Abdillah<br />Nikolai Aguierre<br />Marc-Andre Fichtel</h4>
         </div>
         
         <!--Navgation-->
-        <form id="navi">
+        <div id="navi">
+                
             <!--Home-->
-            <input formaction="demoPage.php"
-                   style="width: 150px; float: left" 
-                   type="submit" 
-                   value="Home"/>
-                
+            <a href="index.php">Home</a>
+
             <!--Admin Login-->
-            <input formaction="adminLogin.php"
-                   style="width: 150px; float: right" 
-                   type="submit" 
-                   value="Admin Login"/><br/><br/>
-                
-            <!--Departments Dropdown-->
-            <select style="width: 150px; float: left">
-                <option href="demoPage.php">Department 1</option>
-                <option href="demoPage.php">Department 2</option>
-                <option href="demoPage.php">Department 3</option>
-                <input type="submit" value="Go"/>
-            </select>
-            
-            <!--User Login-->
-            <input formaction="userLogin.php"
-                   style="width: 150px; float: right" 
-                   type="submit" 
-                   value="User Login"/>
-        </form>
-        
-        <div id="cart" style="text-align: right">
-            <img src="https://d30y9cdsu7xlg0.cloudfront.net/png/28468-200.png"
-                 alt="Shopping Cart"
-                 style="width: 100px; height: 100px">
-            <br/>
-            <a>Items in Cart: X</a>
+            <a href="adminLogin.php">Admin Login</a>
         </div>
             
         <?php
-        //    $servername = "localhost";        // Server: Localhost
-        //    $username = "root";               // User: Root
-        //    $password = "secret";             // Insert localhost root PW
-        //    $db = "temp";                     // Insert DB name
-            
-            // Connect to specified DB
-        //    $conn = new mysqli($servername, $username, $password, $db);
-            
-            // Check if connection was established successfully
-        //    if($conn->connect_error){
-        //        die("Connection failed".$conn->connect_error);
-        //    }
-            
-            //sql query
-        //    $sql = "INSERT INTO names (names) VALUES ('John')";
-        //    echo "<br><br>Inserting  into db: ";
-        //    if($conn->query($sql)==TRUE){       //try executing the query 
-        //        echo "Query executed<br>";
-        //    } else {
-        //        echo "Query did not execute<br>";
-        //    }
-            
-            //sql query
-        //    $sql = "SELECT Id, names FROM names";
-        //    echo "<br>Printing IDs and names:<br>";
-        //    $result = $conn->query($sql);       //execute the query
-            
-        //    if($result->num_rows >0){           //check if query results in more than 0 rows
-        //        while($row = $result->fetch_assoc()){   //loop until all rows in result are fetched
-        //            echo "Entry " .$row["Id"].": ".$row["names"]."<br>";     // print ID
-        //        }
-        //   }
-            
-            // Close DB connection
-        //    $conn-> close();
+            // Someone is logged in
+            if (!empty($_SESSION['LoggedIn']) && !empty($_SESSION['Username'])) {
         ?>
-        
+                <!--Welcome User-->
+                <h1>User Area</h1>
+                <p>Welcome 
+                    <?=$_SESSION['Username']?>.
+                </p><br />
+                <a href="logout.php">Logout</a><br /><br />
+                
+                <!--Navgation-->
+                <form id="userarea">
+
+                    <!--Departments Dropdown
+                    <select name="departselect" id="departselect">
+                        <option href="demoPage.php">Department 1</option>
+                        <option href="demoPage.php">Department 2</option>
+                        <option href="demoPage.php">Department 3</option>
+                        <input type="submit" name="go" value="Go"/>
+                    </select>
+                    -->
+                    
+                    <!--Shopping Cart
+                    <div id="cart" style="text-align: right">
+                        <img src="https://d30y9cdsu7xlg0.cloudfront.net/png/28468-200.png"
+                         alt="Shopping Cart"
+                         style="width: 100px; height: 100px">
+                        <br/>
+                        <a>Items in Cart: X</a>
+                    </div>
+                    -->
+                </form>      
+        <?php    
+            // Someone is logging in 
+            } else if (!empty($_POST['username']) && !empty($_POST['password'])) {
+               
+                // Get username & password, check DB
+                $username = $_POST['username'];
+                $password = $_POST['password'];
+                $checkLogin = mysqli_query($conn, ""
+                        . "SELECT username, password FROM Customer "
+                        . "WHERE username = '".$username."' "
+                        . "  AND password = '".$password."' ");
+                
+                // If a match was found, log user in
+                if (mysqli_num_rows($checkLogin) == 1) {
+                    $_SESSION['Username'] = $username;
+                    $_SESSION['LoggedIn'] = 1;
+                    echo "<h1>Success</h1>";
+                    echo "<p>Redirecting to User Area...</p>";
+                    echo "<meta http-equiv='refresh' content='2; demoPage.php'/>";
+                
+                // If no match was found, let user know    
+                } else {
+                    echo "<h1>Error</h1>";
+                    echo "<br /><p>User Account was not found.<p/><br />";
+                    echo "<br /><p><a href=\"demoPage.php\">Click here to try again.</a></p><br />";
+                }
+                
+            // Nobody is logged in 
+            } else {
+        ?>     
+                <h1>User Login</h1>
+                <form method="POST" action="demoPage.php" name="userloginform" id="userloginform">
+                    <fieldset>
+                        <label for="username">Username:</label>
+                        <input type="text" name="username" id="username" /><br />
+                        <label for="password">Password:</label>
+                        <input type="text" name="password" id="password" /><br />
+                        <input type="submit" name="userlogin" id="userlogin" value="Login"/>
+                    </fieldset>
+                </form>
+                <br /><p>Not a user yet? <a href="newUser.php">Click here to register.</a></p><br />
+        <?php 
+            }
+        ?>
+    
+        </div>            
     </body>
 </html>
