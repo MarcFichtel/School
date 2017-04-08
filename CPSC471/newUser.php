@@ -24,7 +24,7 @@
                 <a href="index.php">Home</a>
                 
                 <!--User Login-->
-                <a href="demoPage.php.php">User Login</a>
+                <a href="demoPage.php">User Login</a>
                 
                 <!--Admin Login-->
                 <a href="adminLogin.php">Admin Login</a>
@@ -37,16 +37,17 @@
                     !empty($_POST['firstname']) && !empty($_POST['lastname'])) {
                     
                     // Get form contents
-                    $username = mysqli_real_escape_string($_POST['username']);
-                    $password = md5(mysqli_real_escape_string($_POST['password']));
-                    $firstname = mysqli_real_escape_string($_POST['firstname']);
-                    $lastname = mysqli_real_escape_string($_POST['lastname']);
-                    $birthdate = mysqli_real_escape_string($_POST['birthdate']);
+                    $username = $_POST['username'];
+                    $password = $_POST['password'];
+                    $firstname = $_POST['firstname'];
+                    $lastname = $_POST['lastname'];
+                    if (!empty($_POST['birthdate'])) {
+                        $birthdate = $_POST['birthdate'];   // BDate may be blank
+                    }
                     
                     // Check if username is already taken
                     $checkUsername = mysqli_query($conn, ""
-                            . "SELECT * FROM Customer"
-                            . "WHERE username = '".$username."'");
+                            . "SELECT username FROM Customer WHERE username = '".$username."'");
                     
                     // Username already taken
                     if (mysqli_num_rows($checkUsername) == 1) {
@@ -55,28 +56,32 @@
                         
                     // Username available, create account
                     } else {
-                        $registerQuery = mysqli_query($conn, ""
-                                . "INSERT INTO "
-                                . "Customer (id, username, password, firstname, lastname, birthdate, funds, admin_id)"
-                                . "VALUES ( NULL, "                 // id auto-increments
-                                . "         '".$username."', "      // insert username
-                                . "         '".$password."', "      // insert password
-                                . "         '".$firstname."', "     // insert first name
-                                . "         '".$lastname."', "      // insert last name
-                                . "         '".$birthdate."'), "    // insert birth date
-                                . "         0, "                    // default funds = 0
-                                . "         1");                    // default admin id = 1
-                                
-                    
+                        // Check if BDate was left blank
+                        if (!empty($_POST['birthdate'])) {
+                            
+                            // Create new customer with BDate
+                            $registerQuery = mysqli_query($conn, ""
+                                . "INSERT INTO Customer (id, username, password, firstname, lastname, birthdate, funds, admin_id) "
+                                . "VALUES (NULL, '".$username."', '".$password."', '".$firstname."', '".$lastname."', '".$birthdate."', 0, 1)");                 // default funds = 0, admin_id = 1
+                        } else {
+                            
+                            // Create new customer without BDate
+                            $registerQuery = mysqli_query($conn, ""
+                                . "INSERT INTO Customer (id, username, password, firstname, lastname, funds, admin_id) "
+                                . "VALUES (NULL, '".$username."', '".$password."', '".$firstname."', '".$lastname."', 0, 1)");  
+                        }
                         // Success
                         if ($registerQuery) {
                             echo "<h1>Success</h1>";
-                            echo "<p>Account created. <a href=\"demoPage.php\">Click here to login.</a></p>";
+                            echo "<br /><p>Account created.</p><br />"; 
+                            echo "<br /><p><a href=\"demoPage.php\">Click here to login.</a></p><br />";
                         
                         // Error    
                         } else {
                             echo "<h1>Error</h1>";
                             echo "<p>Registration failed. Please try again.</p>";
+                            echo mysqli_error($conn);
+                            
                         }
                     }
                 
@@ -90,17 +95,18 @@
                     <form method="post" action="newUser.php" 
                           name="userregisterform" id="userregisterform">
                         <fieldset>
-                            <label for="username">Username:</label>
+                            <label for="username">* Username:</label>
                             <input type="text" name="username" id="username"/><br />
-                            <label for="password">Password:</label>
+                            <label for="password">* Password:</label>
                             <input type="text" name="password" id="password"/><br />
-                            <label for="firstname">First Name:</label>
+                            <label for="firstname">* First Name:</label>
                             <input type="text" name="firstname" id="firstname"/><br />
-                            <label for="lastname">Last Name:</label>
+                            <label for="lastname">* Last Name:</label>
                             <input type="text" name="lastname" id="lastname"/><br />
                             <label for="birthdate">Birth Date:</label>
                             <input type="text" name="birthdate" id="birthdate"/><br />
                             <input type="submit" name="register" id="register" value="Register" />
+                            <p>Note: Fields with * are required.</p>
                         </fieldset>
                     </form>
             <?php        
