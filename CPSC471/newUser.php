@@ -19,15 +19,12 @@
                 
             <!--Navgation-->
             <div id="navi">
-
-                <!--Home-->
-                <a href="index.php">Home</a>
                 
-                <!--User Login-->
-                <a href="demoPage.php">User Login</a>
+                <!--User Home-->
+                <a href="demoPage.php">User Home</a>
                 
-                <!--Admin Login-->
-                <a href="adminLogin.php">Admin Login</a>
+                <!--Admin Home-->
+                <a href="adminLogin.php">Admin Home</a>
             </div>
                  
             <?php
@@ -88,25 +85,25 @@
                 // User has not tried to register yet  
                 } else {
             ?>
-                    <h1>Register</h1>
+                    <h1>User Registration</h1>
                     <p>Enter details to register.</p>
                     
                     <!--Display registration form-->
                     <form method="post" action="newUser.php" 
                           name="userregisterform" id="userregisterform">
                         <fieldset>
-                            <label for="username">* Username:</label>
+                            <label for="username">Username *:</label>
                             <input type="text" name="username" id="username"/><br />
-                            <label for="password">* Password:</label>
+                            <label for="password">Password *:</label>
                             <input type="text" name="password" id="password"/><br />
-                            <label for="firstname">* First Name:</label>
+                            <label for="firstname">First Name *:</label>
                             <input type="text" name="firstname" id="firstname"/><br />
-                            <label for="lastname">* Last Name:</label>
+                            <label for="lastname">Last Name *:</label>
                             <input type="text" name="lastname" id="lastname"/><br />
                             <label for="birthdate">Birth Date:</label>
                             <input type="text" name="birthdate" id="birthdate"/><br />
-                            <input type="submit" name="register" id="register" value="Register" />
-                            <p>Note: Fields with * are required.</p>
+                            <input type="submit" name="register" id="register" value="Create User Account" />
+                            <br /><p><br /><br />Note: Fields with * are required.</p>
                         </fieldset>
                     </form>
             <?php        

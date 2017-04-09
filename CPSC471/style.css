@@ -42,7 +42,7 @@ form fieldset p br {
 label {
     margin-top: 5px;
     display: block;
-    width: 120px;
+    width: 180px;
     padding: 0;
     float: left;
 }
@@ -76,4 +76,18 @@ input {
 input:hover {
     border: 1px solid #222;
     background-color: #EEE;   
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 10px;
+}
+
+tr, td {
+    border: 1px solid #000;
+}
+
+#productSelectCB {
+    text-align: center;
 }

@@ -1,4 +1,7 @@
-<?php include "base.php"; ?>
+<?php 
+include "base.php";     // Include base
+session_start();        // Start session
+?>
 
 <!DOCTYPE html>
 <!--CPSC 471 Project-->
@@ -33,31 +36,36 @@
                 <h1>User Area</h1>
                 <p>Welcome 
                     <?=$_SESSION['Username']?>.
-                </p><br />
-                <a href="logout.php">Logout</a><br /><br />
+                </p><br /><br />
+                <p>Select a department to start shopping.</p><br />
                 
-                <!--Navgation-->
-                <form id="userarea">
-
-                    <!--Departments Dropdown
-                    <select name="departselect" id="departselect">
-                        <option href="demoPage.php">Department 1</option>
-                        <option href="demoPage.php">Department 2</option>
-                        <option href="demoPage.php">Department 3</option>
-                        <input type="submit" name="go" value="Go"/>
-                    </select>
-                    -->
+                <?php
+                    // Get department names
+                    $dropdownquery = mysqli_query($conn, "SELECT name FROM Department");
                     
-                    <!--Shopping Cart
-                    <div id="cart" style="text-align: right">
-                        <img src="https://d30y9cdsu7xlg0.cloudfront.net/png/28468-200.png"
-                         alt="Shopping Cart"
-                         style="width: 100px; height: 100px">
-                        <br/>
-                        <a>Items in Cart: X</a>
-                    </div>
-                    -->
-                </form>      
+                    // Populate dropwdown with department names
+                    // Redirect and POST chosen department to display.php
+                    echo "<form id='displaydropdownform' action='/cpsc471.com/display.php' method='POST'>";
+                    echo "<select id='displaydropdown' name='displaydropdown'>";
+                    echo "<option selected>Select Department</option>";
+                        while ($row = mysqli_fetch_array($dropdownquery)) {
+                            echo "<option value='{$row['name']}'>{$row['name']}</option>";
+                        }
+                    echo "</select>";
+                    echo "<input type='submit' name='submit' value='Submit' />";
+                    echo "</form>";
+
+                    // Shopping Cart
+//                    <div id="cart" style="text-align: right">
+//                        <img src="https://d30y9cdsu7xlg0.cloudfront.net/png/28468-200.png"
+//                         alt="Shopping Cart"
+//                         style="width: 100px; height: 100px">
+//                        <br/>
+//                        <a>Items in Cart: X</a>
+//                    </div>
+                    ?>  
+                
+                <br /><a href="logout.php">Logout</a><br /><br />
         <?php    
             // Someone is logging in 
             } else if (!empty($_POST['username']) && !empty($_POST['password'])) {
@@ -72,9 +80,10 @@
                 
                 // If a match was found, log user in
                 if (mysqli_num_rows($checkLogin) == 1) {
-                    $_SESSION['Username'] = $username;
-                    $_SESSION['LoggedIn'] = 1;
-                    $_SESSION['customeruser'] = true;   // Usertype = customer
+                    $_SESSION['Username'] = $username;      // Set username
+                    $_SESSION['LoggedIn'] = 1;              // LoggedIn = true
+                    $_SESSION['customeruser'] = true;       // Usertype = customer
+                    $_SESSION['activeDepartment'] = "None"; // Initialize active department
                     echo "<h1>Success</h1>";
                     echo "<p>Redirecting to User Area...</p>";
                     echo "<meta http-equiv='refresh' content='2; demoPage.php'/>";
