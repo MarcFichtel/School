@@ -20,17 +20,8 @@
         
         <!--Navgation-->
         <div id="navi">
-
             <!--User Login-->
             <a href="demoPage.php">User Home</a>
-            
-            <?php
-                // Create Product
-                if (!empty($_SESSION['adminuser'])) {
-                    echo "<a href='createProduct.php'>Create Product</a>";
-                }
-            ?>
-            
         </div>
             
         <?php
@@ -43,21 +34,26 @@
                     <?=$_SESSION['email']?>.
                 </p><br /> 
                 <br /><a href="createProduct.php">Create a product</a><br /> <br /> 
+                <br /><a href="createDepartment.php">Create a department</a><br /> <br /> 
                 <br /><a href="logout.php">Logout</a><br /><br /> 
         <?php    
             // Someone is logging in 
             } else if (!empty($_POST['email']) && !empty($_POST['password'])) {
                 
-                // Get email & password, check DB
+                // Get id, email & password, check DB
                 $email = $_POST['email'];
                 $password = $_POST['password'];
                 $checkLogin = mysqli_query($conn, ""
-                        . "SELECT email, password FROM Admin "
+                        . "SELECT id FROM Admin "
                         . "WHERE email = '".$email."' "
                         . "  AND password = '".$password."' ");
                 
+                $row = mysqli_fetch_array($checkLogin);
+                $id = $row['id'];
+                
                 // If a match was found, log user in
                 if (mysqli_num_rows($checkLogin) == 1) {
+                    $_SESSION['adminId'] = $id;
                     $_SESSION['email'] = $email;
                     $_SESSION['LoggedIn'] = 1;
                     $_SESSION['adminuser'] = true;      // Usertype = admin

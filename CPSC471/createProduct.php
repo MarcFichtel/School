@@ -44,6 +44,7 @@ session_start();
                         !empty($_POST['department'])){
                     
                     // Get form inputs & create SQL query
+                    $adminId = $_SESSION['adminId'];
                     $name = $_POST['name'];
                     $price = $_POST['price'];
                     $stock = $_POST['stock'];
@@ -56,13 +57,13 @@ session_start();
                     if (!empty($_POST['description'])) {
                         $createProductQuery = mysqli_query($conn, ""
                             . "INSERT INTO Product (name, price, stock, description, admin_id, department_id)"
-                            . "VALUES ('".$name."', '".$price."', '".$stock."', '".$description."', 1, '".$department."')");
+                            . "VALUES ('".$name."', '".$price."', '".$stock."', '".$description."', '".$adminId."', '".$department."')");
                     
                     // Description was left blank    
                     } else {
                         $createProductQuery = mysqli_query($conn, ""
                             . "INSERT INTO Product (name, price, stock, admin_id, department_id)"
-                            . "VALUES ('".$name."', '".$price."', '".$stock."', 1, '".$department."')");
+                            . "VALUES ('".$name."', '".$price."', '".$stock."', '".$adminId."', '".$department."')");
                     }
 
                     // Success
