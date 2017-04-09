@@ -20,12 +20,17 @@
         
         <!--Navgation-->
         <div id="navi">
-                
-            <!--Home-->
-            <a href="index.php">Home</a>
 
-            <!--Admin Login-->
-            <a href="demoPage.php">User Login</a>
+            <!--User Login-->
+            <a href="demoPage.php">User Home</a>
+            
+            <?php
+                // Create Product
+                if (!empty($_SESSION['adminuser'])) {
+                    echo "<a href='createProduct.php'>Create Product</a>";
+                }
+            ?>
+            
         </div>
             
         <?php
@@ -37,7 +42,8 @@
                 <p>Logged in as: 
                     <?=$_SESSION['email']?>.
                 </p><br /> 
-                <a href="logout.php">Logout</a><br /> <br /> 
+                <br /><a href="createProduct.php">Create a product</a><br /> <br /> 
+                <br /><a href="logout.php">Logout</a><br /><br /> 
         <?php    
             // Someone is logging in 
             } else if (!empty($_POST['email']) && !empty($_POST['password'])) {
@@ -54,6 +60,7 @@
                 if (mysqli_num_rows($checkLogin) == 1) {
                     $_SESSION['email'] = $email;
                     $_SESSION['LoggedIn'] = 1;
+                    $_SESSION['adminuser'] = true;      // Usertype = admin
                     echo "<h1>Success</h1>";
                     echo "<p>Redirecting to Admin Area...</p>";
                     echo "<meta http-equiv='refresh' content='2; adminLogin.php'/>";

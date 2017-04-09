@@ -20,12 +20,9 @@
         
         <!--Navgation-->
         <div id="navi">
-                
-            <!--Home-->
-            <a href="index.php">Home</a>
 
-            <!--Admin Login-->
-            <a href="adminLogin.php">Admin Login</a>
+            <!--Admin Home-->
+            <a href="adminLogin.php">Admin Home</a>
         </div>
             
         <?php
@@ -77,6 +74,7 @@
                 if (mysqli_num_rows($checkLogin) == 1) {
                     $_SESSION['Username'] = $username;
                     $_SESSION['LoggedIn'] = 1;
+                    $_SESSION['customeruser'] = true;   // Usertype = customer
                     echo "<h1>Success</h1>";
                     echo "<p>Redirecting to User Area...</p>";
                     echo "<meta http-equiv='refresh' content='2; demoPage.php'/>";
