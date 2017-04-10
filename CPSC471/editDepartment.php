@@ -38,10 +38,11 @@ session_start();
                     echo "<br /><a href='adminLogin.php'>Go to Admin Login</a><br /><br />";
                     
                 // User does have permission (i.e. is an admin) and all required fields are filled in   
-                } else if (!empty($_POST['name'])){
+                } else if (!empty($_POST['name']) && !empty($_POST['rename'])){
                     
                     // Check if department exists
                     $name = $_POST['name'];
+                    $rename = $_POST['rename'];
                     $checkDepartmentQuery = mysqli_query($conn, ""
                             . "SELECT * FROM Department WHERE name = '".$name."'"); 
                     
@@ -54,70 +55,47 @@ session_start();
                     // Department does not exist
                     if (mysqli_num_rows($checkDepartmentQuery) == 0) {
                         echo "<h1>Error</h1>";
-                        echo "<br /><p>The department you are trying to delete does not exist.</p><br />";
-                        echo "<br /><a href='deleteDepartment.php'>Click here to try again</a><br /><br />";
+                        echo "<br /><p>The department you are trying to edit does not exist.</p><br />";
+                        echo "<br /><a href='editDepartment.php'>Click here to try again</a><br /><br />";
                     
                     // Department exists    
                     } else {
                         
-                        // Check if any products belong to department
-                        $row = mysqli_fetch_array($checkDepartmentQuery);
-                        $depId = $row['id'];
-                        $productsQuery = mysqli_query($conn, ""
-                                . "SELECT * FROM Product WHERE department_id = '".$depId."' ");
-                        
-                        // Error accessing products
-                        if (!$productsQuery) {
-                            echo "<h1>Error</h1>";
-                            echo "<p>Couldn't access department products. Please try again. <br /></p>";
-                            echo "<code>", mysqli_error($conn), "</code>";
-                        
-                        // Products accessed successfully    
+                        // Rename department query
+                        $renameDepartmentQuery = mysqli_query($conn, ""
+                            . "UPDATE Department "
+                            . "SET name = '".$rename."' "
+                            . "WHERE name = '".$name."' ");
+
+                        // Success
+                        if ($renameDepartmentQuery) {
+                            echo "<h1>Success</h1>";
+                            echo "<br /><p>Department renamed.</p><br />"; 
+                            echo "<br /><p><a href=\"editDepartment.php\">Click here to rename another department.</a></p><br />";
+
+                        // Error    
                         } else {
-                        
-                            // Error: Products belong to department (so cannot delete)
-                            if (mysqli_num_rows($productsQuery) != 0) {
-                                echo "<h1>Error</h1>";
-                                echo "<p>Cannot delete department with products in it. <br /></p>";
-                                echo "<br /><p><a href=\"deleteDepartment.php\">Click here to try again.</a></p><br />";
-
-                            // Department is empty    
-                            } else {
-                                // Delete department query
-                                $deleteDepartmentQuery = mysqli_query($conn, ""
-                                    . "DELETE FROM Department WHERE name = '".$name."' ");
-
-                                // Success
-                                if ($deleteDepartmentQuery) {
-                                    echo "<h1>Success</h1>";
-                                    echo "<br /><p>Department deleted.</p><br />"; 
-                                    echo "<br /><p><a href=\"deleteDepartment.php\">Click here to delete another department.</a></p><br />";
-
-                                // Error    
-                                } else {
-                                    echo "<h1>Error</h1>";
-                                    echo "<p>Department deletion failed. Please try again. <br /></p>";
-                                    echo "<code>", mysqli_error($conn), "</code>";
-                                } 
-                            }
-                        }
-                        
+                            echo "<h1>Error</h1>";
+                            echo "<p>Department edit failed. Please try again. <br /></p>";
+                            echo "<code>", mysqli_error($conn), "</code>";
+                        } 
                     }
                 
-                // User has not tried to delete a department yet    
+                // User has not tried to edit a department yet    
                 } else {
             ?>
-                    <h1>Delete a Department</h1>
-                    <p>Please enter department name.</p>
-                    <p>Note: To be able to delete a department, it must be empty (i.e. no products belong to it).</p><br />
+                    <h1>Edit a Department</h1>
+                    <p>Please enter department name you want to edit, and a new name.</p>
                     
                     <!--Display department creation form-->
-                    <form method="post" action="deleteDepartment.php" 
-                          name="departmentdeletionform" id="departmentdeletionform">
+                    <form method="post" action="editDepartment.php" 
+                          name="departmenteditform" id="departmenteditform">
                         <fieldset>
                             <label for="name">Name *:</label>
                             <input type="text" name="name" id="name"/><br />
-                            <input type="submit" name="deleteDepartment" id="deleteDepartment" value="Delete Department" />
+                            <label for="rename">New Name *:</label>
+                            <input type="text" name="rename" id="rename"/><br />
+                            <input type="submit" name="editDepartment" id="editDepartment" value="Rename Department" />
                             <p><br /><br />Note: Fields with * are required.</p><br />
                         </fieldset>
                     </form>

@@ -34,7 +34,8 @@
                     <?=$_SESSION['email']?>.
                 </p><br /> 
                 <br /><a href="createProduct.php">Create a product</a><br /><br /> 
-                <br /><a href="createDepartment.php">Create a department</a><br /><br /> 
+                <br /><a href="createDepartment.php">Create a department</a><br /><br />
+                <br /><a href="editDepartment.php">Edit a department</a><br /><br />
                 <br /><a href="deleteDepartment.php">Delete a department</a><br /><br />
                 <br /><a href="logout.php">Logout</a><br /><br /> 
         <?php    
