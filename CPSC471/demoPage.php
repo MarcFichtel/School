@@ -75,13 +75,15 @@ session_start();        // Start session
                 $username = $_POST['username'];
                 $password = $_POST['password'];
                 $checkLogin = mysqli_query($conn, ""
-                        . "SELECT username, password FROM Customer "
+                        . "SELECT id, username, password FROM Customer "
                         . "WHERE username = '".$username."' "
                         . "  AND password = '".$password."' ");
                 
                 // If a match was found, log user in
                 if (mysqli_num_rows($checkLogin) == 1) {
+                    $row = mysqli_fetch_array($checkLogin);
                     $_SESSION['Username'] = $username;      // Set username
+                    $_SESSION['userId'] = $row['id'];       // Set user id
                     $_SESSION['LoggedIn'] = 1;              // LoggedIn = true
                     $_SESSION['customeruser'] = true;       // Usertype = customer
                     $_SESSION['activeDepartment'] = "None"; // Initialize active department

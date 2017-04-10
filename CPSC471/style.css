@@ -85,13 +85,18 @@ input:hover {
     margin: 10px;
 }
 
+#cartTable {
+    width: 100%;
+    border: 1px solid #000;
+}
+
 #productDisplayTable tr, #productDisplayTable td {
     border: 1px solid #000;
     margin: 10px;
     padding: 10px;
 }
 
-#productSelectCB {
+#productSelectCB, #cartSelectCB {
     text-align: center;
 }
 

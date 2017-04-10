@@ -65,8 +65,8 @@ session_start();
                     // Product already exists
                     if (mysqli_num_rows($checkProductQuery) > 0) {
                         echo "<h1>Error</h1>";
-                        echo "<br /><p>The product you are trying to delete does not exist.</p><br />";
-                        echo "<br /><a href='deleteProduct.php'>Click here to try again</a><br /><br />";
+                        echo "<br /><p>The product you are trying to create already exists.</p><br />";
+                        echo "<br /><a href='cresteProduct.php'>Click here to try again</a><br /><br />";
                     
                     // Product does not exist yet    
                     } else {
