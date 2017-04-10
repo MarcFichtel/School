@@ -78,19 +78,14 @@ input:hover {
     background-color: #EEE;   
 }
 
-#productDisplayTable {
+#productDisplayTable, #cartTable {
     width: 98%;
     border: 1px solid #000;
     border-collapse: collapse;
     margin: 10px;
 }
 
-#cartTable {
-    width: 100%;
-    border: 1px solid #000;
-}
-
-#productDisplayTable tr, #productDisplayTable td {
+#productDisplayTable tr, #productDisplayTable td, #cartTable tr, #cartTable td {
     border: 1px solid #000;
     margin: 10px;
     padding: 10px;

@@ -76,8 +76,42 @@ session_start();
                                 }
                             }
                         }
-                        echo "<br /><br /><p><a href='displayCart.php'>Click here to view your Shopping Cart</a></p><br />";
+                    
+                    // User removed products from cart    
+                    } else {
+                        foreach ($_POST['cartSelectCB'] as $check) {
+                            
+                            // Product is already in cart
+                            $checkCartQuery = mysqli_query($conn, ""
+                                . "SELECT * FROM ShoppingCart WHERE product_id = '".$check."' ");
+                            
+                            // Error
+                            if (!$checkCartQuery) {
+                                echo "<h1>Error</h1>";
+                                echo "Failed to retrieve cart product.";
+                                echo "<code>", mysqli_error($conn), "</code>";
+                            
+                            // Success  
+                            } else {
+                            
+                                // Remove checked product from shopping cart
+                                $removeProductFromCartQuery = mysqli_query($conn, ""
+                                    . "DELETE FROM ShoppingCart WHERE product_id = '".$check."' ");
+                                
+                                // Error
+                                if (!$removeProductFromCartQuery) {
+                                    echo "<h1>Error</h1>";
+                                    echo "Failed to remove product from cart.";
+                                    echo "<code>", mysqli_error($conn), "</code>";
+                                
+                                // Success    
+                                } else {
+                                    echo "<p>Product with ID ", $check, " was removed from shopping cart.</p><br />";
+                                }
+                            }
+                        }
                     }
+                    
                     // Display cart
                     $checkCartQuery = mysqli_query($conn, ""
                         . "SELECT * FROM ShoppingCart WHERE customer_id = '".$userId."' ");

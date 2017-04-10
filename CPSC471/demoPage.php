@@ -65,6 +65,7 @@ session_start();        // Start session
 //                    </div>
                     ?>  
                 
+                <br /><a href="displayCart.php">My Shopping Cart</a><br /><br />
                 <br /><a href="transactions.php">My Transactions</a><br /><br />
                 <br /><a href="logout.php">Logout</a><br /><br />
         <?php    
