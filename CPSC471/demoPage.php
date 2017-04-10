@@ -24,6 +24,9 @@ session_start();        // Start session
         <!--Navgation-->
         <div id="navi">
                 
+            <!--Employee Login-->
+            <a id="employeeHomeButton" href="employeeLogin.php">Employee Home</a>
+            
             <!--Admin Login-->
             <a id="adminHomeButton" href="adminLogin.php">Admin Home</a>
         </div>
@@ -109,7 +112,7 @@ session_start();        // Start session
                         <label for="username">Username:</label>
                         <input type="text" name="username" id="username" /><br />
                         <label for="password">Password:</label>
-                        <input type="text" name="password" id="password" /><br />
+                        <input type="password" name="password" id="password" /><br />
                         <input type="submit" name="userlogin" id="userlogin" value="Login"/>
                     </fieldset>
                 </form>

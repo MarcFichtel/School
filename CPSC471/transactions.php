@@ -24,6 +24,9 @@
                     <!--User Login-->
                     <a id="userHomeButton" href="demoPage.php">User Home</a>
 
+                    <!--Employee Login-->
+                    <a id="employeeHomeButton" href="employeeLogin.php">Employee Home</a>
+            
                     <!--Admin Login-->
                     <a id="adminHomeButton" href="adminLogin.php">Admin Home</a>
                 

@@ -26,16 +26,20 @@ session_start();
                 <!--User Login-->
                 <a id="userHomeButton" href="demoPage.php">User Home</a>
                 
+                <!--Employee Login-->
+                <a id="employeeHomeButton" href="employeeLogin.php">Employee Home</a>
+            
                 <!--Admin Login-->
                 <a id="adminHomeButton" href="adminLogin.php">Admin Home</a>
             </div>
                  
             <?php
                 // User does not have permission
-                if(!$_SESSION['adminuser']) {
+                if(!$_SESSION['adminuser'] && !$_SESSION['employeeuser']) {
                     echo "<h1>Error</h1>";
-                    echo "<br /><p>You must be logged in as an admin to access this page.</p><br />";
+                    echo "<br /><p>You must be logged in as an admin or employee to access this page.</p><br />";
                     echo "<br /><a href='adminLogin.php'>Go to Admin Login</a><br /><br />";
+                    echo "<br /><a href='employeeLogin.php'>Go to Employee Login</a><br /><br />";
                     
                 // User does have permission (i.e. is an admin) and all required fields are filled in   
                 } else if (!empty($_POST['name']) && !empty($_POST['rename']) &&

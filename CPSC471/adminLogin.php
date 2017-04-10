@@ -22,6 +22,9 @@
         <div id="navi">
                 <!--User Login-->
                 <a id="userHomeButton" href="demoPage.php">User Home</a>
+                
+                <!--Employee Login-->
+                <a id="employeeHomeButton" href="employeeLogin.php">Employee Home</a>
         </div>
             
         <?php
@@ -94,9 +97,9 @@
                 <form method="POST" action="adminLogin.php" name="adminloginform" id="adminloginform">
                     <fieldset>
                         <label for="email">Email:</label>
-                        <input type="text" name="email" id="email" /><br />
+                        <input type="email" name="email" id="email" /><br />
                         <label for="password">Password:</label>
-                        <input type="text" name="password" id="password" /><br />
+                        <input type="password" name="password" id="password" /><br />
                         <input type="submit" name="adminlogin" id="adminlogin" value="Login"/>
                     </fieldset>
                 </form>
