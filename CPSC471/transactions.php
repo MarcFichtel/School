@@ -20,76 +20,56 @@
 			
                 <!--Navgation-->
                 <div id="navi">
-                    
-                    <!--User Login-->
-                    <a id="userHomeButton" href="demoPage.php">User Home</a>
-
-                    <!--Employee Login-->
-                    <a id="employeeHomeButton" href="employeeLogin.php">Employee Home</a>
-            
-                    <!--Admin Login-->
-                    <a id="adminHomeButton" href="adminLogin.php">Admin Home</a>
-                
+                    <!--UserPage-->
+                    <a href="demoPage.php">Main Page</a>
                 </div>
                 <?php
                 //retrieves the transaction id from the customer id
-                    $retrieveId = mysqli_query($conn, ""
-                           . "SELECT Transaction.id, Transaction.date FROM Transaction, Customer "
-                           . "WHERE  Customer.username = '".$_SESSION['Username']."' "
-                           . "  AND Customer.id = Transaction.customer_id ");
+                    $sql = "SELECT transaction.id, transaction.date FROM transaction, customer WHERE customer.username = '".$_SESSION['Username']."' AND customer.id = transaction.customer_id";
+                    $retrieveId = mysqli_query($conn, $sql);
                 ?>
                 
                 <?php
                 //checks if the form from the select buttons are pressed
                 if (!empty($_POST['t_id'])){
                     //fetches the product ids from the transaction id
-                    $int_id = (int)($_POST['t_id']);
                     $t_products = mysqli_query($conn, ""
                             . "SELECT Transactionproducts.product_id FROM Transactionproducts "
-                            . "WHERE Transactionproducts.transaction_id = '$int_id' ");
+                            . "WHERE Transactionproducts.transaction_id = ".$_POST['t_id']." ");
                     
                     //takes the first row of that table since we're setting the admin id as the first admin id in the list of products
                     $p_row = mysqli_fetch_assoc($t_products);
                     
                     //finds the product with the same product_id as the first product in the transaction and finds the admin_id from it
-                    $admin_id = mysqli_query($conn, ""
-                            . "SELECT Product.admin_id, Product.price FROM Product "
-                            . "WHERE Product.id = '".$p_row["product_id"]."'");
+                    $sql = "SELECT admin_id, price FROM product WHERE id = ".$p_row['product_id']."";
+                    $admin_id = mysqli_query($conn, $sql);
                     $a_row = mysqli_fetch_assoc($admin_id);
-                    
+
                     //updates the transaction admin_id to the one obtained from first product in transaction
                     //not sure if we can update the admin_id directly because it's a foreign key
-                    $insert_id = mysqli_query($conn, ""
-                            . "UPDATE Transaction"
-                            . "SET Transaction.admin_id = '".$a_row["admin_id"]."' "
-                            . "WHERE Transaction.id = '$int_id'");
+
+                    $sql = "UPDATE Transaction SET admin_id = ".$a_row['admin_id']." WHERE id = ".$_POST['t_id']."";
+                    $insert_id = mysqli_query($conn, $sql);
                     
                     //updates the stock of the product
                     //don't know if I can do the + 1 to Product.stock in the sqli query
-                    $update_stock = mysqli_query($conn, ""
-                            . "UPDATE Product"
-                            . "SET Product.stock = Product.stock+1"
-                            . "WHERE Product.id = '".$p_row["product_id"]."'");
+                    $sql = "UPDATE Product SET stock = stock+1 WHERE id = ".$p_row['product_id']."";
+                    $update_stock = mysqli_query($conn, $sql);
+                    
                     while($stock = mysqli_fetch_assoc($t_products)){
-                        $update_stock = mysqli_query($conn, ""
-                            . "UPDATE Product"
-                            . "SET Product.stock = Product.stock+1"
-                            . "WHERE Product.id = '".$p_row["product_id"]."'");
+                        $sql = "UPDATE Product SET stock = stock+1 WHERE id = ".$stock['product_id']."";
+                        $update_stock = mysqli_query($conn, $sql);
                     }
                     
                     //add the funds back to the customers wallet
                     //gets a table full of prices of products that were in the transactions
-                    $product_list = mysqli_query($conn, ""
-                            . "SELECT Product.price FROM Product, Transactionproducts"
-                            . "WHERE Transactionproducts.transaction_id = '$int_id' "
-                            . "  AND Transactionproducts.product_id = Product.id");
+                    $sql = "SELECT product.price FROM product, transactionproducts WHERE transactionproducts.transaction_id = ".$_POST['t_id']." AND transactionproducts.product_id = product.id";
+                    $product_list = mysqli_query($conn, $sql);
+
                     //adds the prices in the list with the matching list id and product id
                     while($prices = mysqli_fetch_assoc($product_list)){
-                        $update_product = mysqli_query($conn, ""
-                                . "UPDATE Customer"
-                                . "SET Customer.funds = Customer.funds+'".$prices['price']."'"
-                                . "WHERE Customer.username = '".$_SESSION['Username']."'" );
-                        
+                        $sql = "UPDATE Customer SET funds = funds+".$prices['price']." WHERE username = '".$_SESSION['Username']."'";
+                        $update_product = mysqli_query($conn, $sql);
                     }
                     
                 }
