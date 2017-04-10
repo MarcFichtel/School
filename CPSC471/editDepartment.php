@@ -35,10 +35,11 @@ session_start();
                  
             <?php
                 // User does not have permission
-                if(!$_SESSION['adminuser']) {
+                if(!$_SESSION['adminuser'] && !$_SESSION['employeeuser']) {
                     echo "<h1>Error</h1>";
-                    echo "<br /><p>You must be logged in as an admin to access this page.</p><br />";
+                    echo "<br /><p>You must be logged in as an admin or a manager to access this page.</p><br />";
                     echo "<br /><a href='adminLogin.php'>Go to Admin Login</a><br /><br />";
+                    echo "<br /><a href='employeeLogin.php'>Go to Employee Login</a><br /><br />";
                     
                 // User does have permission (i.e. is an admin) and all required fields are filled in   
                 } else if (!empty($_POST['name']) && !empty($_POST['rename'])){
@@ -102,11 +103,24 @@ session_start();
                             <p><br /><br />Note: Fields with * are required.</p><br />
                         </fieldset>
                     </form>
-                    <h4>Existing departments:</h4>
                 <?php
-                    // Get department names
-                    $deps = mysqli_query($conn, ""
+                    // Display only available departments for managers (not logged in as admin)
+                    if ($_SESSION['employeeuser'] && !$_SESSION['adminuser']) {
+                        
+                        // Get managing department names
+                        $empId = $_SESSION['employeeId'];
+                        $deps = mysqli_query($conn, ""
+                            . "SELECT name FROM Department WHERE manager_id = '".$empId."' ");
+                        echo "<h4>Departments you are managing:</h4>";
+                    
+                    // Display all departments for admin (may be logged in as employee)   
+                    } else {
+                        
+                        $deps = mysqli_query($conn, ""
                             . "SELECT name FROM Department");
+                        echo "<h4>Existing departments:</h4>";
+                    }
+                    
                     
                     // Display department names
                     if ($deps) {
