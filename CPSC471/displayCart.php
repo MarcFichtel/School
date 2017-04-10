@@ -125,7 +125,8 @@ session_start();
                     // Success    
                     } else {
                         
-                        // Display table with cart contents
+                        // Display table with cart contents, keep track of overall price
+                        $finalPrice = 0;
                         echo "<form id='cartForm' action='#' method='POST'>";
                         echo "<table id='cartTable'>";
                         echo ""
@@ -154,6 +155,7 @@ session_start();
                                 $row = mysqli_fetch_array($cartProductsQuery);
                                 $name = $row['name'];
                                 $price = $row['price'];
+                                $finalPrice = $finalPrice + $price;     // Track overall price
                                 $stock = $row['stock'];
                                 $description = $row['description'];
                                 echo ""
@@ -168,8 +170,37 @@ session_start();
                             }
                         }
                         echo "</table>";
-                        echo "<input type='submit' name='cartSelectSubmit' value='Remove from Shopping Cart'/>";
+                        echo "<input type='submit' name='cartSelectSubmit' value='Remove Selected Products from Shopping Cart'/>";
                         echo "</form>";
+                        
+                        // User can make an order, get current funds
+                        $userId = $_SESSION['userId'];
+                        $fundsQuery = mysqli_query($conn, ""
+                            . "SELECT * FROM Customer WHERE id = '".$userId."' ");
+
+                        // Error
+                        if (!$fundsQuery) {
+                            echo "<h1>Error</h1>";
+                            echo "<p>Failed accessing funds. <br /></p>";
+                            echo "<code>", mysqli_error($conn), "</code>";
+
+                        // Success    
+                        } else {
+                            $row = mysqli_fetch_array($fundsQuery);
+                            $funds = $row['funds'];
+                            $funds = ltrim($funds, '0');
+                            
+                            echo "<form id='orderForm' action='transaction.php' method='POST'>";
+                            echo "<br /><p>Final price: $", number_format($finalPrice, 2), "</p>";
+                            if ($funds == 0) {
+                                echo "<br /><p>No funds available.</p><br />";
+                            } else {
+                                echo "<br /><p>Available funds: $", $funds, "</p><br />";
+                            }
+                            echo "<input type='submit' name='orderSubmit' value='Make Order'/>";
+                            echo "<br /><br /><p>Note: If you have enough funds, clicking this button will finalize this order.</p>";
+                            echo "</form>";
+                        }
                     }
                 }
             ?>
