@@ -28,12 +28,13 @@
             // Someone is logged in
             if (!empty($_SESSION['LoggedIn']) && !empty($_SESSION['email'])) {
         ?>
-                <!--Welcome User-->
+                <!--Welcome Admin-->
                 <h1>Admin Area</h1>
                 <p>Logged in as: 
                     <?=$_SESSION['email']?>.
                 </p><br /> 
                 <br /><a href="createProduct.php">Create a product</a><br /><br /> 
+                <br /><a href="deleteProduct.php">Delete a product</a><br /><br />
                 <br /><a href="createDepartment.php">Create a department</a><br /><br />
                 <br /><a href="editDepartment.php">Edit a department</a><br /><br />
                 <br /><a href="deleteDepartment.php">Delete a department</a><br /><br />
