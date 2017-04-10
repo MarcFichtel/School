@@ -41,27 +41,45 @@ session_start();
                 } else if (!empty($_POST['name'])){
                     
                     // Get current admin's email and id
-                    $id = $_SESSION['adminId'];
+                    $adminId = $_SESSION['adminId'];
                     
-                    // Get form inputs & create SQL query
+                    // Check if department exists
                     $name = $_POST['name'];
-                    $createDepartmentQuery = mysqli_query($conn, ""
-                        . "INSERT INTO Department (name, manager_id)"
-                        . "VALUES ('".$name."', '".$id."')");
-
-                    // Success
-                    if ($createDepartmentQuery) {
-                        echo "<h1>Success</h1>";
-                        echo "<br /><p>Department created.</p><br />"; 
-                        echo "<br /><p><a href=\"createDepartment.php\">Click here to create another department.</a></p><br />";
+                    $checkDepartmentQuery = mysqli_query($conn, ""
+                            . "SELECT * FROM Department WHERE name = '".$name."'");
                     
-                    // Error    
-                    } else {
+                    if (!$checkDepartmentQuery) {
                         echo "<h1>Error</h1>";
-                        echo "<p>Department creation failed. Please try again. <br /></p>";
+                        echo "<p>Department check failed. Please try again. <br /></p>";
                         echo "<code>", mysqli_error($conn), "</code>";
-                    } 
-                
+                    }
+                    
+                    if (mysqli_num_rows($checkDepartmentQuery) > 0) {
+                        echo "<h1>Error</h1>";
+                        echo "<br /><p>A department with that name already exists.</p><br />";
+                        echo "<br /><p><a href=\"createDepartment.php\">Click here to try again.</a></p><br />";
+                        
+                    // Department does not exist yet    
+                    } else {
+                        
+                        $createDepartmentQuery = mysqli_query($conn, ""
+                        . "INSERT INTO Department (name, manager_id)"
+                        . "VALUES ('".$name."', '".$adminId."')");
+
+                        // Success
+                        if ($createDepartmentQuery) {
+                            echo "<h1>Success</h1>";
+                            echo "<br /><p>Department created.</p><br />"; 
+                            echo "<br /><p><a href=\"createDepartment.php\">Click here to create another department.</a></p><br />";
+
+                        // Error    
+                        } else {
+                            echo "<h1>Error</h1>";
+                            echo "<p>Department creation failed. Please try again. <br /></p>";
+                            echo "<code>", mysqli_error($conn), "</code>";
+                        }
+                    }
+                    
                 // User has not tried to create a department yet    
                 } else {
             ?>
