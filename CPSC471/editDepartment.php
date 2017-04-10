@@ -24,10 +24,10 @@ session_start();
             <div id="navi">
                 
                 <!--User Login-->
-                <a href="demoPage.php">User Home</a>
+                <a id="userHomeButton" href="demoPage.php">User Home</a>
                 
                 <!--Admin Login-->
-                <a href="adminLogin.php">Admin Home</a>
+                <a id="adminHomeButton" href="adminLogin.php">Admin Home</a>
             </div>
                  
             <?php
@@ -87,7 +87,7 @@ session_start();
                     <h1>Edit a Department</h1>
                     <p>Please enter department name you want to edit, and a new name.</p>
                     
-                    <!--Display department creation form-->
+                    <!--Display department edit form-->
                     <form method="post" action="editDepartment.php" 
                           name="departmenteditform" id="departmenteditform">
                         <fieldset>

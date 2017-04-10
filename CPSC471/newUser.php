@@ -20,11 +20,11 @@
             <!--Navgation-->
             <div id="navi">
                 
-                <!--User Home-->
-                <a href="demoPage.php">User Home</a>
+                <!--User Login-->
+                <a id="userHomeButton" href="demoPage.php">User Home</a>
                 
-                <!--Admin Home-->
-                <a href="adminLogin.php">Admin Home</a>
+                <!--Admin Login-->
+                <a id="adminHomeButton" href="adminLogin.php">Admin Home</a>
             </div>
                  
             <?php

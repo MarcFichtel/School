@@ -20,8 +20,8 @@
         
         <!--Navgation-->
         <div id="navi">
-            <!--User Login-->
-            <a href="demoPage.php">User Home</a>
+                <!--User Login-->
+                <a id="userHomeButton" href="demoPage.php">User Home</a>
         </div>
             
         <?php
@@ -33,12 +33,28 @@
                 <p>Logged in as: 
                     <?=$_SESSION['email']?>.
                 </p><br /> 
-                <br /><a href="createProduct.php">Create a product</a><br /><br /> 
-                <br /><a href="deleteProduct.php">Delete a product</a><br /><br />
-                <br /><a href="createDepartment.php">Create a department</a><br /><br />
-                <br /><a href="editDepartment.php">Edit a department</a><br /><br />
-                <br /><a href="deleteDepartment.php">Delete a department</a><br /><br />
-                <br /><a href="logout.php">Logout</a><br /><br /> 
+                <table id="adminNaviTable">
+                    <tr id="adminNaviHeader">
+                        <td>Products</td>
+                        <td>Departments</td>
+                        <td>Other</td>
+                    </tr>
+                    <tr>
+                        <td><br /><a href="createProduct.php">Create a product</a><br /><br /></td>
+                        <td><br /><a href="createDepartment.php">Create a department</a><br /><br /></td>
+                        <td><br /><a href="logout.php">Logout</a><br /><br /></td>
+                    </tr>
+                    <tr>
+                        <td><br /><a href="editProduct.php">Edit a product</a><br /><br /></td>
+                        <td><br /><a href="editDepartment.php">Edit a department</a><br /><br /></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><br /><a href="deleteProduct.php">Delete a product</a><br /><br /></td>
+                        <td><br /><a href="deleteDepartment.php">Delete a department</a><br /><br /></td>
+                        <td></td>
+                    </tr>
+                </table>
         <?php    
             // Someone is logging in 
             } else if (!empty($_POST['email']) && !empty($_POST['password'])) {

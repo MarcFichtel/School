@@ -26,10 +26,10 @@ session_start();
             <div id="navi">
                 
                 <!--User Login-->
-                <a href="demoPage.php">User Home</a>
+                <a id="userHomeButton" href="demoPage.php">User Home</a>
                 
                 <!--Admin Login-->
-                <a href="adminLogin.php">Admin Home</a>
+                <a id="adminHomeButton" href="adminLogin.php">Admin Home</a>
             </div>
                  
             <?php
@@ -64,7 +64,7 @@ session_start();
                         if ($productQuery) {
                             
                             // Display table with products
-                            echo "<table>";
+                            echo "<table id='productDisplayTable'>";
                             echo ""
                             . "<tr>"
                                     . "<td></td>"

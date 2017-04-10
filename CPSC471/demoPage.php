@@ -23,9 +23,9 @@ session_start();        // Start session
         
         <!--Navgation-->
         <div id="navi">
-
-            <!--Admin Home-->
-            <a href="adminLogin.php">Admin Home</a>
+                
+            <!--Admin Login-->
+            <a id="adminHomeButton" href="adminLogin.php">Admin Home</a>
         </div>
             
         <?php

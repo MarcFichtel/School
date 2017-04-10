@@ -19,14 +19,11 @@
         <!--Navgation-->
         <div id="navi">
             
-                <!--Home-->
-                <a href="index.php">Home</a>
-                
-                <!--User Login-->
-                <a href="demoPage.php">User Login</a>
-            
-                <!--Admin Login-->
-                <a href="adminLogin.php">Admin Login</a>
+            <!--User Login-->
+            <a id="userHomeButton" href="demoPage.php">User Home</a>
+
+            <!--Admin Login-->
+            <a id="adminHomeButton" href="adminLogin.php">Admin Home</a>
         </div>
     </body>
 </html>

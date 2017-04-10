@@ -20,8 +20,12 @@
 			
                 <!--Navgation-->
                 <div id="navi">
-                    <!--UserPage-->
-                    <a href="demoPage.php">Main Page</a>
+                    
+                    <!--User Login-->
+                    <a id="userHomeButton" href="demoPage.php">User Home</a>
+
+                    <!--Admin Login-->
+                    <a id="adminHomeButton" href="adminLogin.php">Admin Home</a>
                 </div>
                 <?php
                 //retrieves the transaction id from the customer id

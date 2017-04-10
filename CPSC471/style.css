@@ -78,16 +78,40 @@ input:hover {
     background-color: #EEE;   
 }
 
-table {
-    width: 100%;
+#productDisplayTable {
+    width: 98%;
+    border: 1px solid #000;
     border-collapse: collapse;
     margin: 10px;
 }
 
-tr, td {
+#productDisplayTable tr, #productDisplayTable td {
     border: 1px solid #000;
+    margin: 10px;
+    padding: 10px;
 }
 
 #productSelectCB {
     text-align: center;
 }
+
+#adminNaviTable {
+    border: 1px solid #000;
+    width: 700px;
+    height: 300px;
+    text-align: center;
+    border-collapse: collapse;
+}
+
+#adminNaviTable tr, #adminNaviTable td  {
+    border-left: 1px solid #000;
+    border-right: 1px solid #000;
+}
+
+#adminNaviHeader {
+    margin: 10px;
+    padding: 10px;
+    text-align: center;
+    border-bottom: 1px solid #000;
+}
+
