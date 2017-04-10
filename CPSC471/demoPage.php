@@ -67,6 +67,7 @@ session_start();        // Start session
                 
                 <br /><a href="displayCart.php">My Shopping Cart</a><br /><br />
                 <br /><a href="transactions.php">My Transactions</a><br /><br />
+                <br /><a href="userFunds.php">Add funds</a><br /><br />
                 <br /><a href="logout.php">Logout</a><br /><br />
         <?php    
             // Someone is logging in 
