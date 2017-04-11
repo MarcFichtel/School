@@ -40,21 +40,25 @@
                     <tr id="adminNaviHeader">
                         <td>Products</td>
                         <td>Departments</td>
+                        <td>Employees</td>
                         <td>Other</td>
                     </tr>
                     <tr>
                         <td><br /><a href="createProduct.php">Create a product</a><br /><br /></td>
                         <td><br /><a href="createDepartment.php">Create a department</a><br /><br /></td>
+                        <td><br /><a href="createEmployee.php">Create an employee</a><br /><br /></td>
                         <td><br /><a href="logout.php">Logout</a><br /><br /></td>
                     </tr>
                     <tr>
                         <td><br /><a href="editProduct.php">Edit a product</a><br /><br /></td>
                         <td><br /><a href="editDepartment.php">Edit a department</a><br /><br /></td>
+                        <td><br /><a href="editEmployee.php">Edit an employee</a><br /><br /></td>
                         <td></td>
                     </tr>
                     <tr>
                         <td><br /><a href="deleteProduct.php">Delete a product</a><br /><br /></td>
                         <td><br /><a href="deleteDepartment.php">Delete a department</a><br /><br /></td>
+                        <td><br /><a href="deleteEmployee.php">Delete an employee</a><br /><br /></td>
                         <td></td>
                     </tr>
                 </table>
