@@ -60,20 +60,32 @@ session_start();
                             // Product is not yet in cart    
                             } else {
                             
-                                // Add one of each checked product to user's shopping cart
-                                $addProductsToCartQuery = mysqli_query($conn, ""
-                                    . "INSERT INTO ShoppingCart (customer_id, product_id, quantity)"
-                                    . "VALUES ('".$userId."', '".$check."', 1)");
-
-                                // Error
-                                if (!$addProductsToCartQuery) {
-                                    echo "<h1>Error</h1>";
-                                    echo "Failed to add product to cart.";
-                                    echo "<code>", mysqli_error($conn), "</code>";
+                                // Check product stock
+                                $checkProductStock = mysqli_query($conn, ""
+                                        . "SELECT stock, name FROM Product WHERE id = '".$check."' ");
+                                $row = mysqli_fetch_array($checkProductStock);
+                                $stock = $row['stock'];
+                                $name = $row['name'];
                                 
-                                // Success    
+                                if ($stock == 0) {
+                                    echo "<p>The product ", $name, " is out of stock and could not be added to the Shopping Cart.</p>";
                                 } else {
-                                    echo "<p>Product with ID ", $check, " was added shopping cart.</p><br />";
+                                
+                                    // Add one of each checked product to user's shopping cart
+                                    $addProductsToCartQuery = mysqli_query($conn, ""
+                                        . "INSERT INTO ShoppingCart (customer_id, product_id, quantity)"
+                                        . "VALUES ('".$userId."', '".$check."', 1)");
+
+                                    // Error
+                                    if (!$addProductsToCartQuery) {
+                                        echo "<h1>Error</h1>";
+                                        echo "Failed to add product to cart.";
+                                        echo "<code>", mysqli_error($conn), "</code>";
+
+                                    // Success    
+                                    } else {
+                                        echo "<p>Product with ID ", $check, " was added shopping cart.</p><br />";
+                                    }
                                 }
                             }
                         }
@@ -133,6 +145,7 @@ session_start();
                                 $transactionId = $row['id'];        // Get ID of transaction that was just created
                             }
                             
+                            // Get cart contents
                             $cart = mysqli_query($conn, ""
                             . "SELECT * FROM ShoppingCart WHERE customer_id = '".$userId."' ");
                             if (!$cart) {
@@ -141,6 +154,7 @@ session_start();
                                 echo "<code>", mysqli_error($conn), "</code>";
                             }
                             
+                            // Create transactions products & decrease product stock
                             while ($row = mysqli_fetch_array($cart)) {
                                 $productId = $row['product_id'];
                                 $quantity = $row['quantity'];
@@ -150,6 +164,13 @@ session_start();
                                 if (!$createTransactionProductsQuery) {
                                     echo "<h1>Error</h1>";
                                     echo "Failed to insert transaction products.";
+                                    echo "<code>", mysqli_error($conn), "</code>";
+                                }
+                                $decreaseProductStockQuery = mysqli_query($conn, ""
+                                        . "UPDATE Product SET stock = stock - '".$quantity."' WHERE id = '".$productId."' ");
+                                if (!$decreaseProductStockQuery) {
+                                    echo "<h1>Error</h1>";
+                                    echo "Failed to update product stock.";
                                     echo "<code>", mysqli_error($conn), "</code>";
                                 }
                             }    
