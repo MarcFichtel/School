@@ -140,11 +140,9 @@ session_start();
                         . "Once you make a purchase, the transaction will appear here.";
                 }
                 
-                $transactionIdQuery = mysqli_query($conn, "SELECT id FROM Transaction ");
-                $row = mysqli_fetch_array($transactionIdQuery);
-                $tId = $row['id'];
-
-                echo "<form method='POST' action='#' name='transactionsform'>";
+                $transactionQuery = mysqli_query($conn, "SELECT * FROM Transaction ");
+                
+                echo "<form method='POST' action='displayTransaction.php' name='transactionsform'>";
                     echo "<table id='transactiontable'>";
                     echo "<tr>";
                         echo "<th>ID</th>";
@@ -154,18 +152,21 @@ session_start();
                         echo "<th>Refund</th>";
                     echo "</tr>";
 
-                    while ($row = mysqli_fetch_assoc($retrieveId)){
+                    while ($row = mysqli_fetch_assoc($transactionQuery)){
                         $id = $row['id'];
                         $state = $row['state'];
                         $date = $row['date'];
                         echo "<tr>";
-                            echo "<td>", $tId, "</td>";
+                            echo "<td>", $id, "</td>";
                             echo "<td>", $state, "</td>";
                             echo "<td>", $date, "</td>";
                             echo "<td><input type='submit' name='viewTransactionButton' value='".$id."'></td>";
                             echo "<td><input type='submit' name='refundTransactionButton' value='".$id."'></td>";
-                    echo "</form>";
-                }
+                        echo "</tr>";
+                    }
+                    echo "</table>";    
+                echo "</form>";
+                
             ?>  
                 
         </div>

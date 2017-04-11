@@ -78,7 +78,10 @@ input:hover {
     background-color: #EEE;   
 }
 
-#productDisplayTable, #cartTable, #transactiontable {
+#productDisplayTable, 
+#cartTable, 
+#transactiontable, 
+#transaction2table {
     width: 98%;
     border: 1px solid #000;
     border-collapse: collapse;
@@ -91,7 +94,10 @@ input:hover {
 #cartTable td, 
 #transactiontable tr, 
 #transactiontable td, 
-#transactiontable th {
+#transactiontable th,
+#transaction2table tr,
+#transaction2table td,
+#transaction2table th {
     border: 1px solid #000;
     margin: 10px;
     padding: 10px;
