@@ -37,7 +37,7 @@ session_start();
             <?php
                 // Retrieves the transaction id from the customer id
                 $username = $_SESSION['Username'];
-                $sql = "SELECT Transaction.id, Transaction.date "
+                $sql = "SELECT * "
                         . "FROM Transaction, Customer "
                         . "WHERE Customer.username = '".$username."' "
                         . "AND Customer.id = Transaction.customer_id";
@@ -139,26 +139,31 @@ session_start();
                     echo "There are no transactions at the moment. "
                         . "Once you make a purchase, the transaction will appear here.";
                 }
-                echo "<table id='transactiontable'>";
+                
+                $transactionIdQuery = mysqli_query($conn, "SELECT id FROM Transaction ");
+                $row = mysqli_fetch_array($transactionIdQuery);
+                $tId = $row['id'];
+
+                echo "<form method='POST' action='#' name='transactionsform'>";
+                    echo "<table id='transactiontable'>";
                     echo "<tr>";
                         echo "<th>ID</th>";
+                        echo "<th>Status</th>";
                         echo "<th>Date</th>";
+                        echo "<th>View</th>";
                         echo "<th>Refund</th>";
                     echo "</tr>";
 
-                while ($row = mysqli_fetch_assoc($retrieveId)){
-                    $id = $row['id'];
-                    $date = $row['date'];
-                    echo "<tr>";
-                        echo "<td>", $id, "</td>";
-                        echo "<td>", $date, "</td>";
-                        echo "<td>''</td>"; 
-
-                    echo "<form method='POST' action='transactions.php' name='transactionsform'>";
-                        echo "<fieldset>";
-                            echo "<input value='".$id."' type='hidden' name='t_id'>";
-                            echo "<input type='submit'  value='Select'>";
-                        echo "</fieldset>";
+                    while ($row = mysqli_fetch_assoc($retrieveId)){
+                        $id = $row['id'];
+                        $state = $row['state'];
+                        $date = $row['date'];
+                        echo "<tr>";
+                            echo "<td>", $tId, "</td>";
+                            echo "<td>", $state, "</td>";
+                            echo "<td>", $date, "</td>";
+                            echo "<td><input type='submit' name='viewTransactionButton' value='".$id."'></td>";
+                            echo "<td><input type='submit' name='refundTransactionButton' value='".$id."'></td>";
                     echo "</form>";
                 }
             ?>  

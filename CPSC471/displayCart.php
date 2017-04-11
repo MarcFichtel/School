@@ -43,10 +43,8 @@ session_start();
                 
                 // User does have permission    
                 } else {
-                    // Get user's id & cart contents
+                    // Get user's id
                     $userId = $_SESSION['userId'];
-                    $cart = mysqli_query($conn, ""
-                            . "SELECT * FROM ShoppingCart WHERE customer_id = '".$userId."' ");
                     
                     // User added products to cart
                     if(!empty($_POST['productSelectCB'])) {
@@ -80,6 +78,98 @@ session_start();
                             }
                         }
                     
+//////////////////////////////////////////////////////////////////////////////////////////////////////////                        
+                    // User wants to make an order 
+                    } else if (!empty($_POST['orderSubmit'])) {    
+                        
+                        // Check if user funds suffice
+                        $userId = $_SESSION['userId'];
+                        $fundsQuery = mysqli_query($conn, ""
+                            . "SELECT * FROM Customer WHERE id = '".$userId."' ");
+                        $row = mysqli_fetch_array($fundsQuery);
+                        $funds = $row['funds'];
+                        $price = $_SESSION['cartPrice'];
+                        
+                        // Not enough funds
+                        if ($price > $funds) {
+                            echo "<h1>Error</h1>";
+                            echo "<p>Cart price exceeds available funds. Please add sufficient funds.</p><br />";
+                            echo "<br /><p><a href='userFunds.php'>Add funds</a></p><br />";
+                        
+                        // Enough funds    
+                        } else {
+                            
+                            // Deduct funds
+                            $deductFundsQuery = mysqli_query($conn, ""
+                                    . "UPDATE Customer SET funds = funds - '".$price."' WHERE id = '".$userId."' ");
+                            
+                            if (!$deductFundsQuery) {
+                                echo "<h1>Error</h1>";
+                                echo "Failed to deduct funds.";
+                                echo "<code>", mysqli_error($conn), "</code>";
+                            }
+                            
+                            // Create transaction
+                            $date = date('Y-m-d', time());
+                            $createTransactionQuery = mysqli_query($conn, ""
+                                    . "INSERT INTO Transaction (state, date, customer_id, admin_id) "
+                                    . "VALUES ('Complete', '".$date."', '".$userId."', 1)");
+                            if (!$createTransactionQuery) {
+                                echo "<h1>Error</h1>";
+                                echo "Failed to create a transaction.";
+                                echo "<code>", mysqli_error($conn), "</code>";
+                            }
+                            
+                            // Create an entry in TransactionProducts for each product
+                            $getTransactionIDQuery = mysqli_query($conn, ""
+                                    . "SELECT id FROM Transaction "
+                                    . "WHERE customer_id = '".$userId."' AND id = LAST_INSERT_ID()");
+                            if (!$getTransactionIDQuery) {
+                                echo "<h1>Error</h1>";
+                                echo "Failed to transaction id.";
+                                echo "<code>", mysqli_error($conn), "</code>";
+                            } else {
+                                $row = mysqli_fetch_array($getTransactionIDQuery);
+                                $transactionId = $row['id'];        // Get ID of transaction that was just created
+                            }
+                            
+                            $cart = mysqli_query($conn, ""
+                            . "SELECT * FROM ShoppingCart WHERE customer_id = '".$userId."' ");
+                            if (!$cart) {
+                                echo "<h1>Error</h1>";
+                                echo "Failed to get cart contents.";
+                                echo "<code>", mysqli_error($conn), "</code>";
+                            }
+                            
+                            while ($row = mysqli_fetch_array($cart)) {
+                                $productId = $row['product_id'];
+                                $quantity = $row['quantity'];
+                                $createTransactionProductsQuery = mysqli_query($conn, ""
+                                    . "INSERT INTO TransactionProducts (transaction_id, product_id, quantity) "
+                                    . "VALUES ('".$transactionId."', '".$productId."', '".$quantity."')");
+                                if (!$createTransactionProductsQuery) {
+                                    echo "<h1>Error</h1>";
+                                    echo "Failed to insert transaction products.";
+                                    echo "<code>", mysqli_error($conn), "</code>";
+                                }
+                            }    
+                            
+                            // Clear shopping cart
+                            $clearCartQuery = mysqli_query($conn, ""
+                                    . "DELETE FROM ShoppingCart WHERE customer_id = '".$userId."' ");
+                            if (!$clearCartQuery) {
+                                echo "<h1>Error</h1>";
+                                echo "Failed to clear shopping cart.";
+                                echo "<code>", mysqli_error($conn), "</code>";
+                            }
+                            
+                            echo "<h1>Success</h1>";
+                            echo "<p>Created transaction with ID: ", $transactionId, "<p>";
+                            echo "<br /><p><a href='transactions.php'>View Transactions</a></p><br />";
+                        }
+                        
+////////////////////////////////////////////////////////////////////////////////////////////////////////////                        
+                        
                     // User incremented product quantity   
                     } else if (!empty($_POST['incQ'])) {
                         $pId = $_POST['incQ'];
@@ -181,7 +271,12 @@ session_start();
                     
                     // Success    
                     } else {
-                        // User incremented product quantity 
+                        
+                        // Is cart empty?
+                        if (mysqli_num_rows($checkCartQuery) == 0) {
+                            echo "<br /><p>Your Shopping Cart is currently empty. Please add products.</p><br />";
+                        }
+                        
                         // Display table with cart contents, keep track of overall price
                         $finalPrice = 0;
                         echo "<form id='cartForm' action='#' method='POST'>";
@@ -251,8 +346,9 @@ session_start();
                             $row = mysqli_fetch_array($fundsQuery);
                             $funds = $row['funds'];
                             $funds = ltrim($funds, '0');
+                            $_SESSION['cartPrice'] = $finalPrice;
                             
-                            echo "<form id='orderForm' action='transaction.php' method='POST'>";
+                            echo "<form id='orderForm' action='#' method='POST'>";
                             echo "<br /><p>Final price: $", number_format($finalPrice, 2), "</p>";
                             if ($funds == 0) {
                                 echo "<br /><p>No funds available.</p><br />";
