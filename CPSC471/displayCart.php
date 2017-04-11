@@ -80,7 +80,61 @@ session_start();
                             }
                         }
                     
-                    // User removed products from cart    
+                    // User incremented product quantity   
+                    } else if (!empty($_POST['incQ'])) {
+                        $pId = $_POST['incQ'];
+                        
+                        // Increment quantity only if it does not exceed available product stock
+                        $checkStockQuery = mysqli_query($conn, ""
+                                . "SELECT stock FROM Product WHERE id = '".$pId."' ");
+                        $row = mysqli_fetch_array($checkStockQuery);
+                        $pStock = $row['stock'];
+                        $checkQuantityQuery = mysqli_query($conn, ""
+                                . "SELECT quantity FROM ShoppingCart WHERE product_id = '".$pId."' ");
+                        $row = mysqli_fetch_array($checkQuantityQuery);
+                        $pQuantity = $row['quantity'];
+                        
+                        if ($pQuantity < $pStock) {
+                            $addQuantityQuery = mysqli_query($conn, ""
+                                    . "UPDATE ShoppingCart SET quantity = quantity + 1 WHERE product_id = '".$pId."' ");
+                            if ($addQuantityQuery) {
+                                echo "Incremented quantity of product with ID: ", $pId;
+                            } else {
+                                echo "<h1>Error</h1>";
+                                echo "Failed to increment product quantity.";
+                                echo "<code>", mysqli_error($conn), "</code>";
+                            }
+                        } else {
+                            echo "<h1>Error</h1>";
+                            echo "<p>Quantity cannot exceed available product stock.</p>";
+                        }
+                        
+                    // User decremented product quantity     
+                    } else if (!empty($_POST['decQ'])) {
+                        $pId = $_POST['decQ'];
+                        
+                        // Decrement quantity only if quatity remains greater than 0
+                        $checkQuantityQuery = mysqli_query($conn, ""
+                            . "SELECT quantity FROM ShoppingCart WHERE product_id = '".$pId."' ");
+                        $row = mysqli_fetch_array($checkQuantityQuery);
+                        $pQuantity = $row['quantity'];
+                        
+                        if ($pQuantity > 1) {
+                            $decQuantityQuery = mysqli_query($conn, ""
+                                    . "UPDATE ShoppingCart SET quantity = quantity - 1 WHERE product_id = '".$pId."' ");
+                            if ($decQuantityQuery) {
+                                echo "Decremented quantity of product with ID: ", $pId;
+                            } else {
+                                echo "<h1>Error</h1>";
+                                echo "Failed to decrement product quantity.";
+                                echo "<code>", mysqli_error($conn), "</code>";
+                            }
+                        } else {
+                            echo "<h1>Error</h1>";
+                            echo "<p>Quantity cannot be 0. Please remove the product instead.</p>";
+                        }
+                        
+                    // User removed products from cart     
                     } else {
                         foreach ($_POST['cartSelectCB'] as $check) {
                             
@@ -127,7 +181,7 @@ session_start();
                     
                     // Success    
                     } else {
-                        
+                        // User incremented product quantity 
                         // Display table with cart contents, keep track of overall price
                         $finalPrice = 0;
                         echo "<form id='cartForm' action='#' method='POST'>";
@@ -135,6 +189,7 @@ session_start();
                         echo ""
                             . "<tr>"            // Header row
                                     . "<td></td>"
+                                    . "<td><strong>ID</strong></td>"
                                     . "<td><strong>Name</strong></td>"
                                     . "<td><strong>Price</strong></td>"
                                     . "<td><strong>Stock</strong></td>"
@@ -156,18 +211,22 @@ session_start();
                             // Success    
                             } else {
                                 $row = mysqli_fetch_array($cartProductsQuery);
+                                $id = $row['id'];
                                 $name = $row['name'];
                                 $price = $row['price'];
-                                $finalPrice = $finalPrice + $price;     // Track overall price
+                                $finalPrice = $finalPrice + $price * $quantity;     // Track overall price
                                 $stock = $row['stock'];
                                 $description = $row['description'];
                                 echo ""
                                 . "<tr>"
                                     . "<td id='cartSelectCB'><input type='checkbox' name='cartSelectCB[]' value='".$productId."' /></td>"
+                                    . "<td>".$id."</td>"
                                     . "<td>".$name."</td>"
                                     . "<td>".$price."</td>"
                                     . "<td>".$stock."</td>"
-                                    . "<td>".$quantity."</td>"   
+                                    . "<td>".$quantity." "
+                                        . "     (+1 Quantity: <input name='incQ' type='submit' value='".$id."' />)"
+                                        . "     (-1 Quantity: <input name='decQ' type='submit' value='".$id."' />)</td>"   
                                     . "<td>".$description."</td>"
                                 . "</tr>";
                             }
