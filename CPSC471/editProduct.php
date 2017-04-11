@@ -43,13 +43,15 @@ session_start();
                     
                 // User does have permission (i.e. is an admin) and all required fields are filled in   
                 } else if (!empty($_POST['name']) && !empty($_POST['rename']) &&
-                        !empty($_POST['reprice']) && !empty($_POST['restock'])){
+                        !empty($_POST['reprice']) && !empty($_POST['restock']) &&
+                        !empty($_POST['redepartment'])){
                     
                     // Check if product exists
                     $name = $_POST['name'];
                     $rename = $_POST['rename'];
                     $reprice = $_POST['reprice'];
                     $restock = $_POST['restock'];
+                    $redepartment = $_POST['redepartment'];
                     if (!empty($_POST['redescription'])) {
                         $redescription = $_POST['redescription'];
                     }
@@ -117,16 +119,25 @@ session_start();
                                     // Product does not belong to any shopping carts    
                                     } else {
                         
+                                        // Get product department id
+                                        $depIDQuery = mysqli_query($conn, ""
+                                                . "SELECT id FROM Department WHERE name = '".$redepartment."' ");
+                                        if (!$depIDQuery) {
+                                            echo "Error getting dep ID";
+                                        }
+                                        $row = mysqli_fetch_array($depIDQuery);
+                                        $depID = $row['id'];
+                                        
                                         // Edit product query (with or without description)
                                         if (!empty($_POST['redescription'])) {
                                             $editProductQuery = mysqli_query($conn, ""
                                                 . "UPDATE Product "
-                                                . "SET name = '".$rename."', price = '".$reprice."', stock = '".$restock."', description = '".$redescription."' "
+                                                . "SET name = '".$rename."', price = '".$reprice."', stock = '".$restock."', department_id = '".$depID."', description = '".$redescription."' "
                                                 . "WHERE name = '".$name."' ");
                                         } else {
                                            $editProductQuery = mysqli_query($conn, ""
                                             . "UPDATE Product "
-                                            . "SET name = '".$rename."', price = '".$reprice."', stock = '".$restock."' "
+                                            . "SET name = '".$rename."', price = '".$reprice."', stock = '".$restock."', department_id = '".$depID."' "
                                             . "WHERE name = '".$name."' ");
                                         }
                                         // Success
@@ -165,6 +176,8 @@ session_start();
                             <input type="text" name="reprice" id="reprice"/><br />
                             <label for="restock">New Stock *:</label>
                             <input type="text" name="restock" id="restock"/><br />
+                            <label for="redepartment">New Department *:</label>
+                            <input type="text" name="redepartment" id="redepartment"/><br />
                             <label for="redescription">New Description:</label>
                             <input type="text" name="redescription" id="redescription"/><br />
                             <input type="submit" name="editProduct" id="editProduct" value="Edit Product" />
@@ -186,24 +199,60 @@ session_start();
                                 . "<td><strong>Name</strong></td>"
                                 . "<td><strong>Price</strong></td>"
                                 . "<td><strong>Stock</strong></td>"
+                                . "<td><strong>Department</strong></td>"
                                 . "<td><strong>Description</strong></td>"
                             . "</tr>";
                         while ($row = mysqli_fetch_array($prods)) {
+                            $depId = $row['department_id'];
                             $name = $row['name'];
                             $price = $row['price'];
                             $stock = $row['stock'];
                             $description = $row['description'];
+                            $depNameQuery = mysqli_query($conn, ""
+                                    . "SELECT name FROM Department WHERE id = '".$depId."' ");
+                            $row2 = mysqli_fetch_array($depNameQuery);
+                            $depName = $row2['name'];
                             echo ""
                             . "<tr>"
                                  . "<td>".$name."</td>"
                                  . "<td>".$price."</td>"
                                  . "<td>".$stock."</td>"
+                                 . "<td>".$depName."</td>"  
                                  . "<td>".$description."</td>"
                             . "</tr>";
                         }
                         echo "</table>";
                         
                     // Error getting product infos   
+                    } else {
+                        echo "Error retrieving departments.";
+                    }
+                    // Display only available departments for managers (not logged in as admin)
+                    if ($_SESSION['employeeuser'] && !$_SESSION['adminuser']) {
+                        
+                        // Get managing department names
+                        $empId = $_SESSION['employeeId'];
+                        $deps = mysqli_query($conn, ""
+                            . "SELECT name FROM Department WHERE manager_id = '".$empId."' ");
+                        echo "<h4>Departments you are managing:</h4>";
+                    
+                    // Display all departments for admin (may be logged in as employee)   
+                    } else {
+                        
+                        $deps = mysqli_query($conn, ""
+                            . "SELECT name FROM Department");
+                        echo "<h4>Existing departments:</h4>";
+                    }
+                    
+                    
+                    // Display department names
+                    if ($deps) {
+                        while ($row = mysqli_fetch_array($deps)) {
+                            $name = $row['name'];
+                            echo $name, "<br />";
+                        }    
+                        
+                    // Error getting department names    
                     } else {
                         echo "Error retrieving departments.";
                     }
