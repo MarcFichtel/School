@@ -76,6 +76,7 @@ session_start();
                                     . "<td><strong>Price</strong></td>"
                                     . "<td><strong>Stock</strong></td>"
                                     . "<td><strong>Description</strong></td>"
+									. "<td><strong>Reviews</strong></td>"
                             . "</tr>";
                             while ($row = mysqli_fetch_array($productQuery)) {
                                 $productId = $row['id'];
@@ -83,6 +84,7 @@ session_start();
                                 $price = $row['price'];
                                 $stock = $row['stock'];
                                 $description = $row['description'];
+								$_SESSION['ProductId'] = $productId;
                                 echo ""
                                 . "<tr>"
                                      . "<td id='productSelectCB'><input type='checkbox' name='productSelectCB[]' value='".$productId."' /></td>"
@@ -90,7 +92,8 @@ session_start();
                                      . "<td>".$price."</td>"
                                      . "<td>".$stock."</td>"
                                      . "<td>".$description."</td>"
-                                . "</tr>";
+									 . "<td><a href='dispplayReviews.php'>Reviews</a></td>";
+								 . "</tr>";
                             }
                             echo "</table>";
                             echo "<input type='submit' name='productSelectSubmit' value='Add to Shopping Cart'/>";
@@ -108,8 +111,6 @@ session_start();
                     }
                     
                     
-                    
-                // No active department was supplied by POST    
                 } else {
                     echo "<h1>Error</h1>";
                     echo "No department was chosen.";
