@@ -81,7 +81,8 @@ input:hover {
 #productDisplayTable, 
 #cartTable, 
 #transactiontable, 
-#transaction2table {
+#transaction2table, 
+#transaction3table {
     width: 98%;
     border: 1px solid #000;
     border-collapse: collapse;
@@ -97,7 +98,10 @@ input:hover {
 #transactiontable th,
 #transaction2table tr,
 #transaction2table td,
-#transaction2table th {
+#transaction2table th,
+#transaction3table tr,
+#transaction3table td,
+#transaction3table th {
     border: 1px solid #000;
     margin: 10px;
     padding: 10px;
