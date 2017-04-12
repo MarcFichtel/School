@@ -84,7 +84,6 @@ session_start();
                                 $price = $row['price'];
                                 $stock = $row['stock'];
                                 $description = $row['description'];
-								$_SESSION['ProductId'] = $productId;
                                 echo ""
                                 . "<tr>"
                                      . "<td id='productSelectCB'><input type='checkbox' name='productSelectCB[]' value='".$productId."' /></td>"
@@ -92,8 +91,8 @@ session_start();
                                      . "<td>".$price."</td>"
                                      . "<td>".$stock."</td>"
                                      . "<td>".$description."</td>"
-									 . "<td><a href='dispplayReviews.php'>Reviews</a></td>";
-								 . "</tr>";
+									 . "<td>"<a href="displayReviews.php?key='".$productId."'; ?>">Reviews</a>"</td>"
+                                . "</tr>";
                             }
                             echo "</table>";
                             echo "<input type='submit' name='productSelectSubmit' value='Add to Shopping Cart'/>";
@@ -111,6 +110,13 @@ session_start();
                     }
                     
                     
+                } else if(!(empty($_POST['reviews']))){
+					$_SESSION['productId'] = $productId;
+					echo "<p>Redirecting to Reviews...</p>";
+                    echo "<meta http-equiv='refresh' content='2; displayReviews.php'/>";
+					
+				}    
+                // No active department was supplied by POST    
                 } else {
                     echo "<h1>Error</h1>";
                     echo "No department was chosen.";
