@@ -2,5 +2,5 @@
 
 ### Programming Paradigms
 
-* Haskell
-* Prolog
+* Functional Programming (Haskell)
+* Logic Programming (Prolog)
