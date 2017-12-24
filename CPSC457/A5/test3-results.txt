@@ -1,0 +1,5 @@
+Issues with files:
+  A:
+  B: not enough blocks, contains cycles
+  C:
+Number of free blocks: 5
