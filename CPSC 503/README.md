@@ -9,3 +9,7 @@ This paper describes a computer program that was created as a research tool for 
 
 Final Report: https://docs.google.com/document/d/1lnY-bSwSyPv9UPLRchSV_73326IEkgcS3ascSdmS4eY/edit?usp=sharing
 Presentation: https://docs.google.com/presentation/d/1ygvHUFsNtvgkGLteCliWxHrifVZLA8NtUTM3yJVVsUU/edit?usp=sharing
+
+## Disclaimer
+
+This is an unfinished ongoing project.
