@@ -24,7 +24,7 @@ public class SelectionController : MonoBehaviour {
 		get { return _instance; }
 	}
 
-	// Initialize singleton on awake, get OMM
+	// Initialize singleton on awake
 	public void Awake() {
 		if (_instance != null && _instance != this) {
 			Destroy(gameObject);
