@@ -3,6 +3,8 @@ using UnityEngine;
 using System.Collections.Generic;
 using System.Collections;
 
+// Reference: https://github.com/HiddenMonk/Unity3DRuntimeTransformGizmo
+
 namespace RuntimeGizmos
 {
 	[RequireComponent(typeof(Camera))]
