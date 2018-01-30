@@ -1,0 +1,538 @@
+///////////////////////////////////////////////////////////////////////////////////////////////
+//
+//
+// This program does the following:
+// ~ Pop word from top of stack
+// ~ Compute its negative (2's complement) and push back onto stack
+//
+// Usage Instructions v2:
+// ~ Enter a number --> num1 (up to 8 digit hex, using upper-case "A"-"F"), click return
+// ~ Enter a number --> num2 (up to 8 digit hex, using upper-case "A"-"F"), click return
+// ~ Click the Run button
+// ~ The number of divisors for num1 will be displayed w/ leading 0's
+// ~ A 1 will be displayed if num2 is a multiple of num1, else 0 is displayed
+// ~ Click on the Stop button
+//
+// Note: Input and Output is in base 16.
+//
+//
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+.constant
+OBJREF 0x40			// Needed for method invocation
+.end-constant
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+//
+// Main
+//
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+.main				// start main
+
+.var				// local variables for main program
+a 				// a = int1
+b 				// b = int2
+result 				// result of calling the methods
+.end-var 			// end variables area
+
+start:
+	BIPUSH 0x0		// initialize var a (int a = 0)
+	DUP
+	ISTORE a
+	BIPUSH 0x20		// = " "
+	OUT			// print " "
+	LDC_W OBJREF		// prepare for method call
+	INVOKEVIRTUAL getnum 	// get a
+	ISTORE a		// store a
+	OUT 			// print a
+	BIPUSH 0x3d		// print "========"
+	DUP
+	DUP
+	DUP
+	DUP
+	DUP
+	DUP
+	DUP
+	OUT
+	OUT
+	OUT
+	OUT
+	OUT
+	OUT
+	OUT
+	OUT
+	BIPUSH 0xa 		// = newline
+	OUT 			// print newline
+	LDC_W OBJREF 		// push OBJREF
+	ILOAD a 		// load a from stack
+	INVOKEVIRTUAL divcount 	// call divCount(a)
+	ISTORE result		// store result to stack
+	LDC_W OBJREF		// push OBJREF
+	ILOAD result		// push result, parameter for method print
+	INVOKEVIRTUAL print 	// print result
+
+	BIPUSH 0x0		// initialize var a, b (int a, b = 0)
+	DUP
+	ISTORE a
+	ISTORE b
+	BIPUSH 0x20		//print " "
+	OUT
+	LDC_W OBJREF
+	INVOKEVIRTUAL getnum	// get a
+	ISTORE a 		// store a
+	BIPUSH 0x7c 		// = "|"
+	OUT			// print ="|"
+	LDC_W OBJREF		
+	INVOKEVIRTUAL getnum 	// get b
+	ISTORE b 		//store b
+	BIPUSH 0x3d		// print "========"
+	DUP
+	DUP
+	DUP
+	DUP
+	DUP
+	DUP
+	DUP
+	OUT
+	OUT
+	OUT
+	OUT
+	OUT
+	OUT
+	OUT
+	OUT
+	BIPUSH 0xa 		// = newline
+	OUT 			// print newline
+	LDC_W OBJREF 		// push OBJREF
+	ILOAD a 		// load a from stack
+	ILOAD b 		// load b from stack
+	INVOKEVIRTUAL ismul 	// call isMul(a, b)
+	ISTORE result 		// store result
+	LDC_W OBJREF 		// push OBJREF
+	ILOAD result  		// push result, parameter for method print
+	INVOKEVIRTUAL print 	// print result
+
+	GOTO start
+.end-main 			// End main
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+//
+// DivCount(int1)
+//
+// Returns the number of devisors for int1
+//
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+.method divcount(int1)
+
+.var				// local variables for DivCount
+a 				// a = int1
+r 				// r = result
+l 				// l = limit
+c 				// c = counter
+.end-var 			// end variables area
+
+dc_start:
+	ILOAD int1 		// load int1
+	IFLT dc_int1_neg 	// pop int1: if int1 < 0, go to dc_int1_neg
+	ILOAD int1 		// else int1 >= 0
+	ISTORE a 		// a = absInt1
+	ILOAD int1 		// 
+	ISTORE l 		// l = absInt1
+	GOTO dc_int1_cont 	// continue
+
+dc_int1_neg:
+	INEG 			// push int1: negate int1 (int1 is now > 0)
+	ISTORE l 		// l = int1
+
+dc_int1_cont:
+	BIPUSH 0x0 		// push 0
+	ISTORE r 		// r = 0
+
+	ILOAD a			// load a
+	BIPUSH 0x1 		// push 1
+	ISUB 			// a - 1
+	IFEQ dc_return_1 	// if a - 1 = 0, then a = 1, so go to dc_return_1
+
+	BIPUSH 0x1 		// push 1
+	ISTORE c 		// counter = 1
+	
+dc_loop:
+	LDC_W OBJREF 		// push OBJREF
+	ILOAD a 		// push a
+	ILOAD c 		// push counter
+	BIPUSH 0x1 		// push 1 (check remainder)
+	INVOKEVIRTUAL idiv 	// call iDiv(a, c, 1)
+	IFEQ dc_next 		// if a % c = 0, go to dc_next
+	GOTO dc_loop_cont 	// else continue loop below
+
+dc_next:
+	ILOAD r 		// push r
+	BIPUSH 0x1 		// push 1
+	IADD 			// r++
+	ISTORE r 		// r = r + 1
+
+	LDC_W OBJREF 		// push OBJREF
+	ILOAD a 		// push a
+	ILOAD c 		// push counter
+	BIPUSH 0x0 		// push 1 (check quotient)
+	INVOKEVIRTUAL idiv 	// call iDiv(a, c, 0)	
+	ISTORE l 		// limit = a / c
+	
+	ILOAD l 		// push limit
+	ILOAD c 		// push counter
+	ISUB 			// l - c
+	IFEQ dc_loop_cont	// if l - c = 0, go to dc_loop_cont, else increment r
+
+dc_incr_r:
+	ILOAD r 		// push r
+	BIPUSH 0x1 		// push 1
+	IADD 			// r++
+	ISTORE r 		// r = r + 1
+
+dc_loop_cont:
+	ILOAD c 		// push c
+	BIPUSH 0x1 		// push 1
+	IADD 			// c++
+	ISTORE c 		// c = c + 1
+
+dc_loop_test:
+	ILOAD c 		// push counter
+	ILOAD l 		// push limit
+	ISUB 			// counter - limit
+	IFLT dc_loop 		// if c - l < 0, loop
+	GOTO dc_return 		// else return
+
+dc_return_1:
+	BIPUSH 0x1 		// push 1
+	ISTORE r 		// r = 1
+
+dc_return:
+	ILOAD r 		// load r
+	IRETURN 		// return r
+.end-method
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+//
+// Divide (int1, int2, returnType)
+//
+// Returns 1 if int2 is a multiple of int1, else 0
+//
+// If return type = 1, return remainder, else return quotient
+//
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+.method idiv(int1, int2, return_type)
+.var 				// local variables for iDiv
+a 				// a = int1
+b 				// b = int2
+q				// q = quotient
+r				// r = remainder
+.end-var 			// end variables area
+
+d_start:
+	ILOAD int1 		// load int1
+	IFLT d_int1_neg 	// pop int1: if int1 < 0, go to d_int1_neg
+	ILOAD int1 		// else int1 >= 0
+	ISTORE a 		// a = int1
+	GOTO d_int1_cont 	// continue
+
+d_int1_neg:
+	INEG 			// push int1: negate int1 (int1 is now > 0)
+	ISTORE a 		// a = int1
+
+d_int1_cont:
+	ILOAD int2 		// load int2
+	IFLT d_int2_neg 	// pop int2: if int2 < 0, go to d_int2_neg
+	ILOAD int2 		// else int2 >= 0
+	ISTORE b 		// b = int2
+	GOTO d_int2_cont 	// continue
+
+d_int2_neg:
+	INEG 			// push int1: negate int1 (int1 is now > 0)
+	ISTORE a 		// a = int1
+
+d_int2_cont:
+	BIPUSH 0x0
+	ISTORE q		// q = 0
+	ILOAD a
+	ISTORE r		// r = a
+	
+d_loop:
+	ILOAD r
+	ILOAD b
+	ISUB 			// r - b
+	DUP 			
+	IFEQ d_return 		// return if r - b = 0
+	IFLT d_check_Neg	// exit loop when r - b < 0
+	ILOAD r
+	ILOAD b
+	ISUB
+	ISTORE r 		// r = r - b > 0
+	ILOAD q
+	BIPUSH 0x1
+	IADD
+	ISTORE q 		// q++
+	GOTO d_loop 		// loop
+	
+d_check_Neg:
+	INEG 			// Negate q
+	ISTORE q		// q = -q
+
+d_return:
+	BIPUSH 0x0
+	ILOAD return_type
+	ISUB
+	IFLT d_done		// branch if return_type > 0
+	ILOAD q			// load q
+	IRETURN			// return q
+	
+d_done:
+	ILOAD r			// load r
+	IRETURN			// return r
+.end-method
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+//
+// IsMul (int1, int2)
+//
+// Returns 1 if int2 is a multiple of int1, else 0
+//
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+.method ismul(int1, int2)
+
+.var				// local variables for IsMul
+a 				// a = int1
+b 				// b = int2
+r 				// r = result
+s 				// s = sum
+.end-var 			// end variables area
+
+im_start:
+	BIPUSH 0x0		// initialize var r (int r = 0)
+	ISTORE r 		// store r
+	BIPUSH 0x0		// initialize var s (int s = 0)
+	ISTORE s 		// store s
+
+	ILOAD int2 		// load int2
+	DUP 			// duplicate int2
+	IFLT im_int2_neg 	// pop int2: if int2 < 0, go to im_int2_neg
+	GOTO im_int2_cont 	// else continue	
+
+im_int2_neg:
+	INEG 			// push int2: negate int2 (int2 is now > 0)
+
+im_int2_cont:
+	ILOAD int1 		// load int1
+	DUP 			// duplicate int1
+	IFLT im_int1_neg 	// pop int1: if int1 < 0, go to im_int1_neg
+	GOTO im_int1_cont 	// else continue
+		
+im_int1_neg:
+	INEG 			// push int1: negate int1 (int1 is now > 0)
+	
+im_int1_cont:
+	ISTORE a 		// a = absA
+	ISTORE b 		// b = absB
+	ILOAD a 		// push a
+	ISTORE s 		// pop ainto s (s = absA)
+	ILOAD b 		// push b
+im_loop:
+	ILOAD s 		// push s
+	ILOAD b 		// push b
+	ILOAD s 		// push s
+	ISUB 			// TOS = b - s
+	DUP 			// duplicate b - s
+
+	IFEQ im_return_true 	// if b - a = 0, return true
+	IFLT im_return 		// else if b - a < 0, return false
+
+	ILOAD a 		// load a
+	IADD 			// s + a
+	ISTORE s 		// s = s + absA
+	GOTO im_loop 		// loop
+
+im_return_true:
+	BIPUSH 0x1 		// TOS = 1
+	ISTORE r 		// r = 1
+	GOTO im_return
+
+im_return_false:
+	BIPUSH 0x0 		// TOS = 0
+	ISTORE r 		// r = 0	
+
+im_return:
+	ILOAD r 		// Load r
+	IRETURN 		// Return
+.end-method
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+//
+// GetNum
+//
+// Reference: add.jas by Dan Stone, which was provided for this class
+//
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+.method getnum()
+.var
+a
+.end-var
+
+	BIPUSH 0x0		// initialize a
+        ISTORE a
+geta:	IN			// read key press
+	DUP			// duplicate key for comparison
+	BIPUSH 0xa		// if key = cr,
+	IF_ICMPEQ return	//   return
+	DUP
+	BIPUSH 0x30		// if key < "0"
+	ISUB			//
+	IFLT geta4		//   goto geta4 (key is not a hex digit)
+    	DUP
+	BIPUSH 0x3a		// else if key < ":"
+	ISUB			//
+	IFLT geta2		//   goto geta2 (key is numeric character - "0"-"9")
+	DUP
+	BIPUSH 0x41		// else if key < "A"
+	ISUB			//
+	IFLT geta4		//   goto geta4 (key is not a hex digit)
+	DUP
+	BIPUSH 0x46		// else if key > "F"
+	SWAP			//
+	ISUB			//
+	IFLT geta4		//   goto geta4 (key is not a hex digit)
+	DUP			// else (key is letter - "A"-"F")
+	OUT			//   print key
+	BIPUSH 0x37		//   convert key from character to number
+	ISUB			//
+	GOTO geta3		//   goto geta3
+geta2:  DUP
+	OUT			// print key (numeric character)
+	BIPUSH 0x30		// convert key from character to number
+	ISUB
+geta3:  ILOAD a			// shift a left 8 bits
+	DUP
+	IADD
+	DUP
+	IADD
+	DUP
+	IADD
+	DUP
+	IADD
+	IADD			// add key to a
+	ISTORE a
+	GOTO geta		// get next key
+
+geta4:	POP			// pop invalid character
+	GOTO geta		// get next key
+
+return: OUT			// print cr
+	ILOAD a			// load a as return value
+	IRETURN			// return
+.end-method
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+//
+// Print
+//
+// Converts a number into a string of prints it
+// All of the string's chars are pushed onto the stack,
+// (least significant digit first), popped, and then printed
+//
+// Reference: add.jas by Dan Stone, which was provided for this class
+//
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+.method print( total ) 		// Start print
+.var
+place
+index
+.end-var
+
+print: 	BIPUSH 0x9		// there are 8 nibbles in each integer--setting
+				//   this as nine pushes 10 characters onto the
+ 				//   stack, thus a total of ten printed digits,
+				//   but setting this less does not remove the
+				//   two leading zeros, just removes significant
+				//   digits
+	ISTORE index
+	BIPUSH 0x1		// comparison bit
+	ISTORE place
+print1:	BIPUSH 0x0
+	ILOAD index		// index = index - 1
+	BIPUSH 0x1
+	ISUB
+	DUP
+	IFEQ pall		// if index = 0  goto pall
+	ISTORE index
+	ILOAD total		// else
+	ILOAD place		//
+	IAND			//   if 1st bit of current nibble is zero (total & place)
+	IFEQ print2		//     goto print2
+	BIPUSH 0x1		//   else set first bit of character
+	IADD
+print2: ILOAD place		//   place = place << 1
+	DUP
+	IADD
+	ISTORE place
+	ILOAD total
+	ILOAD place
+	IAND			//   if 2nd bit of current nibble is zero (total & place)
+	IFEQ print3		//     goto print3
+	BIPUSH 0x2		//   else set second bit of character
+	IADD
+print3: ILOAD place		//   place = place << 1
+	DUP
+	IADD
+	ISTORE place
+	ILOAD total
+	ILOAD place
+	IAND			//   if 3rd bit of current nibble is zero (total & place)
+	IFEQ print4		//     goto print4
+	BIPUSH 0x4		//   else set second bit of character
+	IADD
+print4: ILOAD place		//   place = place << 1
+	DUP
+	IADD
+	ISTORE place
+	ILOAD total
+	ILOAD place
+	IAND			//   if 4th bit of current nibble is zero (total & place)
+	IFEQ print5		//     goto print5
+	BIPUSH 0x8		//   else set second bit of character
+	IADD
+print5: ILOAD place		//   place = place << 1
+	DUP
+	IADD
+	ISTORE place
+	GOTO print1
+
+pall:   POP			// Pop off leading 0's
+	POP
+	BIPUSH 0x9
+	ISTORE index
+pall1:	ILOAD index		// index = index - 1
+	BIPUSH 0x1
+	ISUB
+	DUP
+	IFEQ return		// if index = 0  return
+	ISTORE index
+	DUP
+	BIPUSH 0xa		// else if character < 0xa goto pall1
+	ISUB
+	IFLT pall2
+	BIPUSH 0x37		// else convert character to "A"-"F"
+	IADD
+	OUT			// print character
+	GOTO pall1		// goto pall (prepare & print next character)
+pall2:	BIPUSH 0x30		// convert character to "0"-"9"
+	IADD
+	OUT			// print character
+	GOTO pall1		// goto pall1 (prepare & print next character)
+return:	BIPUSH 0xa		// print cr
+	OUT
+	IRETURN			// no return value
+.end-method 			// End print
