@@ -1,0 +1,289 @@
+
+Majid Ghaderi
+University of Calgary
+
+
+
+Running the Tester
+==================
+1. To compile:
+
+	./make.sh
+
+2. To run: 
+
+	./run.sh server port
+
+The tester reads a list of "object paths" on the server from a text file named "url.txt". Each line of the text file represents one absolute object path in the form
+
+	/path/dir/obj.ext
+
+The arguments "server" and "port" specify the host name and port number of the web server.
+
+
+Sample Output with Multi-Threaded Web Server
+============================================
+If the requests are served by the web server in parallel, then the output should contain a sequence of messages similar to the following, with "test finished" message at the end:
+
+--------------------
+testing bad requests
+--------------------
+connected to: ict746x.cs.ucalgary.ca:2225 
+POST /files/a.pdf HTTP/1.1 
+HTTP/1.1 400 Bad Request 
+Server: CPSC 441 Server 
+Date: Wed, 18 Oct 2017 09:50:03 MDT 
+Connection: close 
+ 
+connected to: ict746x.cs.ucalgary.ca:2225 
+GET /files/a.pdf 
+HTTP/1.1 400 Bad Request 
+Server: CPSC 441 Server 
+Date: Wed, 18 Oct 2017 09:50:03 MDT 
+Connection: close 
+ 
+connected to: ict746x.cs.ucalgary.ca:2225 
+GET 
+HTTP/1.1 400 Bad Request 
+Server: CPSC 441 Server 
+Date: Wed, 18 Oct 2017 09:50:03 MDT 
+Connection: close 
+ 
+--------------------
+testing not found request
+--------------------
+connected to: ict746x.cs.ucalgary.ca:2225 
+GET /files/a.pdfrandom HTTP/1.1
+Host: ict746x.cs.ucalgary.ca
+Connection: close
+
+ 
+HTTP/1.1 404 Not Found 
+Server: CPSC 441 Server 
+Date: Wed, 18 Oct 2017 09:50:03 MDT 
+Connection: close 
+ 
+--------------------
+testing functionality: sequential
+--------------------
+connected to: ict746x.cs.ucalgary.ca:2225 
+GET /files/a.pdf HTTP/1.1
+Host: ict746x.cs.ucalgary.ca
+Connection: close
+
+ 
+HTTP/1.1 200 OK 
+Server: CPSC 441 Server 
+Date: Wed, 18 Oct 2017 09:50:03 MDT 
+Last-Modified: Mon, 23 May 2016 05:11:06 MDT 
+Content-Length: 602802 
+Content-Type: application/pdf 
+Connection: close 
+ 
+object saved to: /files/a.pdf
+ 
+connected to: ict746x.cs.ucalgary.ca:2225 
+GET /files/a.jpg HTTP/1.1
+Host: ict746x.cs.ucalgary.ca
+Connection: close
+
+ 
+HTTP/1.1 200 OK 
+Server: CPSC 441 Server 
+Date: Wed, 18 Oct 2017 09:50:03 MDT 
+Last-Modified: Sun, 15 Oct 2017 02:40:44 MDT 
+Content-Length: 737026 
+Content-Type: image/jpeg 
+Connection: close 
+ 
+object saved to: /files/a.jpg
+ 
+connected to: ict746x.cs.ucalgary.ca:2225 
+GET /files/a.txt HTTP/1.1
+Host: ict746x.cs.ucalgary.ca
+Connection: close
+
+ 
+HTTP/1.1 200 OK 
+Server: CPSC 441 Server 
+Date: Wed, 18 Oct 2017 09:50:03 MDT 
+Last-Modified: Sun, 08 Oct 2017 09:35:33 MDT 
+Content-Length: 257 
+Content-Type: text/plain 
+Connection: close 
+ 
+object saved to: /files/a.txt
+ 
+--------------------
+testing functionality: parallel
+--------------------
+background TCP connection opened 
+connected to: ict746x.cs.ucalgary.ca:2225 
+GET /files/a.pdf HTTP/1.1
+Host: ict746x.cs.ucalgary.ca
+Connection: close
+
+ 
+connected to: ict746x.cs.ucalgary.ca:2225 
+connected to: ict746x.cs.ucalgary.ca:2225 
+GET /files/a.jpg HTTP/1.1
+Host: ict746x.cs.ucalgary.ca
+Connection: close
+
+ 
+GET /files/a.txt HTTP/1.1
+Host: ict746x.cs.ucalgary.ca
+Connection: close
+
+ 
+HTTP/1.1 200 OK 
+Server: CPSC 441 Server 
+HTTP/1.1 200 OK 
+Date: Wed, 18 Oct 2017 09:50:03 MDT 
+Server: CPSC 441 Server 
+Last-Modified: Mon, 23 May 2016 05:11:06 MDT 
+HTTP/1.1 200 OK 
+Content-Length: 602802 
+Date: Wed, 18 Oct 2017 09:50:03 MDT 
+Content-Type: application/pdf 
+Last-Modified: Sun, 15 Oct 2017 02:40:44 MDT 
+Connection: close 
+Server: CPSC 441 Server 
+ 
+Content-Length: 737026 
+Date: Wed, 18 Oct 2017 09:50:03 MDT 
+Content-Type: image/jpeg 
+Last-Modified: Sun, 08 Oct 2017 09:35:33 MDT 
+Connection: close 
+Content-Length: 257 
+ 
+Content-Type: text/plain 
+Connection: close 
+ 
+object saved to: /files/a.pdf
+ 
+object saved to: /files/a.txt
+ 
+object saved to: /files/a.jpg
+ 
+--------------------
+test finished
+
+
+Sample Output with Single-Threaded Web Server
+============================================
+On the other hand, if the requests are served by the server sequentially, the tester will print a sequence of messages and then waits indefinitely, i.e., no "test finished" message is printed:
+
+--------------------
+testing bad requests
+--------------------
+connected to: ict746x.cs.ucalgary.ca:2225 
+POST /files/a.pdf HTTP/1.1 
+HTTP/1.1 400 Bad Request 
+Server: CPSC 441 Server 
+Date: Wed, 18 Oct 2017 09:55:00 MDT 
+Connection: close 
+ 
+connected to: ict746x.cs.ucalgary.ca:2225 
+GET /files/a.pdf 
+HTTP/1.1 400 Bad Request 
+Server: CPSC 441 Server 
+Date: Wed, 18 Oct 2017 09:55:00 MDT 
+Connection: close 
+ 
+connected to: ict746x.cs.ucalgary.ca:2225 
+GET 
+HTTP/1.1 400 Bad Request 
+Server: CPSC 441 Server 
+Date: Wed, 18 Oct 2017 09:55:00 MDT 
+Connection: close 
+ 
+--------------------
+testing not found request
+--------------------
+connected to: ict746x.cs.ucalgary.ca:2225 
+GET /files/a.pdfrandom HTTP/1.1
+Host: ict746x.cs.ucalgary.ca
+Connection: close
+
+ 
+HTTP/1.1 404 Not Found 
+Server: CPSC 441 Server 
+Date: Wed, 18 Oct 2017 09:55:00 MDT 
+Connection: close 
+ 
+--------------------
+testing functionality: sequential
+--------------------
+connected to: ict746x.cs.ucalgary.ca:2225 
+GET /files/a.pdf HTTP/1.1
+Host: ict746x.cs.ucalgary.ca
+Connection: close
+
+ 
+HTTP/1.1 200 OK 
+Server: CPSC 441 Server 
+Date: Wed, 18 Oct 2017 09:55:00 MDT 
+Last-Modified: Mon, 23 May 2016 05:11:06 MDT 
+Content-Length: 602802 
+Content-Type: application/pdf 
+Connection: close 
+ 
+object saved to: /files/a.pdf
+ 
+connected to: ict746x.cs.ucalgary.ca:2225 
+GET /files/a.jpg HTTP/1.1
+Host: ict746x.cs.ucalgary.ca
+Connection: close
+
+ 
+HTTP/1.1 200 OK 
+Server: CPSC 441 Server 
+Date: Wed, 18 Oct 2017 09:55:00 MDT 
+Last-Modified: Sun, 15 Oct 2017 02:40:44 MDT 
+Content-Length: 737026 
+Content-Type: image/jpeg 
+Connection: close 
+ 
+object saved to: /files/a.jpg
+ 
+connected to: ict746x.cs.ucalgary.ca:2225 
+GET /files/a.txt HTTP/1.1
+Host: ict746x.cs.ucalgary.ca
+Connection: close
+
+ 
+HTTP/1.1 200 OK 
+Server: CPSC 441 Server 
+Date: Wed, 18 Oct 2017 09:55:00 MDT 
+Last-Modified: Sun, 08 Oct 2017 09:35:33 MDT 
+Content-Length: 257 
+Content-Type: text/plain 
+Connection: close 
+ 
+object saved to: /files/a.txt
+ 
+--------------------
+testing functionality: parallel
+--------------------
+background TCP connection opened 
+connected to: ict746x.cs.ucalgary.ca:2225 
+connected to: ict746x.cs.ucalgary.ca:2225 
+GET /files/a.jpg HTTP/1.1
+Host: ict746x.cs.ucalgary.ca
+Connection: close
+
+ 
+GET /files/a.pdf HTTP/1.1
+Host: ict746x.cs.ucalgary.ca
+Connection: close
+
+ 
+connected to: ict746x.cs.ucalgary.ca:2225 
+GET /files/a.txt HTTP/1.1
+Host: ict746x.cs.ucalgary.ca
+Connection: close
+
+
+(waiting)
+

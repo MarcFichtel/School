@@ -76,6 +76,7 @@ session_start();
                                     . "<td><strong>Price</strong></td>"
                                     . "<td><strong>Stock</strong></td>"
                                     . "<td><strong>Description</strong></td>"
+									. "<td><strong>Reviews</strong></td>"
                             . "</tr>";
                             while ($row = mysqli_fetch_array($productQuery)) {
                                 $productId = $row['id'];
@@ -90,6 +91,7 @@ session_start();
                                      . "<td>".$price."</td>"
                                      . "<td>".$stock."</td>"
                                      . "<td>".$description."</td>"
+									 . "<td>"<a href="displayReviews.php?key='".$productId."'; ?>">Reviews</a>"</td>"
                                 . "</tr>";
                             }
                             echo "</table>";
@@ -108,7 +110,12 @@ session_start();
                     }
                     
                     
-                    
+                } else if(!(empty($_POST['reviews']))){
+					$_SESSION['productId'] = $productId;
+					echo "<p>Redirecting to Reviews...</p>";
+                    echo "<meta http-equiv='refresh' content='2; displayReviews.php'/>";
+					
+				}    
                 // No active department was supplied by POST    
                 } else {
                     echo "<h1>Error</h1>";

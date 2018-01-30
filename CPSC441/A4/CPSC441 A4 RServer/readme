@@ -1,0 +1,52 @@
+Assignment 4
+
+Author: Majid Ghaderi
+Email: mghaderi@cs.ucalgary.ca
+
+
+Note: First, start the relay server. Then, start routers.
+A topology file is needed to start the server.
+
+
+Running the Relay Server:
+=========================
+Use the following script
+
+	./run.sh
+
+to start the server. To stop the server, type "quit" on the screen. To change the
+network topology, type "update" on the screen. In response to command "update",
+the relay server cycles through the list of topologies defined in the topology file. If
+it reaches the last topology then it moves back to the first topology.
+
+Using the above script, the server starts with a set of default parameters.
+You can edit the script to specify your own parameters. Specifically, the server takes the following parameters:
+
+	port topology loss
+
+in the order specified, where,
+
+    port: the server local port number.
+
+    topology: the name of the topology file.
+
+    loss: the packet loss probability at the server.
+
+    Note: The loss probability specifies the ratio of lost packets at the server. The server randomly
+        drops arriving packets. The probability that the server drops a packet
+        is given by this parameter.
+         
+
+Changing the Log Level
+=======================
+The relay server uses standard Java loggers to output various messages. To change the log level, edit the file "logging.properties". Specifically, change the log level at the end of the file:
+
+cpsc441.a4.server.level = FINE
+
+to whatever level you desire. The logging.properties file should be passed to the Java runtime environment, as has been already done in the script "run.sh".
+
+
+No Software is Bug-Free!
+========================
+If you discover a critical bug in the server, let me know to fix it.
+You should however treat the server nicely or it may crash!

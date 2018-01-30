@@ -1,0 +1,159 @@
+/* Note:
+ * There is a bug in Chrome where images on index.html are rotated.
+ * This happens both in Firefox and Chrome, but I only found a fix for Firefox.
+ * A fix for Chrome was to use "-webkit-transform: rotate(90deg);", but this threw off the size and placement of the images, so I left it out. */
+
+body {
+    display: flex;
+    flex-direction: row;
+    font-family: Georgia, Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    line-height: 25px;
+}
+
+/******************************************************************
+Navigation
+******************************************************************/
+
+#col-1 {
+    background: #3e520a;
+    color: white;
+    flex: 1;
+    line-height: 50px;
+    text-align: center;
+}
+
+#col-1 a {
+    color: white;
+    text-decoration: none;
+}
+
+#col-1 a:hover {
+    font-weight: bold;
+    font-size: 25px;
+}
+
+/******************************************************************
+Header & Main
+******************************************************************/
+
+#col-2 {
+    display: flex;
+    flex-direction: column;
+    flex: 5;
+}
+
+/******************************************************************
+Header Only
+******************************************************************/
+
+header {
+    background: #2b2d41;
+    color: white;
+    height: 20vh;
+}
+
+header, nav {
+    padding: 1em;
+}
+
+#header-text {
+    float: left;
+    margin-top: 10px;
+}
+
+header h2 {
+    margin-left: 50px;
+}
+
+header p {
+    line-height: 25px;
+    margin-left: 50px;
+}
+
+/******************************************************************
+Main
+******************************************************************/
+
+#content {
+    background: #978e58;
+    display: flex;
+    flex-direction: column;
+    flex: 4;
+    min-height: 60vh;
+}
+
+#content p, #content h3 {
+  margin-left: 20px;
+}
+
+#content div {
+  max-width: 90%;
+}
+
+#content img {
+  display: inline-block;
+  max-width: 95%;
+  height: auto;
+  width: 18%;
+  margin-left: 0.5%;
+}
+
+/* TODO: Fix bug where some images are rotated in Chrome only */
+@-moz-document url-prefix() {
+  .rotate {
+    image-orientation: 90deg;
+  }
+}
+
+#content-title {
+  margin-left: 20px;
+}
+
+/******************************************************************
+Summary Table
+******************************************************************/
+
+#summary-table {
+  margin: 20px;
+  width: 90%;
+}
+#summary-table td, #summary-table th {
+  text-align: left;
+  padding: 5px;
+}
+#summary-table th {
+  border-bottom: 5px solid black;
+}
+#summary-table tr:nth-child(even) {
+  background-color: #dddddd;
+}
+#summary-table tr:nth-child(odd) {
+  background-color: white;
+}
+
+/******************************************************************
+Tarantula Displays
+******************************************************************/
+
+.tarantulas {
+  background: #978e58;
+}
+
+.tarantulas img {
+  width: 50%;
+  margin-left: 10px;
+  margin-right: 25px;
+  float: left;
+}
+
+.tarantulas div {
+  width: 95%;
+  padding: 10px;
+  overflow: hidden;
+}
+
+.tarantulas div ul li {
+  padding-top: 5px;
+}
