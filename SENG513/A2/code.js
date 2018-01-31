@@ -20,6 +20,7 @@ function getStats(txt) {
 
 //
 // Count characters in a string
+// TODO check why I get slightly less words than expected in example 3. What is counted as a word???
 //
 function countChars(txt) {
   return txt.length;
@@ -29,11 +30,7 @@ function countChars(txt) {
 // Count words in a string
 //
 function countWords(txt) {
-  txt = txt.replace(/\n/g, " ").trim();
-  let words = txt.split(" ");
-
-  // TODO solve example 3
-
+  let words = getWords(txt);
   return words.length;
 }
 
@@ -45,12 +42,19 @@ function countLines(txt) {
 }
 
 //
-// count nonempty lines in a string
+// Count nonempty lines in a string
 //
 function countNonEmptyLines(txt) {
   let count = 0;
+  
+  // Isolate lines
   let lines = txt.split("\n");
   for (let i = 0; i < lines.length; i++) {
+  	
+  	// Remove all whitespace
+  	lines[i] = lines[i].replace(/\s/g, "");
+
+  	// If line has anything left in it, it is nonempty
   	if (lines[i].length != 0) {
   		count++;
   	}
@@ -62,8 +66,12 @@ function countNonEmptyLines(txt) {
 // Find the length of the longest line in a string
 //
 function findMaxLineLength(txt) {
+  
+  // Isolate lines
   let lines = txt.split("\n");
   let result = lines[0].length;
+
+  // Find maximum line length
   for (let i = 1; i < lines.length; i++) {
   	if (lines[i].length > result) {
   		result = lines[i].length;
@@ -74,7 +82,6 @@ function findMaxLineLength(txt) {
 
 //
 // Find the average word length in a string
-// This assumes that the symbols {, . ! ?} are always followed by a space
 //
 function findAvgWordLength(txt) {
   let words = getWords(txt);
@@ -83,26 +90,24 @@ function findAvgWordLength(txt) {
   	count += words[i].length;
   }
 
-  // TODO solve example 3
-
   return count / words.length;
 }
 
 //
 // Find all palindromes in a string
-// This assumes that the symbols {, . ! ?} are always followed by a space
 //
 function findPalindromes(txt) {
   let words = getWords(txt);
   let palindromes = [];
 	
+  // Check each word
   for (let i = 0; i < words.length; i++) {
-  	if (words[i].toLowerCase() === words[i].toLowerCase().split("").reverse().join("")) {
+
+  	// If word is at least 2 characters long and is the same as its reverse, then its a palindrome
+  	if (words[i].toLowerCase() === words[i].toLowerCase().split("").reverse().join("") && words[i].length >= 2) {
   		palindromes.push(words[i].toLowerCase());
   	}
   }
-
-  // TODO solve example 3
 
   return palindromes;
 }
@@ -203,14 +208,29 @@ function findMostFrequentWords(txt) {
 // Isolate all words into an array
 //
 function getWords(txt) {
-  txt = txt.replace(/\n/g, " ");
-  txt = txt.replace(/\./g, "");
-  txt = txt.replace(/,/g, "");
-  txt = txt.replace(/!/g, "");
-  txt = txt.replace(/\?/g, "");
+
+  // Remove leading and trailing whitespace
   txt = txt.trim();
 
-  // TODO solve example 3
+  // Replace non-word characters with spaces
+  txt = txt.replace(":-)", " ");
+  txt = txt.replace(/\n/g, " ");
+  txt = txt.replace(/\./g, " "); 
+  txt = txt.replace(/\!/g, " "); 	
+  txt = txt.replace(/\?/g, " ");
+  txt = txt.replace(/\,/g, " ");
+  txt = txt.replace(/\+/g, " ");
+  txt = txt.replace(/\:/g, " ");
+  txt = txt.replace(/\"/g, " ");
 
-  return txt.split(" ");
+  // Remove consecutive spaces
+  txt = txt.replace(/\s+/g, " ");
+  let words = txt.split(" ");
+
+  // If last word is empty, remove it
+  if (words[words.length-1] === "") {
+  	words.splice(words.length-1, 1);
+  }
+
+  return words;
 }
