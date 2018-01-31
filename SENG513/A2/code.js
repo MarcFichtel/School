@@ -29,9 +29,7 @@ function countChars(txt) {
 // Count words in a string
 //
 function countWords(txt) {
-  // Convert newlines to spaces and trim the string
   txt = txt.replace(/\n/g, " ").trim();
-  // Split at spaces
   let words = txt.split(" ");
 
   // TODO solve example 3
@@ -47,49 +45,172 @@ function countLines(txt) {
 }
 
 //
-// TODO
+// count nonempty lines in a string
 //
 function countNonEmptyLines(txt) {
-  let countNL = 0;
-  for (let i = 0; i < txt.length; i++) {
-    if (txt[i] === "\n") {
-      countNL++;
-    }
+  let count = 0;
+  let lines = txt.split("\n");
+  for (let i = 0; i < lines.length; i++) {
+  	if (lines[i].length != 0) {
+  		count++;
+  	}
   }
-  return countNL;
+  return count;
 }
 
 //
 // Find the length of the longest line in a string
 //
 function findMaxLineLength(txt) {
-  return null;
+  let lines = txt.split("\n");
+  let result = lines[0].length;
+  for (let i = 1; i < lines.length; i++) {
+  	if (lines[i].length > result) {
+  		result = lines[i].length;
+  	}
+  }
+  return result;
 }
 
 //
 // Find the average word length in a string
+// This assumes that the symbols {, . ! ?} are always followed by a space
 //
 function findAvgWordLength(txt) {
-  return null;
+  let words = getWords(txt);
+  let count = 0;
+  for (let i = 0; i < words.length; i++) {
+  	count += words[i].length;
+  }
+
+  // TODO solve example 3
+
+  return count / words.length;
 }
 
 //
 // Find all palindromes in a string
+// This assumes that the symbols {, . ! ?} are always followed by a space
 //
 function findPalindromes(txt) {
-  return null;
+  let words = getWords(txt);
+  let palindromes = [];
+	
+  for (let i = 0; i < words.length; i++) {
+  	if (words[i].toLowerCase() === words[i].toLowerCase().split("").reverse().join("")) {
+  		palindromes.push(words[i].toLowerCase());
+  	}
+  }
+
+  // TODO solve example 3
+
+  return palindromes;
 }
 
 //
-// Find the longest words in a string
+// Find the longest words in a string (at most 10)
 //
 function findLongestWords(txt) {
-  return null;
+  let words = getWords(txt);
+  let longestWords = [];  
+  let longestWordCount = words[0].length;
+
+  // Find longest word count
+  for (let i = 1; i < words.length; i++) {
+  	if (words[i].length > longestWordCount) {
+  		longestWordCount = words[i].length;
+  	}
+  }
+
+  // Find unique longest words (may record more than 10 through the for loop)
+  while (longestWordCount > 0 && longestWords.length < 10) {
+  	for (let i = 0; i < words.length; i++) {
+  	  if (words[i].length >= longestWordCount && 
+  		longestWords.indexOf(words[i].toLowerCase()) <= -1) {
+  		longestWords.push(words[i].toLowerCase());
+  	  }
+  	}
+  	longestWordCount--;  
+  }
+
+  // Sort alphabetically (2nd order) and by length (1st order)
+  longestWords.sort();
+  longestWords.sort(function(a,b) {
+  	return b.length - a.length;
+  });
+
+  // If there are more than 10, remove items until there are only 10
+  while (longestWords.length > 10) {
+  	longestWords.pop();
+  }
+
+  return longestWords;
 }
 
 //
 // Find the most frequent words in a string
 //
 function findMostFrequentWords(txt) {
-  return null;
+  let words = getWords(txt);
+  let wordCount = {};
+  let result = [];
+  let highestCount = 0;
+
+  // Convert all words to lowercase
+  for (let i = 0; i < words.length; i++) {
+  	words[i] = words[i].toLowerCase();
+  }
+
+  // Sort words alphabetically
+  words.sort();
+
+  // Count how often each word appears
+  for (let i = 0; i < words.length; i++) {
+  	if (!(words[i] in wordCount)) {
+  		wordCount[words[i]] = 1;
+  	} else {
+  		wordCount[words[i]]++;
+  	}
+  }
+
+  // Find highest word count
+  for (let i = 0; i < words.length; i++) {
+  	if (wordCount[words[i]] > highestCount) {
+  	  	highestCount = wordCount[words[i]];
+  	}
+  }
+
+  // Find 10 most frequent words in order
+  while (highestCount > 0 && result.length < 10) {
+  	for (let i = 0; i < words.length; i++) {
+  	  if (wordCount[words[i]] === highestCount && 
+  	  	result.indexOf(words[i] + "(" + wordCount[words[i]] + ")") <= -1) {
+  		result.push(words[i] + "(" + wordCount[words[i]] + ")");
+  	  }
+  	}
+  	highestCount--;
+  }
+
+  // If there are more than 10, remove items until there are only 10
+  while (result.length > 10) {
+  	result.pop();
+  }
+
+  return result;
+}
+
+//
+// Isolate all words into an array
+//
+function getWords(txt) {
+  txt = txt.replace(/\n/g, " ");
+  txt = txt.replace(/\./g, "");
+  txt = txt.replace(/,/g, "");
+  txt = txt.replace(/!/g, "");
+  txt = txt.replace(/\?/g, "");
+  txt = txt.trim();
+
+  // TODO solve example 3
+
+  return txt.split(" ");
 }
