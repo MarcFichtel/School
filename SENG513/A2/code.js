@@ -1,5 +1,9 @@
 //
-// this is just a stub for a function you need to implement
+// SENG 513 - Assignment 2
+// Unversity of Calgary
+// WS 2018
+// Student: Marc-Andre Fichtel
+// ID: 30014709
 //
 function getStats(txt) {
 
