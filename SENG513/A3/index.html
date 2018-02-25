@@ -1,0 +1,166 @@
+<!doctype html>
+<html>
+    <head>
+        <title>SENG 513 A3</title>
+        <link href="https://afeld.github.io/emoji-css/emoji.css" rel="stylesheet">
+        <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font: 13px Helvetica, Arial;
+            overflow-y: hidden;
+            background-color: #8baba8;
+            color: #dfe0de;
+        }
+        form {
+            padding: 5px;
+            width: 100%;
+        }
+        form input {
+            border: 1px solid black;
+            border-radius: 25px;
+            padding: 10px;
+            width: 90%;
+            margin: 1% .5% 1% .5%;
+        }
+        form button {
+            width: 9%;
+            background-color: #f3827c;
+            border: 1px solid black;
+            border-radius: 25px;
+            padding: 10px;
+            color: black;
+        }
+        #messagesContainer {
+            float: right;
+            width: 70%;
+            height: 98vh;
+            margin: 10px 0px 10px 0px;
+            padding: 10px;
+            border: 1px solid black;
+            border-radius: 25px;
+            overflow-y: auto;
+            background-color: #4f5e5d;
+        }
+        #messages {
+            list-style-type: none;
+        }
+        #messages li {
+            padding: 5px 10px;
+        }
+        #usersContainer {
+            float: left;
+            width: 28%;
+            height: 98vh;
+            margin: 10px 0px 10px 15px;
+            padding: 10px;
+            border: 1px solid black;
+            border-radius: 25px;
+            overflow-y: auto;
+            background-color: #4f5e5d;
+        }
+        #users {
+            list-style-type: none;
+        }
+        #users li {
+            padding: 5px 10px;
+        }
+        </style>
+    </head>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script>
+        $(function () {
+
+            // Let server know someone connected
+            $('#m').focus().select();
+            var socket = io();
+            let id = '';
+
+            // Check if a cookie with username is available
+            let allCookies = document.cookie;
+            let cookies = allCookies.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+
+                // If a cookie exists, let server know an old user connected
+                if (cookies[i].includes('username')) {
+                    console.log("Found username");
+                    id = cookies[i].split('=')[1];
+                    socket.emit('old user', id);
+                    $('#username').html("You are " + id);
+                }
+            }
+
+            // Otherwise let server know a new user connected
+            if (!id) {
+                socket.emit('new user');
+            }
+
+            // Get nickname from server and write to cookie
+            socket.on('nickname', function(nickname) {
+                console.log("Received username from server: " + nickname);
+                id = nickname;
+                document.cookie = "username=" + nickname;
+                $('#username').html("You are " + id);
+            });
+
+            // Send outgoing message from this user
+            $('form').submit(function(){
+                if ($('#m').val() != '') {
+                    socket.emit('chat message', $('#m').val(), id);
+                    $('#m').val('');          // Clear message field
+                    $('#m').focus().select(); // Select message field
+                }
+                return false;
+            });
+
+            // Receive incoming message at datetime from a user
+            socket.on('chat message', function(msg){
+                if (msg.from === id) {
+                    $('#messages')
+                        .append($('<li>')
+                            .html(msg.date + ' <b><span style="color:#' + msg.color + '">' + msg.from + ':</span> ' + msg.text + '</b>')
+                            .hide()
+                            .fadeIn(1000));
+                } else {
+                    $('#messages')
+                        .append($('<li>')
+                            .html(msg.date + ' <span style="color:#' + msg.color + '">' + msg.from + ':</span> ' + msg.text)
+                            .hide()
+                            .fadeIn(1000));
+                }
+
+                // Scroll to bottom of message container
+                $('#messagesContainer').animate({ scrollTop: $('#messagesContainer').prop('scrollHeight')}, 0);
+            });
+
+            // Empty and rebuild user list
+            socket.on('user change', function(users) {
+                $('#users').empty();
+                for (let i = 0; i < users.length; i++) {
+                    if (users[i] != null) {
+                        $('#users').append($('<li>').text(users[i]));
+                    }
+                }
+            });
+        });
+    </script>
+
+    <body>
+        <div id="messagesContainer">
+            <h2 id="username">foo</h2>
+            <ul id="messages"></ul>
+            <form action="">
+                <input id="m" autocomplete="off" /><button>Send</button>
+            </form>
+        </div>
+        <div id="usersContainer">
+            <h2>Online users:</h2>
+            <ul id="users"></ul>
+        </div>
+    </body>
+</html>

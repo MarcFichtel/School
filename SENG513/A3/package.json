@@ -1,0 +1,10 @@
+{
+  "name": "seng513-A3-chat",
+  "version": "0.0.1",
+  "description": "Building a chat app for SENG 513 Assignment 3",
+  "dependencies": {
+    "express": "^4.15.2",
+    "node-datetime": "^2.0.6",
+    "socket.io": "^2.0.4"
+  }
+}
