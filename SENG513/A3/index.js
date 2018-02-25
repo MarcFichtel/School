@@ -124,10 +124,11 @@ io.on('connection', function(socket){
             }
         }
 
+        // TODO add more chat commands here
         // Display error for unrecognized chat commands
         else if (msg.substr(0,1) === '/') {
             sendMessage(msg, username, colors[userId]);
-            sendMessage('Command was not recognized. Try something else like /nick or /nickcolor.', username, colors[userId]);
+            sendMessage('I\'m sorry ' + username + ', I\'m afraid I can\'t do that. Try something else like /nick <New User Name> or /nickcolor 00ff00.', username, colors[userId]);
         }
 
         // Just a plain chat message
