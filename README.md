@@ -1,4 +1,4 @@
-# University of Calgary
+# B.S. Computer Science @ University of Calgary
 This is where I keep code from my B.S. Computer Science classes
 * CPP Practice: A simple tic tac toe practice written in C++
 * CPSC233: Introduction to Computer Science for Computer Science Majors II
