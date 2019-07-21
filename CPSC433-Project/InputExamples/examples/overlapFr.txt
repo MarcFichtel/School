@@ -1,0 +1,26 @@
+Name:
+overlapFr.txt
+
+Course slots:
+MO, 9:00, 2, 0
+
+Lab slots:
+Fr, 8:00, 1, 0
+
+Courses:
+CPSC 101 LEC 01
+
+Labs:
+CPSC 101 LEC 01 TUT 01
+
+Not compatible:
+
+Unwanted:
+
+Preferences:
+
+Pair:
+
+Partial assignments:
+
+

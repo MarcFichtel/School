@@ -1,0 +1,18 @@
+Name:
+gehtnicht13
+
+Course slots:
+TU, 11:00, 1, 1
+
+Courses:
+CPSC 433 LEC 01
+
+Not compatible:
+
+Unwanted:
+
+Preferences:
+
+Pair:
+
+Partial assignments:
